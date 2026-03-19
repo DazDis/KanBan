@@ -1,3 +1,7 @@
+using Microsoft.EntityFrameworkCore;
+using ShapesUI.DataBase;
+using Microsoft.Extensions.DependencyInjection;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -13,6 +17,24 @@ if (app.Environment.IsDevelopment())
 {
     app.MapOpenApi();
 }
+
+// работа с БД
+IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
+var services = new ServiceCollection();
+services.AddSingleton<IConfiguration>(configuration);
+var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+optionsBuilder.UseNpgsql(configuration.GetConnectionString("ExampleStorageDataBase"));
+services.AddScoped<ApplicationDbContext>(provider =>
+{
+    return new ApplicationDbContext(optionsBuilder.Options);
+});
+services.AddScoped<UserRepository>();
+
+
+services.AddSignalR();
+
+
+
 
 app.UseHttpsRedirection();
 
