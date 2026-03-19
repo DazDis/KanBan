@@ -8,53 +8,50 @@ using System.Threading.Tasks;
 
 namespace Server.DataBase;
 
-public class UserRepository(ApplicationDbContextFactory contextFactory)
+public class LabelRepository(ApplicationDbContextFactory contextFactory)
 {
     private ApplicationDbContextFactory _contextFactory = contextFactory;
 
-    public async Task<IReadOnlyList<UserDTO>> GetUsersAsync()
+    public async Task<IReadOnlyList<LabelDTO>> GetLabelsAsync()
     {
         using var context = _contextFactory.CreateApplicationContext();
 
-        var entities = await context.Users.ToListAsync();
+        var entities = await context.Labels.ToListAsync();
 
-        return entities.Select(x => new UserDTO
+        return entities.Select(x => new LabelDTO
         {
             Id = x.Id,
-            FirstName = x.FirstName,
-            LastName = x.LastName,
-            Email = x.Email,
+            Name = x.Name,
+            Color = x.Color,
         }).ToList();
 
     }
 
-    public async Task AddUserAsync(UserDTO user)
+    public async Task AddLabelAsync(LabelDTO label)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
-        var entity = new UserEntity
+        var entity = new LabelEntity
         {
-            //Id = user.Id,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Email = user.Email,
+            //Id = x.Id,
+            Name = label.Name,
+            Color = label.Color,
         };
 
-        await context.Users.AddAsync(entity);
+        await context.Labels.AddAsync(entity);
         await context.SaveChangesAsync();
-        user.Id = entity.Id;
+        label.Id = entity.Id;
     }
 
-    public async Task DeleteUserAsync(UserDTO user)
+    public async Task DeleteLabelAsync(LabelDTO label)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
-        var entity = new UserEntity
+        var entity = new LabelEntity
         {
-            Id = user.Id,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Email = user.Email,
+            Id = label.Id,
+            Name = label.Name,
+            Color = label.Color,
         };
 
         if (entity != null)
@@ -63,11 +60,11 @@ public class UserRepository(ApplicationDbContextFactory contextFactory)
             await context.SaveChangesAsync();
         }
     }
-    public async Task DeleteUserAsync(int id)
+    public async Task DeleteLabelAsync(int id)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
-        var entity = await context.Users.FindAsync(id);
+        var entity = await context.Labels.FindAsync(id);
         if (entity != null)
         {
             context.Remove(entity);

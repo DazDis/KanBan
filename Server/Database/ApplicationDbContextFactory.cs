@@ -1,7 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 
-namespace ShapesUI.DataBase;
+namespace Server.DataBase;
 
 public sealed class ApplicationDbContextFactory(IConfiguration configuration)
 {

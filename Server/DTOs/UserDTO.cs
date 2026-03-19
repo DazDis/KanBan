@@ -1,4 +1,4 @@
-﻿namespace ShapesUI.DataBase
+﻿namespace Server.DTOs
 {
     public class UserDTO
     {

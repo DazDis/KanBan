@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
-using ShapesUI.DataBase;
 using Microsoft.Extensions.DependencyInjection;
+using Server.DataBase;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -8,33 +8,54 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 // Learn more about configuring OpenAPI at https://aka.ms/aspnet/openapi
-builder.Services.AddOpenApi();
+//builder.Services.AddOpenApi();
 
-var app = builder.Build();
-
-// Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.MapOpenApi();
-}
-
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen();
 // работа с БД
+
+
+
+
 IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
-var services = new ServiceCollection();
-services.AddSingleton<IConfiguration>(configuration);
+
+builder.Services.AddSingleton<IConfiguration>(configuration);
 var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
 optionsBuilder.UseNpgsql(configuration.GetConnectionString("ExampleStorageDataBase"));
-services.AddScoped<ApplicationDbContext>(provider =>
+builder.Services.AddScoped<ApplicationDbContext>(provider =>
 {
     return new ApplicationDbContext(optionsBuilder.Options);
 });
-services.AddScoped<UserRepository>();
-
-
-services.AddSignalR();
 
 
 
+
+/*builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("ExampleStorageDataBase"))
+);*/
+builder.Services.AddSingleton<ApplicationDbContextFactory>(provider =>
+    new ApplicationDbContextFactory(provider.GetRequiredService<IConfiguration>())
+);
+builder.Services.AddScoped<UserRepository>();
+builder.Services.AddScoped<TaskRepository>();
+builder.Services.AddScoped<LabelRepository>();
+
+builder.Services.AddSignalR();
+
+
+// Configure the HTTP request pipeline.
+/*if (app.Environment.IsDevelopment())
+{
+    app.MapOpenApi();
+}*/
+
+var app = builder.Build();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
 
 app.UseHttpsRedirection();
 

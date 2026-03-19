@@ -1,4 +1,4 @@
-﻿namespace ShapesUI.DataBase
+﻿namespace Server.DataBase
 {
     public class UserEntity
     {

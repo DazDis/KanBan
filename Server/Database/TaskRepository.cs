@@ -8,53 +8,52 @@ using System.Threading.Tasks;
 
 namespace Server.DataBase;
 
-public class UserRepository(ApplicationDbContextFactory contextFactory)
+public class TaskRepository(ApplicationDbContextFactory contextFactory)
 {
     private ApplicationDbContextFactory _contextFactory = contextFactory;
 
-    public async Task<IReadOnlyList<UserDTO>> GetUsersAsync()
+    public async Task<IReadOnlyList<TaskDTO>> GetTasksAsync()
     {
         using var context = _contextFactory.CreateApplicationContext();
 
-        var entities = await context.Users.ToListAsync();
+        var entities = await context.Tasks.ToListAsync();
 
-        return entities.Select(x => new UserDTO
+        return entities.Select(x => new TaskDTO
         {
             Id = x.Id,
-            FirstName = x.FirstName,
-            LastName = x.LastName,
-            Email = x.Email,
+            Title = x.Title,
+            Description = x.Description,
         }).ToList();
 
     }
 
-    public async Task AddUserAsync(UserDTO user)
+    public async Task AddTaskAsync(TaskDTO task)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
-        var entity = new UserEntity
+        var entity = new TaskEntity
         {
-            //Id = user.Id,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Email = user.Email,
+            //Id = task.Id,
+            Title = task.Title,
+            Description = task.Description,
+            UserIds = task.UserIds,
+            LabelIds = task.LabelIds,
         };
 
-        await context.Users.AddAsync(entity);
+        await context.Tasks.AddAsync(entity);
         await context.SaveChangesAsync();
-        user.Id = entity.Id;
+        task.Id = entity.Id;
     }
 
-    public async Task DeleteUserAsync(UserDTO user)
+    public async Task DeleteTaskAsync(TaskDTO task)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
-        var entity = new UserEntity
+        var entity = new TaskEntity
         {
-            Id = user.Id,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Email = user.Email,
+            Id = task.Id,
+            Title = task.Title,
+            Description = task.Description,
         };
 
         if (entity != null)
@@ -63,11 +62,11 @@ public class UserRepository(ApplicationDbContextFactory contextFactory)
             await context.SaveChangesAsync();
         }
     }
-    public async Task DeleteUserAsync(int id)
+    public async Task DeleteTaskAsync(int id)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
-        var entity = await context.Users.FindAsync(id);
+        var entity = await context.Tasks.FindAsync(id);
         if (entity != null)
         {
             context.Remove(entity);
