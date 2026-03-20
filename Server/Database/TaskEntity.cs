@@ -5,8 +5,8 @@
         public int Id { get; set; }
         public string Title { get; set; } 
         public string Description { get; set; }
-
-        public List<int> UserIds { get; set; }      // ID исполнителей
-        public List<int> LabelIds { get; set; }     // ID тегов
+        public int ColumnId { get; set; }
+        public List<int> UserIds { get; set; }      
+        public List<int> LabelIds { get; set; }     
     }
 }

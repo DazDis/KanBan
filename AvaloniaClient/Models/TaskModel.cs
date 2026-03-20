@@ -1,6 +1,8 @@
-﻿namespace Server.DTOs
+﻿using System.Collections.Generic;
+
+namespace AvaloniaClient.DataBase
 {
-    public class TaskDTO
+    public class TaskModel
     {
         public int Id { get; set; }
         public string Title { get; set; }

@@ -1,7 +1,14 @@
-﻿namespace AvaloniaClient.ViewModels
+﻿using ReactiveUI;
+
+namespace AvaloniaClient.ViewModels
 {
-    public partial class MainWindowViewModel : ViewModelBase
+    public class MainWindowViewModel : ViewModelBase, IScreen
     {
-        public string Greeting { get; } = "Welcome to Avalonia!";
+        public RoutingState Router { get; } = new RoutingState();
+
+        public MainWindowViewModel()
+        {
+
+        }
     }
 }

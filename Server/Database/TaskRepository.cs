@@ -23,6 +23,9 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
             Id = x.Id,
             Title = x.Title,
             Description = x.Description,
+            ColumnId = x.ColumnId,
+            UserIds = x.UserIds,
+            LabelIds = x.LabelIds,
         }).ToList();
 
     }
@@ -36,6 +39,7 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
             //Id = task.Id,
             Title = task.Title,
             Description = task.Description,
+            ColumnId = task.ColumnId,
             UserIds = task.UserIds,
             LabelIds = task.LabelIds,
         };

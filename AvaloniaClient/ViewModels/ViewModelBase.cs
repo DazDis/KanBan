@@ -1,8 +1,8 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using ReactiveUI;
 
 namespace AvaloniaClient.ViewModels
 {
-    public abstract class ViewModelBase : ObservableObject
+    public abstract class ViewModelBase : ReactiveObject
     {
     }
 }

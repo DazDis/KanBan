@@ -1,4 +1,4 @@
-﻿namespace ShapesUI.DataBase
+﻿namespace AvaloniaClient.DataBase
 {
     public class UserModel
     {
