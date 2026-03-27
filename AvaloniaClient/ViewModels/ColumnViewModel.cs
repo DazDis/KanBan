@@ -90,8 +90,14 @@ namespace AvaloniaClient.ViewModels
             var columns = await _apiClient.GetAsync<List<ColumnDTO>>("api/column");
             foreach (var column in columns)
             {
+                ColumnModel model = new ColumnModel()
+                {
+                    Id = column.Id,
+                    Title = column.Title,
+                    Tasks = new ObservableCollection<TaskModel>(),
+                };
 
-                //Columns.Add(column);
+                Columns.Add(model);
 
             }
            /* Columns.Add(new ColumnModel { Id = 0, Title = "📋 To Do" });      // Id = 0
@@ -124,7 +130,7 @@ namespace AvaloniaClient.ViewModels
         {
             ColumnDTO result = new ColumnDTO
             {
-                Id = 0,
+                //Id = 0,
                 Title = "aaa",
             };
             var createdColumn = await _apiClient.PostAsync<ColumnDTO>("api/column", result);
