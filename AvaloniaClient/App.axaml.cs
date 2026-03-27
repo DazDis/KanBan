@@ -54,7 +54,7 @@ namespace AvaloniaClient
             services.AddSingleton<IConfiguration>(configuration);
             services.AddHttpClient<IApiClient, ApiClient>(client =>
             {
-                client.BaseAddress = new Uri(configuration["ApiBaseUrl"] ?? "https://localhost:7076");
+                client.BaseAddress = new Uri(configuration["ApiBaseUrl"]);
             });
             services.AddScoped<NavigationService>();
             services.AddScoped<RoutableViewModelsFactory>();

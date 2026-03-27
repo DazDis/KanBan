@@ -2,11 +2,10 @@
 
 namespace AvaloniaClient.DataBase
 {
-    public class ColumnModel
+    public class ColumnDTO
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public ObservableCollection<TaskModel> Tasks { get; set; } = new();
 
     }
 }

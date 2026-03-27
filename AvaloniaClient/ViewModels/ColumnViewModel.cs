@@ -30,14 +30,21 @@ namespace AvaloniaClient.ViewModels
             get => _selectedTask;
             set => this.RaiseAndSetIfChanged(ref _selectedTask, value);
         }
+        private ColumnModel _selectedColumn;
+        public ColumnModel SelectedColumn
+        {
+            get => _selectedColumn;
+            set => this.RaiseAndSetIfChanged(ref _selectedColumn, value);
+        }
         public string? UrlPathSegment => "/users";
 
         public IScreen HostScreen { get; }
-
+        public int a = 1;
 
         public ObservableCollection<ColumnModel> Columns { get; } = new();
 
         public ReactiveCommand<int, Unit> AddTaskCommand { get; }
+        public ReactiveCommand<Unit, Task> AddColumnCommand { get; }
         public ReactiveCommand<TaskModel, Unit> EditTaskCommand { get; }
         public ReactiveCommand<TaskModel, Unit> DeleteTaskCommand { get; }
         public ColumnViewModel(IScreen screen, NavigationService navigationService, IApiClient apiClient) 
@@ -48,6 +55,7 @@ namespace AvaloniaClient.ViewModels
             //var canDelete = this.WhenAnyValue(x => x.SelectedTask).Select(task => task != null);
 
             AddTaskCommand = ReactiveCommand.CreateFromTask<int>(AddTaskAsync);
+            AddColumnCommand = ReactiveCommand.Create<Task>(AddColumnAsync);
             //EditTaskCommand = ReactiveCommand.Create<Task>(EditTaskAsync);
             //DeleteTaskCommand = ReactiveCommand.Create<TaskModel, Task>(DeleteTaskAsync, canDelete);
         }
@@ -79,10 +87,17 @@ namespace AvaloniaClient.ViewModels
         }
         private async Task LoadColumns()
         {
-            Columns.Add(new ColumnModel { Id = 0, Title = "📋 To Do" });      // Id = 0
+            var columns = await _apiClient.GetAsync<List<ColumnDTO>>("api/column");
+            foreach (var column in columns)
+            {
+
+                //Columns.Add(column);
+
+            }
+           /* Columns.Add(new ColumnModel { Id = 0, Title = "📋 To Do" });      // Id = 0
             Columns.Add(new ColumnModel { Id = 1, Title = "🔄 In Progress" }); // Id = 1
             Columns.Add(new ColumnModel { Id = 2, Title = "📝 Review" });      // Id = 2
-            Columns.Add(new ColumnModel { Id = 3, Title = "✅ Done" });         // Id = 3
+            Columns.Add(new ColumnModel { Id = 3, Title = "✅ Done" });*/         // Id = 3
             foreach (var task in Tasks) {
                 Columns[task.ColumnId].Tasks.Add(task);
             }
@@ -105,8 +120,26 @@ namespace AvaloniaClient.ViewModels
                 column?.Tasks.Add(createdTask);
             }
         }
+        private async Task AddColumnAsync()
+        {
+            ColumnDTO result = new ColumnDTO
+            {
+                Id = 0,
+                Title = "aaa",
+            };
+            var createdColumn = await _apiClient.PostAsync<ColumnDTO>("api/column", result);
+            if (createdColumn != null)
+            {
+                ColumnModel model = new ColumnModel
+                {
+                    Id = result.Id,
+                    Title = result.Title,
+                    Tasks = null,
+                };
+                Columns?.Add(model);
+            }
+        }
 
 
-
-    }
+        }
 }
