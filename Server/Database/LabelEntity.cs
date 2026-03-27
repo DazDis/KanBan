@@ -8,5 +8,7 @@ namespace Server.DataBase
         public int Id { get; set; }
         public string Name { get; set; } 
         public string Color { get; set; }
+        // связь
+        public List<TaskEntity> Tasks { get; set; } = new();
     }
 }

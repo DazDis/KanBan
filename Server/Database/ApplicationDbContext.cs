@@ -15,4 +15,16 @@ public class ApplicationDbContext : DbContext
         //Database.EnsureDeleted(); 
         Database.EnsureCreated();
     }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        // использование Fluent API
+        base.OnModelCreating(modelBuilder);
+
+        // task и labels 
+        modelBuilder.Entity<TaskEntity>()
+            .HasMany(l => l.Labels)
+            .WithMany(t => t.Tasks)
+            .UsingEntity(j => j.ToTable("TaskLabels"));
+    }
 }

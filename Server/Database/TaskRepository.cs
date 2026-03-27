@@ -16,7 +16,8 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
-        var entities = await context.Tasks.ToListAsync();
+        // var entities = await context.Tasks.ToListAsync();
+        var entities = await context.Tasks.Include(x => x.User).Include(x => x.Labels).ToListAsync();
 
         return entities.Select(x => new TaskDTO
         {
@@ -24,8 +25,9 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
             Title = x.Title,
             Description = x.Description,
             ColumnId = x.ColumnId,
-            UserIds = x.UserIds,
-            LabelIds = x.LabelIds,
+            UserId = x.UserId,
+            // преобразование сущностей в Id
+            LabelIds = x.Labels.Select(l => l.Id).ToList(),
         }).ToList();
 
     }
@@ -34,14 +36,19 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
+        // загрузка меток из БД
+        var labels = await context.Labels
+            .Where(l => task.LabelIds.Contains(l.Id))
+            .ToListAsync();
+
         var entity = new TaskEntity
         {
             //Id = task.Id,
             Title = task.Title,
             Description = task.Description,
             ColumnId = task.ColumnId,
-            UserIds = task.UserIds,
-            LabelIds = task.LabelIds,
+            UserId = task.UserId,
+            Labels = labels,
         };
 
         await context.Tasks.AddAsync(entity);
