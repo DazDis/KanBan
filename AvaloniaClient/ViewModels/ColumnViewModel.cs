@@ -140,7 +140,7 @@ namespace AvaloniaClient.ViewModels
                 {
                     Id = result.Id,
                     Title = result.Title,
-                    Tasks = null,
+                    Tasks = new(),
                 };
                 Columns?.Add(model);
             }

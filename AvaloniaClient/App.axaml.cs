@@ -1,4 +1,5 @@
 using Avalonia;
+using Avalonia.Controls;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Data.Core;
 using Avalonia.Data.Core.Plugins;
@@ -14,6 +15,7 @@ using Splat;
 using System;
 using System.Configuration;
 using System.Linq;
+using static System.Net.WebRequestMethods;
 
 namespace AvaloniaClient
 {
@@ -26,8 +28,11 @@ namespace AvaloniaClient
             AvaloniaXamlLoader.Load(this);
         }
 
-        public override void OnFrameworkInitializationCompleted()
-        {
+        public override void OnFrameworkInitializationCompleted() { 
+
+        //if (!Design.IsDesignMode)
+            
+        //{
             if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
             {
                 RegisterLocatorComponents();
@@ -36,17 +41,33 @@ namespace AvaloniaClient
                 // Avoid duplicate validations from both Avalonia and the CommunityToolkit. 
                 // More info: https://docs.avaloniaui.net/docs/guides/development-guides/data-validation#manage-validationplugins
                 DisableAvaloniaDataAnnotationValidation();
-                desktop.MainWindow = new MainWindow
+                try
                 {
-                    DataContext = _serviceProvider.GetRequiredService<MainWindowViewModel>(),
-                };
+                    desktop.MainWindow = new MainWindow
+                    {
+                        DataContext = _serviceProvider?.GetRequiredService<MainWindowViewModel>(),
+                    };
+                }
+                catch
+                {
+                    throw new NotImplementedException();
+                }
             }
 
+            
             base.OnFrameworkInitializationCompleted();
-            var navigationService = _serviceProvider.GetRequiredService<NavigationService>();
-            _ = navigationService.NavigateToColumnAsync();
-        }
+            try
+            {
+                var navigationService = _serviceProvider?.GetRequiredService<NavigationService>();
+                _ = navigationService?.NavigateToColumnAsync();
+            }
+            catch
+            {
+                throw new NotImplementedException();
+            }
 
+            }
+        //}
         private IServiceProvider CreateContainer()
         {
             IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
@@ -54,13 +75,20 @@ namespace AvaloniaClient
             services.AddSingleton<IConfiguration>(configuration);
             services.AddHttpClient<IApiClient, ApiClient>(client =>
             {
-                client.BaseAddress = new Uri(configuration["ApiBaseUrl"]);
+                client.BaseAddress = new Uri(configuration["ApiBaseUrl"] ?? "http://localhost:5015");
             });
             services.AddScoped<NavigationService>();
             services.AddScoped<RoutableViewModelsFactory>();
             services.AddScoped<MainWindowViewModel>();
             services.AddTransient<ColumnViewModel>();
-            services.AddScoped<IScreen>(provider => provider.GetRequiredService<MainWindowViewModel>());
+            try
+            {
+                services.AddScoped<IScreen>(provider => provider?.GetRequiredService<MainWindowViewModel>());
+            }
+            catch
+            {
+                throw new NotImplementedException();
+            }
             return services.BuildServiceProvider();
         }
 
@@ -78,7 +106,7 @@ namespace AvaloniaClient
         }
         private static void RegisterLocatorComponents()
         {
-            Locator.CurrentMutable.Register<IViewFor<ColumnViewModel>>(() => new MVPColumnView());
+            Locator.CurrentMutable.Register<IViewFor<ColumnViewModel>>(() => new ColumnView());
         }
     }
 }
