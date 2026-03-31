@@ -1,9 +1,11 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="using:AvaloniaClient.ViewModels"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="AvaloniaClient.AddTaskView">
+             x:Class="AvaloniaClient.AddTaskView"
+			 x:DataType="vm:AddTaskViewModel">
         <Border Background="#80000000"> 
 
         <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
@@ -32,10 +34,11 @@
                             Width="28" Height="28"
                             Background="Transparent"
                             BorderThickness="0"
-                            FontSize="14"/>
+                            FontSize="14"
+							Command="{Binding CancelCommand}"/>
                 </Grid>
 
-                <TextBox Watermark="Title..." />
+                <TextBox Watermark="Title..." Text="{Binding Title}"/>
                 <ComboBox PlaceholderText="Assignee..." />
                 <ComboBox PlaceholderText="Tag..." />
                 <ComboBox PlaceholderText="Status..." />
@@ -50,7 +53,9 @@
                         Padding="12,6"
                         Background="#E6E6FA"
                         Foreground="#6C7BFF"
-                        CornerRadius="10"/>
+                        CornerRadius="10"
+						Command="{Binding SaveCommand}"
+						x:Name="SaveButton"/>
             </StackPanel>
         </Border>
     </Grid>
