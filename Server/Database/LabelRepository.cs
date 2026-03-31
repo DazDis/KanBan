@@ -58,7 +58,7 @@ public class LabelRepository(ApplicationDbContextFactory contextFactory)
         var entity = new ColumnEntity
         {
             //Id = x.Id,
-            Name = label.Title,
+            Title = label.Title,
         };
 
         await context.Columns.AddAsync(entity);

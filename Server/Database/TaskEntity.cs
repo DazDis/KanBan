@@ -7,9 +7,9 @@
         public string Description { get; set; }
         public int ColumnId { get; set; }
         // внешний ключ 
-        public int UserId { get; set; }
+        public int? UserId { get; set; }
         // навигация
-        public UserEntity User { get; set; }
+        public UserEntity? User { get; set; }
         public List<LabelEntity> Labels { get; set; } = new();
     }
 }
