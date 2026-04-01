@@ -1,6 +1,7 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:vm="using:AvaloniaClient.ViewModels"
+             xmlns:views="using:AvaloniaClient"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="900"
@@ -65,7 +66,7 @@
 
                                     <!-- КНОПКА ДОБАВИТЬ ЗАДАЧУ -->
                                     <Button Content="+ Добавить"
-                                            Command="{Binding $parent[UserControl].DataContext.AddTaskCommand}"
+                                            Command="{Binding $parent[UserControl].DataContext.OpenAddTaskDialogCommand}"
                                             CommandParameter="{Binding Id}"
                                             Margin="0,0,0,10"
                                             Background="#f3f4f6"
@@ -156,6 +157,11 @@
             </StackPanel>
         </ScrollViewer>
 
-
+		<Popup IsOpen="{Binding IsAddTaskPopupOpen}"
+               Placement="Center">
+            <Border>
+                <views:AddTaskView DataContext="{Binding AddTaskViewModel}"/>
+            </Border>
+        </Popup>
     </Grid>
 </UserControl>

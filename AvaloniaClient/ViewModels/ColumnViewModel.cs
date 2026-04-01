@@ -1,4 +1,6 @@
-﻿using Avalonia.Controls.Shapes;
+﻿using Avalonia;
+using Avalonia.Controls;
+using Avalonia.Controls.Shapes;
 using AvaloniaClient.DataBase;
 using AvaloniaClient.Services;
 using ReactiveUI;
@@ -14,8 +16,6 @@ namespace AvaloniaClient.ViewModels
 
     public sealed class ColumnViewModel : ViewModelBase, IRoutableViewModel
     {
-
-
         public bool IsInitialized { get; private set; }
         private IReadOnlyList<TaskModel> _tasks = new List<TaskModel>();
         private IScreen _screen;
@@ -26,9 +26,6 @@ namespace AvaloniaClient.ViewModels
             get => _tasks;
             set => this.RaiseAndSetIfChanged(ref _tasks, value);
         }
-
-
-
         private TaskModel _selectedTask;
         public TaskModel SelectedTask
         {
@@ -48,10 +45,41 @@ namespace AvaloniaClient.ViewModels
 
         public ObservableCollection<ColumnModel> Columns { get; } = new();
 
-        public ReactiveCommand<int, Unit> AddTaskCommand { get; }
+        //public ReactiveCommand<int, Unit> AddTaskCommand { get; }
+        public ReactiveCommand<int, Unit> OpenAddTaskDialogCommand { get; }
         public ReactiveCommand<Unit, Task> AddColumnCommand { get; }
         public ReactiveCommand<TaskModel, Unit> EditTaskCommand { get; }
         public ReactiveCommand<TaskModel, Unit> DeleteTaskCommand { get; }
+
+        private double _popupX;
+        public double PopupX
+        {
+            get => _popupX;
+            set => this.RaiseAndSetIfChanged(ref _popupX, value);
+        }
+
+        private double _popupY;
+        public double PopupY
+        {
+            get => _popupY;
+            set => this.RaiseAndSetIfChanged(ref _popupY, value);
+        }
+
+        private bool _isAddTaskPopupOpen;
+        public bool IsAddTaskPopupOpen
+        {
+            get => _isAddTaskPopupOpen;
+            set => this.RaiseAndSetIfChanged(ref _isAddTaskPopupOpen, value);
+        }
+
+        private AddTaskViewModel _addTaskViewModel;
+        public AddTaskViewModel AddTaskViewModel
+        {
+            get => _addTaskViewModel;
+            set => this.RaiseAndSetIfChanged(ref _addTaskViewModel, value);
+        }
+
+
         public ColumnViewModel(IScreen screen, NavigationService navigationService, IApiClient apiClient) 
         { 
             _screen = screen;
@@ -59,8 +87,8 @@ namespace AvaloniaClient.ViewModels
             _apiClient = apiClient;
             //var canDelete = this.WhenAnyValue(x => x.SelectedTask).Select(task => task != null);
 
-            AddTaskCommand = ReactiveCommand.CreateFromTask<int>(AddTaskAsync);
             AddColumnCommand = ReactiveCommand.Create<Task>(AddColumnAsync);
+            OpenAddTaskDialogCommand = ReactiveCommand.CreateFromTask<int>(OpenAddTaskDialogAsync);
             //EditTaskCommand = ReactiveCommand.Create<Task>(EditTaskAsync);
             //DeleteTaskCommand = ReactiveCommand.Create<TaskModel, Task>(DeleteTaskAsync, canDelete);
         }
@@ -113,39 +141,16 @@ namespace AvaloniaClient.ViewModels
                 Columns[task.ColumnId].Tasks.Add(task);
             }
         }
-        private bool _isAddTaskOpen;
-        public bool IsAddTaskOpen
+        private async Task AddTaskAsync(TaskModel taskModel)
         {
-            get => _isAddTaskOpen;
-            set => this.RaiseAndSetIfChanged(ref _isAddTaskOpen, value);
+            
+            var createdTask = await _apiClient.PostAsync<TaskModel>("api/task", taskModel);
+            if (createdTask != null)
+            {
+                var column = Columns.FirstOrDefault(c => c.Id == taskModel.ColumnId);
+                column?.Tasks.Add(createdTask);
+            }
         }
-        //private async Task AddTaskAsync(int columnId)
-        //{
-        //    TaskModel result = new TaskModel
-        //    {
-        //        Id = 0,
-        //        Title = "aaa",
-        //        Description = "bbb",
-        //        ColumnId = columnId,
-        //        UserIds = [0],
-        //        LabelIds = [0],
-        //    };
-        //    var createdTask = await _apiClient.PostAsync<TaskModel>("api/task", result);
-        //    if (createdTask != null)
-        //    {
-        //        var column = Columns.FirstOrDefault(c => c.Id == columnId);
-        //        column?.Tasks.Add(createdTask);
-        //    }
-        //}
-
-        private Task AddTaskAsync(int columnId)
-        {
-            SelectedColumn = Columns.FirstOrDefault(c => c.Id == columnId);
-            IsAddTaskOpen = true;
-
-            return Task.CompletedTask;
-        }
-
         private async Task AddColumnAsync()
         {
             ColumnDTO result = new ColumnDTO
@@ -165,9 +170,27 @@ namespace AvaloniaClient.ViewModels
                 Columns?.Add(model);
             }
         }
+        private async Task OpenAddTaskDialogAsync(int columnId)
+        {
+            AddTaskViewModel = new AddTaskViewModel(columnId);
+            IsAddTaskPopupOpen = true;
+            PopupX = 200;
+            PopupY = 150;
+            // Подписываемся на результат
+            AddTaskViewModel.SaveCommand.Subscribe(result =>
+            {
+                IsAddTaskPopupOpen = false;
+                if (result != null)
+                {
+                    AddTaskAsync(result);
+                }
+            });
 
-
+            AddTaskViewModel.CancelCommand.Subscribe(_ =>
+            {
+                IsAddTaskPopupOpen = false;
+            });
         }
 
-
+    }
 }

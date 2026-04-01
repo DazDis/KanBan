@@ -23,6 +23,7 @@ namespace AvaloniaClient
     {
         private IConfiguration _configuration;
         private IServiceProvider _serviceProvider;
+        public static Window? MainWindow { get; private set; }
         public override void Initialize()
         {
             AvaloniaXamlLoader.Load(this);
@@ -47,6 +48,7 @@ namespace AvaloniaClient
                     {
                         DataContext = _serviceProvider?.GetRequiredService<MainWindowViewModel>(),
                     };
+                    MainWindow = desktop.MainWindow;
                 }
                 catch
                 {
