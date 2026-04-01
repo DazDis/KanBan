@@ -14,6 +14,8 @@ namespace AvaloniaClient.ViewModels
 
     public sealed class ColumnViewModel : ViewModelBase, IRoutableViewModel
     {
+
+
         public bool IsInitialized { get; private set; }
         private IReadOnlyList<TaskModel> _tasks = new List<TaskModel>();
         private IScreen _screen;
@@ -24,6 +26,9 @@ namespace AvaloniaClient.ViewModels
             get => _tasks;
             set => this.RaiseAndSetIfChanged(ref _tasks, value);
         }
+
+
+
         private TaskModel _selectedTask;
         public TaskModel SelectedTask
         {
@@ -108,24 +113,39 @@ namespace AvaloniaClient.ViewModels
                 Columns[task.ColumnId].Tasks.Add(task);
             }
         }
-        private async Task AddTaskAsync(int columnId)
+        private bool _isAddTaskOpen;
+        public bool IsAddTaskOpen
         {
-            TaskModel result = new TaskModel
-            {
-                Id = 0,
-                Title = "aaa",
-                Description = "bbb",
-                ColumnId = columnId,
-                UserIds = [0],
-                LabelIds = [0],
-            };
-            var createdTask = await _apiClient.PostAsync<TaskModel>("api/task", result);
-            if (createdTask != null)
-            {
-                var column = Columns.FirstOrDefault(c => c.Id == columnId);
-                column?.Tasks.Add(createdTask);
-            }
+            get => _isAddTaskOpen;
+            set => this.RaiseAndSetIfChanged(ref _isAddTaskOpen, value);
         }
+        //private async Task AddTaskAsync(int columnId)
+        //{
+        //    TaskModel result = new TaskModel
+        //    {
+        //        Id = 0,
+        //        Title = "aaa",
+        //        Description = "bbb",
+        //        ColumnId = columnId,
+        //        UserIds = [0],
+        //        LabelIds = [0],
+        //    };
+        //    var createdTask = await _apiClient.PostAsync<TaskModel>("api/task", result);
+        //    if (createdTask != null)
+        //    {
+        //        var column = Columns.FirstOrDefault(c => c.Id == columnId);
+        //        column?.Tasks.Add(createdTask);
+        //    }
+        //}
+
+        private Task AddTaskAsync(int columnId)
+        {
+            SelectedColumn = Columns.FirstOrDefault(c => c.Id == columnId);
+            IsAddTaskOpen = true;
+
+            return Task.CompletedTask;
+        }
+
         private async Task AddColumnAsync()
         {
             ColumnDTO result = new ColumnDTO
@@ -148,4 +168,6 @@ namespace AvaloniaClient.ViewModels
 
 
         }
+
+
 }
