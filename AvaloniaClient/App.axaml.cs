@@ -83,6 +83,8 @@ namespace AvaloniaClient
             services.AddScoped<RoutableViewModelsFactory>();
             services.AddScoped<MainWindowViewModel>();
             services.AddTransient<ColumnViewModel>();
+            services.AddScoped<IColumnService, ColumnService>();
+            services.AddScoped<ITaskService, TaskService>();
             try
             {
                 services.AddScoped<IScreen>(provider => provider?.GetRequiredService<MainWindowViewModel>());

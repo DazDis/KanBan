@@ -3,13 +3,15 @@ using ReactiveUI;
 
 namespace AvaloniaClient.Services;
 
-public class RoutableViewModelsFactory(IScreen screen, IApiClient apiClient)
+public class RoutableViewModelsFactory(IColumnService columnService, ITaskService taskService)
 {
-    private IScreen _screen = screen;
-    private readonly IApiClient _apiClient = apiClient;
+    //private IScreen _screen = screen;
+    //private readonly IApiClient _apiClient = apiClient;
+    private readonly IColumnService _columnService = columnService;
+    private readonly ITaskService _taskService = taskService;
 
     //public CreateShapeViewModel CreateCreateUsersViewModel(NavigationService service) => new CreateUserViewModel(_screen, service, _userRepository);
 
-    public ColumnViewModel CreateColumnViewModel(NavigationService service) => new ColumnViewModel(_screen, service, _apiClient);
+    public ColumnViewModel CreateColumnViewModel(IScreen screen) => new ColumnViewModel(_columnService, _taskService, screen);
 
 }

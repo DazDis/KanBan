@@ -17,7 +17,7 @@ public sealed class NavigationService
 
     public async Task NavigateToColumnAsync()
     {
-        var columnViewModel = _routableViewModelsFactory.CreateColumnViewModel(this);
+        var columnViewModel = _routableViewModelsFactory.CreateColumnViewModel(_screen);
         await columnViewModel.InitializeAsync();
         await _screen.Router.Navigate.Execute(columnViewModel);
     }

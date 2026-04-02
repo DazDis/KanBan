@@ -1,0 +1,13 @@
+﻿using AvaloniaClient.DataBase;
+using System.Collections.Generic;
+using System.Threading.Tasks;
+
+namespace AvaloniaClient.Services
+{
+    public interface IColumnService
+    {
+        Task<List<ColumnDTO>> GetColumnsAsync();
+        Task<ColumnDTO?> CreateColumnAsync(ColumnDTO dto);
+     
+    }
+}

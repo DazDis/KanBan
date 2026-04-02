@@ -40,7 +40,7 @@ namespace AvaloniaClient.ViewModels
                         Title = Title,
                         Description = Description,
                         ColumnId = _columnId,
-                        UserIds = new List<int>(),
+                        UserId = 1,
                         LabelIds = new List<int>()
                     };
                 }

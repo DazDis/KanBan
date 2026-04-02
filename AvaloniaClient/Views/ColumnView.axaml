@@ -22,7 +22,7 @@
                         FontSize="20"
                         Background="#e5e7eb"
                         CornerRadius="12"
-                        Command="{Binding AddColumnCommand}"
+                        Command="{Binding OpenAddColumnDialogCommand}"
                         Margin="0,0,20,0"/>
 
                 <!-- СПИСОК КОЛОНОК -->
@@ -157,10 +157,10 @@
             </StackPanel>
         </ScrollViewer>
 
-		<Popup IsOpen="{Binding IsAddTaskPopupOpen}"
+		<Popup IsOpen="{Binding IsAddTaskOpen}"
                Placement="Center">
             <Border>
-                <views:AddTaskView DataContext="{Binding AddTaskViewModel}"/>
+                <views:AddTaskView DataContext="{Binding AddTask}"/>
             </Border>
         </Popup>
     </Grid>
