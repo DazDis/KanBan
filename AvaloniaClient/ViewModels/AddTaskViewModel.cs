@@ -40,8 +40,8 @@ namespace AvaloniaClient.ViewModels
                         Title = Title,
                         Description = Description,
                         ColumnId = _columnId,
-                        UserId = 1,
-                        LabelIds = new List<int>()
+                        UserIds = new List<int?>(),
+                        LabelIds = new List<int?>()
                     };
                 }
                 catch (Exception ex)

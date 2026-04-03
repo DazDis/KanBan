@@ -1,8 +1,11 @@
-﻿namespace Server.DataBase
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace Server.DataBase
 {
     public class UserEntity
     {
-        public int Id { get; set; }
+        [Key]
+        public int UserId { get; set; }
         public string FirstName { get; set; }
         public string LastName { get; set; }
         public string Email { get; set; }

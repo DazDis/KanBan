@@ -46,7 +46,8 @@
                 <TextBox Watermark="Description..."
                          AcceptsReturn="True"
                          Height="80"
-                         TextWrapping="Wrap"/>
+                         TextWrapping="Wrap"
+                         Text="{Binding Description}"/>
 
                 <Button Content="Confirm"
                         HorizontalAlignment="Right"

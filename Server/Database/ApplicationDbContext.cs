@@ -26,5 +26,11 @@ public class ApplicationDbContext : DbContext
             .HasMany(l => l.Labels)
             .WithMany(t => t.Tasks)
             .UsingEntity(j => j.ToTable("TaskLabels"));
+
+        // task и users
+        modelBuilder.Entity<TaskEntity>()
+            .HasMany(u => u.Users)
+            .WithMany(t => t.Tasks)
+            .UsingEntity(j => j.ToTable("TaskUsers"));
     }
 }

@@ -20,7 +20,7 @@ public class UserRepository(ApplicationDbContextFactory contextFactory)
 
         return entities.Select(x => new UserDTO
         {
-            Id = x.Id,
+            Id = x.UserId,
             FirstName = x.FirstName,
             LastName = x.LastName,
             Email = x.Email,
@@ -42,7 +42,7 @@ public class UserRepository(ApplicationDbContextFactory contextFactory)
 
         await context.Users.AddAsync(entity);
         await context.SaveChangesAsync();
-        user.Id = entity.Id;
+        user.Id = entity.UserId;
     }
 
     public async Task DeleteUserAsync(UserDTO user)
@@ -51,7 +51,7 @@ public class UserRepository(ApplicationDbContextFactory contextFactory)
 
         var entity = new UserEntity
         {
-            Id = user.Id,
+            UserId = user.Id,
             FirstName = user.FirstName,
             LastName = user.LastName,
             Email = user.Email,
