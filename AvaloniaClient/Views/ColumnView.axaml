@@ -159,9 +159,19 @@
 
 		<Popup IsOpen="{Binding IsAddTaskOpen}"
                Placement="Center">
+
             <Border>
                 <views:AddTaskView DataContext="{Binding AddTask}"/>
             </Border>
         </Popup>
+
+        	<Popup IsOpen="{Binding IsAddColumnOpen}"
+               Placement="Center">
+
+            <Border>
+                <views:AddColumnView DataContext="{Binding AddColumn}"/>
+            </Border>
+        </Popup>
+
     </Grid>
 </UserControl>
