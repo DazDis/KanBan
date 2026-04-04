@@ -1,15 +1,15 @@
+using Avalonia;
 using Avalonia.Controls;
+using Avalonia.Markup.Xaml;
 using Avalonia.ReactiveUI;
 using AvaloniaClient.ViewModels;
 
 namespace AvaloniaClient;
 
-public partial class ColumnView : ReactiveUserControl<ColumnViewModel>
+public partial class EditTaskView : ReactiveUserControl<EditTaskViewModel>
 {
-    public ColumnView()
+    public EditTaskView()
     {
         InitializeComponent();
-
-
     }
 }

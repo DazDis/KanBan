@@ -8,7 +8,7 @@
              x:Class="AvaloniaClient.ColumnView"
              x:DataType="vm:ColumnViewModel">
 
-    <Grid Background="#f3f4f6">
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="#f3f4f6" >
         
         <ScrollViewer HorizontalScrollBarVisibility="Auto">
             
@@ -156,22 +156,48 @@
 
             </StackPanel>
         </ScrollViewer>
+       
+        
+        	
 
-		<Popup IsOpen="{Binding IsAddTaskOpen}"
-               Placement="Center">
+        	<Border Background="#80000000"
+            IsVisible="{Binding IsAddColumnOpen}">
 
-            <Border>
-                <views:AddTaskView DataContext="{Binding AddTask}"/>
-            </Border>
-        </Popup>
+        <views:AddColumnView
+            DataContext="{Binding AddColumn}"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"/>
+                </Border>
 
-        	<Popup IsOpen="{Binding IsAddColumnOpen}"
-               Placement="Center">
 
-            <Border>
-                <views:AddColumnView DataContext="{Binding AddColumn}"/>
-            </Border>
-        </Popup>
+        <Border Background="#80000000"
+            IsVisible="{Binding IsAddTaskOpen}">
+
+        <views:AddTaskView
+            DataContext="{Binding AddTask}"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"/>
+                </Border>
+
+      <!--  <Border Background="#80000000"
+            IsVisible="{Binding IsAddColumnOpen}">
+
+       
+            <views:EditTaskView
+            DataContext="{Binding Edit}"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"/>
+                </Border>
+
+
+        <Border Background="#80000000"
+            IsVisible="{Binding IsAddTaskOpen}">
+
+        <views:EditСolumnView
+            DataContext="{Binding AddTask}"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"/>
+                </Border>-->
 
     </Grid>
 </UserControl>

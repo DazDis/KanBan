@@ -6,7 +6,7 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AvaloniaClient.AddTaskView"
 			 x:DataType="vm:AddTaskViewModel">
-        <Border Background="#80000000"> 
+       
 
         <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
             
@@ -62,5 +62,4 @@
     </Grid>
                  </Border>
         </Grid>
-  </Border>
 </UserControl>

@@ -1,13 +1,13 @@
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:vm="using:AvaloniaClient.ViewModels"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:vm="using:AvaloniaClient.ViewModels"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="AvaloniaClient.AddColumnView"
-             x:DataType="vm:AddColumnViewModel">
-       
-        <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+             x:Class="AvaloniaClient.EditTaskView"
+			 x:DataType="vm:EditTaskViewModel">
+
+  <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
             
             <Border Width="320"
                     Padding="20"
@@ -34,11 +34,20 @@
                             Background="Transparent"
                             BorderThickness="0"
                             FontSize="14"
-							Command="{Binding CancelCommand}"/>
+                            Command="{Binding CancelCommand}"/>
                 </Grid>
 
                 <TextBox Watermark="Title..." Text="{Binding Title}"/>
-               
+                <ComboBox PlaceholderText="Assignee..." />
+                <ComboBox PlaceholderText="Tag..." />
+                <ComboBox PlaceholderText="Status..." />
+
+                <TextBox Watermark="Description..."
+                         AcceptsReturn="True"
+                         Height="80"
+                         TextWrapping="Wrap"
+                         Text="{Binding Description}"/>
+
                 <Button Content="Confirm"
                         HorizontalAlignment="Right"
                         Padding="12,6"

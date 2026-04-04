@@ -10,13 +10,12 @@
         x:Class="AvaloniaClient.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
 
-        Icon="/Assets/avalonia-logo.ico"
-        Title="Example"
+        Icon="/Assets/icon.png"
+        Title="KanBan"
         
         WindowStartupLocation="CenterScreen"
 
-        Width="300"
-        Height="600">
+         WindowState="Maximized">
     <rxui:RoutedViewHost Router="{Binding Router}">
         <rxui:RoutedViewHost.DefaultContent>
             <TextBlock Text="Загрузка..." 
