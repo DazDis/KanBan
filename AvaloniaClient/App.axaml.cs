@@ -15,6 +15,7 @@ using Splat;
 using System;
 using System.Configuration;
 using System.Linq;
+using System.Net.Http;
 using static System.Net.WebRequestMethods;
 
 namespace AvaloniaClient
@@ -61,7 +62,7 @@ namespace AvaloniaClient
             try
             {
                 var navigationService = _serviceProvider?.GetRequiredService<NavigationService>();
-                _ = navigationService?.NavigateToColumnAsync();
+                _ = navigationService?.NavigateToErrorAsync();
             }
             catch
             {
@@ -75,14 +76,24 @@ namespace AvaloniaClient
             IConfiguration configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
             var services = new ServiceCollection();
             services.AddSingleton<IConfiguration>(configuration);
-            services.AddHttpClient<IApiClient, ApiClient>(client =>
+            services.AddSingleton<IConfigurationService, ConfigurationService>();
+            services.AddSingleton<IApiClient>(provider =>
             {
-                client.BaseAddress = new Uri(configuration["ApiBaseUrl"] ?? "http://localhost:5015");
+                var configService = provider.GetRequiredService<IConfigurationService>();
+                var httpClient = new HttpClient
+                {
+                    BaseAddress = new Uri(configService.GetApiUrl()),
+                    Timeout = TimeSpan.FromSeconds(30)
+                };
+                return new ApiClient(httpClient);
             });
             services.AddScoped<NavigationService>();
             services.AddScoped<RoutableViewModelsFactory>();
             services.AddScoped<MainWindowViewModel>();
             services.AddTransient<ColumnViewModel>();
+            services.AddTransient<ErrorViewModel>();
+            services.AddScoped<IConfigurationService, ConfigurationService>();
+            services.AddScoped<IHealthService, HealthService>();
             services.AddScoped<IColumnService, ColumnService>();
             services.AddScoped<ITaskService, TaskService>();
             try
@@ -111,6 +122,7 @@ namespace AvaloniaClient
         private static void RegisterLocatorComponents()
         {
             Locator.CurrentMutable.Register<IViewFor<ColumnViewModel>>(() => new ColumnView());
+            Locator.CurrentMutable.Register<IViewFor<ErrorViewModel>>(() => new ErrorView());
         }
     }
 }

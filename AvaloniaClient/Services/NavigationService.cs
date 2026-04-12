@@ -21,4 +21,11 @@ public sealed class NavigationService
         await columnViewModel.InitializeAsync();
         await _screen.Router.Navigate.Execute(columnViewModel);
     }
+    public async Task NavigateToErrorAsync()
+    {
+        var errorViewModel = _routableViewModelsFactory.CreateErrorViewModel(this);
+        await errorViewModel.InitializeAsync();
+        _screen.Router.Navigate.Execute(errorViewModel);
+    }
+
 }

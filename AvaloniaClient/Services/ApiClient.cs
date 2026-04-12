@@ -7,12 +7,17 @@ namespace AvaloniaClient.Services;
 
 public class ApiClient : IApiClient
 {
-    private readonly HttpClient _httpClient;
+    private HttpClient _httpClient;
 
     public ApiClient(HttpClient httpClient)
     {
         _httpClient = httpClient;
         _httpClient.Timeout = TimeSpan.FromSeconds(30);
+    }
+    public void SetUrl(string http)
+    {
+        _httpClient = new();
+        _httpClient.BaseAddress = new Uri(http);
     }
 
     public async Task<T?> GetAsync<T>(string endpoint)

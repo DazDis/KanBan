@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Server.Database.Entities;
 using Server.DataBase;
 using Server.DTOs;
 using System;

@@ -1,0 +1,41 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vm="using:AvaloniaClient.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="AvaloniaClient.ErrorView"
+             x:DataType="vm:ErrorViewModel">
+  <Grid Background="#f3f4f6">
+        <StackPanel HorizontalAlignment="Center" 
+                    VerticalAlignment="Center" 
+                    Spacing="20">
+            
+            <TextBlock Text="⚠️" 
+                       FontSize="48" 
+                       HorizontalAlignment="Center"/>
+            <TextBlock Text="{Binding StatusMessage}" 
+                       FontSize="16" 
+                       Foreground="Black"
+                       HorizontalAlignment="Center"/>
+            <Border Background="White" 
+                    CornerRadius="8" 
+                    Padding="10"
+                    Margin="0,10,0,0">
+                <StackPanel Spacing="8">
+                    <TextBlock Text="Адрес сервера:" 
+                               FontSize="12" 
+                               Foreground="Gray"/>
+                    <TextBox Text="{Binding ServerUrl, Mode=TwoWay}"
+                             Watermark="{Binding ServerUrl}"
+                             FontSize="13"/>
+                </StackPanel>
+            </Border>
+            <Button Content="Повторить подключение" 
+                    Command="{Binding RetryCommand}"
+                    HorizontalAlignment="Center"
+                    Padding="20,10"/>
+            
+        </StackPanel>
+    </Grid>
+</UserControl>

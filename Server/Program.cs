@@ -40,6 +40,8 @@ builder.Services.AddSingleton<ApplicationDbContextFactory>(provider =>
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<TaskRepository>();
 builder.Services.AddScoped<LabelRepository>();
+builder.Services.AddScoped<TeamRepository>();
+builder.Services.AddScoped<ColumnRepository>();
 
 builder.Services.AddSignalR();
 
