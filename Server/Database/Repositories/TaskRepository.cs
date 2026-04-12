@@ -26,6 +26,7 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
             Id = x.Id,
             Title = x.Title,
             Description = x.Description,
+            Deadline = x.Deadline,
             ColumnId = x.ColumnId,
             // преобразование сущностей в Id
             LabelIds = x.Labels.Select(l => l?.Id).ToList(),
@@ -53,6 +54,7 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
             //Id = task.Id,
             Title = task.Title,
             Description = task.Description,
+            Deadline = task.Deadline,
             ColumnId = task.ColumnId,
             Labels = labels,
             Users = users,
@@ -73,6 +75,7 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
             Id = task.Id,
             Title = task.Title,
             Description = task.Description,
+            Deadline= task.Deadline,
         };
 
         if (entity != null)
