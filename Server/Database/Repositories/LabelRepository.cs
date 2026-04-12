@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Server.Database.Entities;
+using Server.DataBase;
 using Server.DTOs;
 using System;
 using System.Collections.Generic;
@@ -6,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Server.DataBase;
+namespace Server.Database.Repositories;
 
 public class LabelRepository(ApplicationDbContextFactory contextFactory)
 {
@@ -26,15 +28,6 @@ public class LabelRepository(ApplicationDbContextFactory contextFactory)
         }).ToList();
 
     }
-    public async Task<IReadOnlyList<ColumnEntity>> GetColumnsAsync()
-    {
-        using var context = _contextFactory.CreateApplicationContext();
-
-        var entities = await context.Columns.ToListAsync();
-
-        return entities;
-
-    }
 
     public async Task AddLabelAsync(LabelDTO label)
     {
@@ -48,20 +41,6 @@ public class LabelRepository(ApplicationDbContextFactory contextFactory)
         };
 
         await context.Labels.AddAsync(entity);
-        await context.SaveChangesAsync();
-        label.Id = entity.Id;
-    }
-    public async Task AddColumnAsync(ColumnDTO label)
-    {
-        using var context = _contextFactory.CreateApplicationContext();
-
-        var entity = new ColumnEntity
-        {
-            //Id = x.Id,
-            Title = label.Title,
-        };
-
-        await context.Columns.AddAsync(entity);
         await context.SaveChangesAsync();
         label.Id = entity.Id;
     }

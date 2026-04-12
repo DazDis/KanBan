@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Server.Database.Entities;
 
 namespace Server.DataBase;
 
@@ -8,6 +9,7 @@ public class ApplicationDbContext : DbContext
     public virtual DbSet<LabelEntity> Labels { get; set; }  
     public virtual DbSet<TaskEntity> Tasks { get; set; }
     public virtual DbSet<ColumnEntity> Columns { get; set; }
+    public virtual DbSet<TeamEntity> Teams { get; set; }
 
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
@@ -32,5 +34,15 @@ public class ApplicationDbContext : DbContext
             .HasMany(u => u.Users)
             .WithMany(t => t.Tasks)
             .UsingEntity(j => j.ToTable("TaskUsers"));
+        // task и users
+        modelBuilder.Entity<TaskEntity>()
+            .HasMany(u => u.Teams)
+            .WithMany(t => t.Tasks)
+            .UsingEntity(j => j.ToTable("TaskTeams"));
+
+        modelBuilder.Entity<UserEntity>()
+            .HasMany(l => l.Teams)
+            .WithMany(t => t.Users)
+            .UsingEntity(j => j.ToTable("UserTeams"));
     }
 }

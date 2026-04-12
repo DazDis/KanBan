@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Server.Database.Entities;
 using Server.DTOs;
 using System;
 using System.Collections.Generic;
@@ -8,53 +9,47 @@ using System.Threading.Tasks;
 
 namespace Server.DataBase;
 
-public class UserRepository(ApplicationDbContextFactory contextFactory)
+public class TeamRepository(ApplicationDbContextFactory contextFactory)
 {
     private ApplicationDbContextFactory _contextFactory = contextFactory;
 
-    public async Task<IReadOnlyList<UserDTO>> GetUsersAsync()
+    public async Task<IReadOnlyList<TeamDTO>> GetTeamsAsync()
     {
         using var context = _contextFactory.CreateApplicationContext();
 
-        var entities = await context.Users.ToListAsync();
+        var entities = await context.Teams.ToListAsync();
 
-        return entities.Select(x => new UserDTO
+        return entities.Select(x => new TeamDTO
         {
-            Id = x.UserId,
-            FirstName = x.FirstName,
-            LastName = x.LastName,
-            Email = x.Email,
+            Id = x.Id,
+            Title = x.Title,
         }).ToList();
 
     }
 
-    public async Task AddUserAsync(UserDTO user)
+    public async Task AddTeamAsync(TeamDTO team)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
-        var entity = new UserEntity
+        var entity = new TeamEntity
         {
-            //Id = user.Id,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Email = user.Email,
+            //Id = x.Id,
+            Title = team.Title,
         };
 
-        await context.Users.AddAsync(entity);
+        await context.Teams.AddAsync(entity);
         await context.SaveChangesAsync();
-        user.Id = entity.UserId;
+        team.Id = entity.Id;
     }
-
-    public async Task DeleteUserAsync(UserDTO user)
+    
+    public async Task DeleteTeamAsync(TeamDTO team)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
-        var entity = new UserEntity
+        var entity = new TeamEntity
         {
-            UserId = user.Id,
-            FirstName = user.FirstName,
-            LastName = user.LastName,
-            Email = user.Email,
+            Id = team.Id,
+            Title = team.Title,
         };
 
         if (entity != null)
@@ -63,11 +58,11 @@ public class UserRepository(ApplicationDbContextFactory contextFactory)
             await context.SaveChangesAsync();
         }
     }
-    public async Task DeleteUserAsync(int id)
+    public async Task DeleteTeamAsync(int id)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
-        var entity = await context.Users.FindAsync(id);
+        var entity = await context.Teams.FindAsync(id);
         if (entity != null)
         {
             context.Remove(entity);

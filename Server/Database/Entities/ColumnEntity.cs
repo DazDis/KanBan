@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Server.DataBase
+namespace Server.Database.Entities
 {
     public class ColumnEntity
     {

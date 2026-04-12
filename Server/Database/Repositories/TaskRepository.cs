@@ -1,4 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Server.Database.Entities;
+using Server.DataBase;
 using Server.DTOs;
 using System;
 using System.Collections.Generic;
@@ -6,7 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Server.DataBase;
+namespace Server.Database.Repositories;
 
 public class TaskRepository(ApplicationDbContextFactory contextFactory)
 {
@@ -25,7 +27,6 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
             Title = x.Title,
             Description = x.Description,
             ColumnId = x.ColumnId,
-            UserIds = x.UserIds,
             // преобразование сущностей в Id
             LabelIds = x.Labels.Select(l => l?.Id).ToList(),
         }).ToList();
@@ -40,6 +41,12 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
         var labels = await context.Labels
             .Where(l => task.LabelIds.Contains(l.Id))
             .ToListAsync();
+        var users = await context.Users
+            .Where(l => task.UserIds.Contains(l.UserId))
+            .ToListAsync();
+        var teams = await context.Teams
+            .Where(l => task.TeamIds.Contains(l.Id))
+            .ToListAsync();
 
         var entity = new TaskEntity
         {
@@ -47,8 +54,9 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
             Title = task.Title,
             Description = task.Description,
             ColumnId = task.ColumnId,
-            UserIds = task.UserIds,
             Labels = labels,
+            Users = users,
+            Teams = teams,
         };
 
         await context.Tasks.AddAsync(entity);

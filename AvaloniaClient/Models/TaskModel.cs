@@ -9,6 +9,7 @@ namespace AvaloniaClient.DataBase
         public string Description { get; set; }
         public int ColumnId { get; set; }
         public List<int?> UserIds { get; set; }
+        public List<int?> TeamIds { get; set; }
         public List<int?> LabelIds { get; set; }
     }
 }

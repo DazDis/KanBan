@@ -21,4 +21,9 @@ public class ColumnService : IColumnService
     {
         return await _apiClient.PostAsync<ColumnDTO>("api/column", dto);
     }
+
+    public async Task DeleteColumnAsync(int id)
+    {
+        await _apiClient.DeleteAsync($"api/task/{id}");
+    }
 }

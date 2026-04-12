@@ -8,6 +8,7 @@ namespace AvaloniaClient.Services
     {
         Task<List<ColumnDTO>> GetColumnsAsync();
         Task<ColumnDTO?> CreateColumnAsync(ColumnDTO dto);
-     
+        Task DeleteColumnAsync(int id);
+
     }
 }

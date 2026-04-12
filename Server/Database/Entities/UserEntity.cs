@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace Server.DataBase
+namespace Server.Database.Entities
 {
     public class UserEntity
     {
@@ -10,6 +10,7 @@ namespace Server.DataBase
         public string LastName { get; set; }
         public string Email { get; set; }
         // связь
-        public List<TaskEntity> Tasks { get; set; } = new();
+        public List<TaskEntity?> Tasks { get; set; } = new();
+        public List<TeamEntity?> Teams { get; set; } = new();
     }
 }
