@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
-using System.Data;
+﻿using Avalonia.Media;
+using ReactiveUI;
 using System;
+using System.Collections.Generic;
+using System.Data;
 
 namespace AvaloniaClient.DataBase
 {
-    public class TaskModel
+    public class TaskModel : ReactiveObject
     {
         public int Id { get; set; }
         public string Title { get; set; }
@@ -14,5 +16,18 @@ namespace AvaloniaClient.DataBase
         public List<int?> UserIds { get; set; }
         public List<int?> TeamIds { get; set; }
         public List<int?> LabelIds { get; set; }
+
+        private string _timeLeft;
+        public string TimeLeft
+        {
+            get => _timeLeft;
+            set => this.RaiseAndSetIfChanged(ref _timeLeft, value);
+        }
+        private bool _overDeadline;
+        public bool OverDeadline
+        {
+            get => _overDeadline;
+            set => this.RaiseAndSetIfChanged(ref _overDeadline, value);
+        }
     }
 }
