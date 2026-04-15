@@ -57,18 +57,23 @@ namespace AvaloniaClient.ViewModels
 
         private void DataTimeParse()
         {
-            try
+            if (!string.IsNullOrWhiteSpace(DeadlineInput))
             {
-                if (!string.IsNullOrWhiteSpace(DeadlineInput))
+                if (DateTime.TryParseExact(DeadlineInput, new[] { "dd.MM.yyyy HH:mm", "dd.MM.yyyy HH.mm" }, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var dataParse))
                 {
-                    Deadline = DateTime.ParseExact(DeadlineInput, "dd.MM.yyyy HH:mm", CultureInfo.InvariantCulture);
+                    Deadline = DateTime.SpecifyKind(dataParse, DateTimeKind.Local);
                 }
-                else { Deadline = null; }
+                else
+                {
+                    Deadline = null;
+                }
             }
-            catch
+            else
             {
                 Deadline = null;
             }
+            
+            
         }
 
         public ReactiveCommand<Unit, TaskModel?> SaveCommand { get; }

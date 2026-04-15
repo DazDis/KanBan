@@ -1,5 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Server.Database.Entities;
+using System.Runtime.CompilerServices;
 
 namespace Server.DataBase;
 
@@ -18,6 +20,12 @@ public class ApplicationDbContext : DbContext
         Database.EnsureCreated();
     }
 
+    // конвертирует время из БД(UTC) в локальное
+    [ModuleInitializer]
+    public static void Initialize()
+    {
+        AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
+    }
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // использование Fluent API
