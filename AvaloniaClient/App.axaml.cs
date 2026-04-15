@@ -97,6 +97,7 @@ namespace AvaloniaClient
             services.AddScoped<IHealthService, HealthService>();
             services.AddScoped<IColumnService, ColumnService>();
             services.AddScoped<ITeamService, TeamService>();
+            services.AddScoped<IUserService, UserService>();
             services.AddScoped<ILabelService, LabelService>();
             services.AddScoped<ITaskService, TaskService>();
             try
