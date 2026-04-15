@@ -1,4 +1,5 @@
-﻿using AvaloniaClient.DataBase;
+﻿using Avalonia.Media;
+using AvaloniaClient.DataBase;
 using AvaloniaClient.Services;
 using ReactiveUI;
 using System;
@@ -7,6 +8,7 @@ using System.Collections.ObjectModel;
 using System.Data.Common;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace AvaloniaClient.ViewModels
@@ -19,6 +21,7 @@ namespace AvaloniaClient.ViewModels
         private readonly ITaskService _taskService;
         public ObservableCollection<ColumnModel> Columns { get; } = new();
         private IReadOnlyList<TaskModel> Tasks = new List<TaskModel>();
+
         private bool IsInitialized;
         public ReactiveCommand<Unit, Task> NavigateToSettingsCommand { get; }
         public ReactiveCommand<Unit, Unit> OpenAddColumnDialogCommand { get; }
@@ -26,6 +29,13 @@ namespace AvaloniaClient.ViewModels
         public ReactiveCommand<TaskModel, Unit> EditTaskCommand { get; }
         public ReactiveCommand<TaskModel, Unit> DeleteTaskCommand { get; }
 
+        private DateTime _now = DateTime.Now;
+        public DateTime Now
+        {
+            get => _now;
+            set => this.RaiseAndSetIfChanged(ref _now, value);
+        }
+        public ColumnViewModel(IColumnService columnService, ITaskService taskService, IScreen screen)
         public NavigationService _navigationService;
         public ColumnViewModel(IColumnService columnService, ITaskService taskService, NavigationService navigationService, IScreen screen)
         {
@@ -37,6 +47,21 @@ namespace AvaloniaClient.ViewModels
             NavigateToSettingsCommand = ReactiveCommand.Create(NavigateToSettingsAsync);
             OpenAddColumnDialogCommand = ReactiveCommand.Create(OpenAddColumnDialog);
             OpenAddTaskDialogCommand = ReactiveCommand.CreateFromTask<int>(OpenAddTaskDialogAsync);
+            Observable.Interval(TimeSpan.FromSeconds(1))
+               .ObserveOn(RxApp.MainThreadScheduler)
+               .Subscribe(_ =>
+               {
+                   Now = DateTime.Now;
+
+                   foreach (var column in Columns)
+                   {
+                       foreach (var task in column.Tasks)
+                       {
+                           task.TimeLeft = GetTimeLeft(task);
+                           task.OverDeadline = IsOverDeadline(task);
+                       }
+                   }
+               });
         }
 
 
@@ -73,8 +98,40 @@ namespace AvaloniaClient.ViewModels
 
             foreach (var task in Tasks)
             {
-                Columns[task.ColumnId].Tasks.Add(task);
+                Columns[task.ColumnId-1].Tasks.Add(task);
             }
+        }
+
+        public string GetTimeLeft(TaskModel task)
+        {
+            if (!task.Deadline.HasValue)
+                return "Без дедлайна";
+
+            var deadline = task.Deadline.Value.Kind == DateTimeKind.Utc? task.Deadline.Value.ToLocalTime(): task.Deadline.Value;
+            var time = deadline - Now;
+
+            if (time.TotalSeconds < 0)
+                return "Просрочено";
+
+            if (time.TotalDays >= 1)
+                return $"{time.Days} д. {time.Hours} ч.";
+
+            if (time.TotalHours >= 1)
+                return $"{time.Hours} ч. {time.Minutes} мин.";
+
+            if (time.TotalMinutes >= 1)
+                return $"{time.Minutes} мин.";
+
+            return "Меньше минуты";
+        }
+
+        // 24 часа до дедлайна
+        public bool IsOverDeadline(TaskModel task)
+        {
+            if (!task.Deadline.HasValue)
+                return false;
+
+            return task.Deadline.Value.ToLocalTime() <= Now.AddHours(24);
         }
 
         // колонки

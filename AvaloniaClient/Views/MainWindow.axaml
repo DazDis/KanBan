@@ -10,7 +10,7 @@
         x:Class="AvaloniaClient.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
 
-        Icon="/Assets/icon.png"
+        Icon="/Assets/icon6.png"
         Title="KanBan"
         
         WindowStartupLocation="CenterScreen"
