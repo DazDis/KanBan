@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Data;
 using System;
-
+using Avalonia.Media;
 namespace AvaloniaClient.DataBase
 {
     public class TaskModel
@@ -14,5 +14,6 @@ namespace AvaloniaClient.DataBase
         public List<int?> UserIds { get; set; }
         public List<int?> TeamIds { get; set; }
         public List<int?> LabelIds { get; set; }
+        public string? Color { get; set; }
     }
 }

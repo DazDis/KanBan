@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Drawing;
 
 namespace Server.Database.Entities
 {
@@ -9,6 +10,7 @@ namespace Server.Database.Entities
         public string Title { get; set; } 
         public string Description { get; set; }
         public DateTime? Deadline { get; set; }
+        public string? Color { get; set; }
         public int ColumnId { get; set; }
         public List<UserEntity?> Users { get; set; }
         public List<TeamEntity?> Teams { get; set; } = new();  

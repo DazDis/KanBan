@@ -69,7 +69,7 @@ namespace AvaloniaClient.ViewModels
 
             foreach (var task in Tasks)
             {
-                Columns[task.ColumnId].Tasks.Add(task);
+                Columns[task.ColumnId-1].Tasks.Add(task);
             }
         }
 

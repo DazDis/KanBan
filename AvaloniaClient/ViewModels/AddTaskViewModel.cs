@@ -1,9 +1,12 @@
-﻿using AvaloniaClient.DataBase;
+﻿using Avalonia.Media;
+using AvaloniaClient.DataBase;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reactive;
+
+
 
 namespace AvaloniaClient.ViewModels
 {
@@ -12,8 +15,11 @@ namespace AvaloniaClient.ViewModels
         private string _title = string.Empty;
         private string _description = string.Empty;
         private int _columnId;
+
         private DateTime? _deadline;
         private string _deadlineInput = string.Empty;
+
+        
 
         public string Title
         {
@@ -42,6 +48,12 @@ namespace AvaloniaClient.ViewModels
                 DataTimeParse();
             }
         }
+        private Color _selectedColor;
+        public Color SelectedColor
+        {
+            get => _selectedColor;
+            set => this.RaiseAndSetIfChanged(ref _selectedColor, value);
+        }
 
         private void DataTimeParse()
         {
@@ -62,7 +74,6 @@ namespace AvaloniaClient.ViewModels
         public ReactiveCommand<Unit, TaskModel?> SaveCommand { get; }
         public ReactiveCommand<Unit, Unit> CancelCommand { get; }
 
-
         public AddTaskViewModel(int columnId)
         {
             _columnId = columnId;
@@ -77,6 +88,7 @@ namespace AvaloniaClient.ViewModels
                         Description = Description,
                         Deadline = Deadline,
                         ColumnId = _columnId,
+                        Color = SelectedColor.ToString(),
                         UserIds = new List<int?>(),
                         LabelIds = new List<int?>(),
                         TeamIds = new List<int?>(),
@@ -90,6 +102,7 @@ namespace AvaloniaClient.ViewModels
             });
 
             CancelCommand = ReactiveCommand.Create(() => { });
+
         }
     }
 }
