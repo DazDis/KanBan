@@ -1,10 +1,12 @@
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Markup.Xaml;
+using Avalonia.ReactiveUI;
+using AvaloniaClient.ViewModels;
 
 namespace AvaloniaClient;
 
-public partial class SettingsView : UserControl
+public partial class SettingsView : ReactiveUserControl<SettingsViewModel>
 {
     public SettingsView()
     {

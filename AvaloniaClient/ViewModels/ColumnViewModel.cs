@@ -35,7 +35,6 @@ namespace AvaloniaClient.ViewModels
             get => _now;
             set => this.RaiseAndSetIfChanged(ref _now, value);
         }
-        public ColumnViewModel(IColumnService columnService, ITaskService taskService, IScreen screen)
         public NavigationService _navigationService;
         public ColumnViewModel(IColumnService columnService, ITaskService taskService, NavigationService navigationService, IScreen screen)
         {

@@ -3,11 +3,10 @@ using ReactiveUI;
 
 namespace AvaloniaClient.Services;
 
-public class RoutableViewModelsFactory(IColumnService columnService, ITaskService taskService, IHealthService healthService, IConfigurationService configurationService, NavigationService navigationService)
+public class RoutableViewModelsFactory(IColumnService columnService, ITaskService taskService, IHealthService healthService, IConfigurationService configurationService)
 {
     //private IScreen _screen = screen;
     //private readonly IApiClient _apiClient = apiClient;
-    private readonly NavigationService _navigationService = navigationService;
     private readonly IColumnService _columnService = columnService;
     private readonly ITaskService _taskService = taskService;
     private readonly IHealthService _healthService = healthService;
@@ -15,8 +14,8 @@ public class RoutableViewModelsFactory(IColumnService columnService, ITaskServic
 
     //public CreateShapeViewModel CreateCreateUsersViewModel(NavigationService service) => new CreateUserViewModel(_screen, service, _userRepository);
 
-    public ColumnViewModel CreateColumnViewModel(IScreen screen) => new ColumnViewModel(_columnService, _taskService, _navigationService, screen);
-    public ErrorViewModel CreateErrorViewModel(IScreen screen) => new ErrorViewModel(_navigationService, _healthService, _configuration, screen);
-    public ErrorViewModel CreateSettingsViewModel(IScreen screen) => new ErrorViewModel(_navigationService, _healthService, _configuration, screen);
+    public ColumnViewModel CreateColumnViewModel(NavigationService navigationService, IScreen screen) => new ColumnViewModel(_columnService, _taskService, navigationService, screen);
+    public ErrorViewModel CreateErrorViewModel(NavigationService navigationService, IScreen screen) => new ErrorViewModel(navigationService, _healthService, _configuration, screen);
+    public SettingsViewModel CreateSettingsViewModel(NavigationService navigationService, IScreen screen) => new SettingsViewModel();
 
 }
