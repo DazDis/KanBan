@@ -14,5 +14,7 @@ namespace AvaloniaClient.DataBase
         public List<int?> UserIds { get; set; }
         public List<int?> TeamIds { get; set; }
         public List<int?> LabelIds { get; set; }
+        public int Position { get; set; }
+
     }
 }

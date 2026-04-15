@@ -31,14 +31,29 @@ public class ColumnRepository(ApplicationDbContextFactory contextFactory)
         {
             //Id = x.Id,
             Title = column.Title,
+            Position = column.Position,
         };
 
         await context.Columns.AddAsync(entity);
         await context.SaveChangesAsync();
         column.Id = entity.Id;
     }
+    public async Task UpdateColumnAsync(ColumnDTO column)
+    {
+        using var context = _contextFactory.CreateApplicationContext();
 
- 
+        var entity = await context.Columns
+            .FirstOrDefaultAsync(t => t.Id == column.Id);
+
+        if (entity == null)
+            throw new Exception($"Column with id {column.Id} not found");
+
+        // Обновляем поля
+        entity.Title = column.Title;
+        entity.Position = column.Position;
+        await context.SaveChangesAsync();
+    }
+
     public async Task DeleteColumnAsync(int id)
     {
         using var context = _contextFactory.CreateApplicationContext();

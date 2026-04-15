@@ -26,4 +26,15 @@ public class ColumnService : IColumnService
     {
         await _apiClient.DeleteAsync($"api/task/{id}");
     }
+
+    public async Task UpdateColumnAsync(ColumnModel dto)
+    {
+        ColumnDTO column = new ColumnDTO()
+        {
+            Id = dto.Id,
+            Title = dto.Title,
+            Position = dto.Position,
+        };
+        await _apiClient.PutAsync<ColumnDTO>("api/column", column);
+    }
 }

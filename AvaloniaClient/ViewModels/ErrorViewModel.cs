@@ -45,11 +45,12 @@ namespace AvaloniaClient.ViewModels
         public string? UrlPathSegment => "error";
         public IScreen HostScreen { get; }
 
-        public ErrorViewModel(NavigationService navigationService, IHealthService healthService, IConfigurationService configuration)
+        public ErrorViewModel(NavigationService navigationService, IHealthService healthService, IConfigurationService configuration, IScreen screen)
         {
             _navigationService = navigationService;
             _healthService = healthService;
             _configService = configuration;
+            HostScreen = screen;
             RetryCommand = ReactiveCommand.Create(RetryConnect);
         }
         public async Task InitializeAsync()

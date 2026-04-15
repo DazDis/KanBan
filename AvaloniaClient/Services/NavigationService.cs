@@ -23,9 +23,15 @@ public sealed class NavigationService
     }
     public async Task NavigateToErrorAsync()
     {
-        var errorViewModel = _routableViewModelsFactory.CreateErrorViewModel(this);
+        var errorViewModel = _routableViewModelsFactory.CreateErrorViewModel(_screen);
         await errorViewModel.InitializeAsync();
-        _screen.Router.Navigate.Execute(errorViewModel);
+        await _screen.Router.Navigate.Execute(errorViewModel);
+    }
+    public async Task NavigateToSettingsAsync()
+    {
+        var settingsViewModel = _routableViewModelsFactory.CreateSettingsViewModel(_screen);
+        await settingsViewModel.InitializeAsync();
+        await _screen.Router.Navigate.Execute(settingsViewModel);
     }
 
 }
