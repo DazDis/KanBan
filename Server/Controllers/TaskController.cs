@@ -28,7 +28,12 @@ namespace Server.Controllers
             await _taskRepository.AddTaskAsync(task);
             return CreatedAtAction(nameof(GetTasks), new { id = task.Id }, task);
         }
-
+        [HttpPut]
+        public async Task<IActionResult> UpdateTask(TaskDTO task)
+        {
+            await _taskRepository.UpdateTaskAsync(task);
+            return NoContent();
+        }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTask(int id)
         {

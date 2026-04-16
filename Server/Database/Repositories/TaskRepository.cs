@@ -28,9 +28,12 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
             Description = x.Description,
             Deadline = x.Deadline,
             ColumnId = x.ColumnId,
+            Position = x.Position,
             Color = x.Color,
             // преобразование сущностей в Id
             LabelIds = x.Labels.Select(l => l?.Id).ToList(),
+            UserIds = x.Users.Select(l => l?.UserId).ToList(),
+            TeamIds = x.Teams.Select(l => l?.Id).ToList(),
         }).ToList();
 
     }
@@ -61,13 +64,48 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
             Labels = labels,
             Users = users,
             Teams = teams,
+            Position = task.Position,
         };
 
         await context.Tasks.AddAsync(entity);
         await context.SaveChangesAsync();
         task.Id = entity.Id;
     }
+    public async Task UpdateTaskAsync(TaskDTO task)
+    {
+        using var context = _contextFactory.CreateApplicationContext();
 
+        var entity = await context.Tasks
+            .Include(t => t.Users)
+            .Include(t => t.Labels)
+            .FirstOrDefaultAsync(t => t.Id == task.Id);
+
+        if (entity == null)
+            throw new Exception($"Task with id {task.Id} not found");
+
+        // Обновляем поля
+        entity.Title = task.Title;
+        entity.Description = task.Description;
+        entity.ColumnId = task.ColumnId;
+        entity.Position = task.Position;
+        // Обновляем связи (многие-ко-многим)
+        entity.Users.Clear();
+        entity.Users = await context.Users
+            .Where(u => task.UserIds.Contains(u.UserId))
+            .ToListAsync();
+
+        entity.Labels.Clear();
+        entity.Labels = await context.Labels
+            .Where(l => task.LabelIds.Contains(l.Id))
+            .ToListAsync();
+
+        entity.Teams.Clear();
+        entity.Teams = await context.Teams
+            .Where(u => task.UserIds.Contains(u.Id))
+            .ToListAsync();
+
+        await context.SaveChangesAsync();
+    }
     public async Task DeleteTaskAsync(TaskDTO task)
     {
         using var context = _contextFactory.CreateApplicationContext();

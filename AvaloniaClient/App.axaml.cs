@@ -92,9 +92,13 @@ namespace AvaloniaClient
             services.AddScoped<MainWindowViewModel>();
             services.AddTransient<ColumnViewModel>();
             services.AddTransient<ErrorViewModel>();
+            services.AddTransient<SettingsViewModel>();
             services.AddScoped<IConfigurationService, ConfigurationService>();
             services.AddScoped<IHealthService, HealthService>();
             services.AddScoped<IColumnService, ColumnService>();
+            services.AddScoped<ITeamService, TeamService>();
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<ILabelService, LabelService>();
             services.AddScoped<ITaskService, TaskService>();
             try
             {
@@ -123,6 +127,7 @@ namespace AvaloniaClient
         {
             Locator.CurrentMutable.Register<IViewFor<ColumnViewModel>>(() => new ColumnView());
             Locator.CurrentMutable.Register<IViewFor<ErrorViewModel>>(() => new ErrorView());
+            Locator.CurrentMutable.Register<IViewFor<SettingsViewModel>>(() => new SettingsView());
         }
     }
 }

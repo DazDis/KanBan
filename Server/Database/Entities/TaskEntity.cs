@@ -15,5 +15,7 @@ namespace Server.Database.Entities
         public List<UserEntity?> Users { get; set; }
         public List<TeamEntity?> Teams { get; set; } = new();  
         public List<LabelEntity?> Labels { get; set; } = new();
+        public int Position { get; set; }
+
     }
 }

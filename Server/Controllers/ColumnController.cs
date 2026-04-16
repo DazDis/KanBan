@@ -24,12 +24,17 @@ namespace Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateColumn(ColumnDTO label)
+        public async Task<IActionResult> CreateColumn(ColumnDTO column)
         {
-            await _columnRepository.AddColumnAsync(label);
-            return CreatedAtAction(nameof(GetColumns), new { id = label.Id }, label);
+            await _columnRepository.AddColumnAsync(column);
+            return CreatedAtAction(nameof(GetColumns), new { id = column.Id }, column);
         }
-
+        [HttpPut]
+        public async Task<IActionResult> UpdateColumn(ColumnDTO column)
+        {
+            await _columnRepository.UpdateColumnAsync(column);
+            return NoContent();
+        }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteColumn(int id)
         {

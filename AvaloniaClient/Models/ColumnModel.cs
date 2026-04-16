@@ -7,6 +7,6 @@ namespace AvaloniaClient.DataBase
         public int Id { get; set; }
         public string Title { get; set; }
         public ObservableCollection<TaskModel> Tasks { get; set; } = new();
-
+        public int Position { get; set; }
     }
 }

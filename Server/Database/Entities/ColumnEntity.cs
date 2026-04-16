@@ -6,6 +6,8 @@ namespace Server.Database.Entities
     {
         [Key]
         public int Id { get; set; }
-        public string Title { get; set; } 
+        public string Title { get; set; }
+        public int Position { get; set; }
+
     }
 }

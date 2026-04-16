@@ -31,5 +31,7 @@ namespace AvaloniaClient.DataBase
             set => this.RaiseAndSetIfChanged(ref _overDeadline, value);
         }
         
+        public int Position { get; set; }
+
     }
 }
