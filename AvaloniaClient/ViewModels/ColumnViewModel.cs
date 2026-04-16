@@ -1,6 +1,7 @@
 ﻿using Avalonia.Media;
 using AvaloniaClient.DataBase;
 using AvaloniaClient.Services;
+using AvaloniaClient.ViewModels;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -42,6 +43,7 @@ namespace AvaloniaClient.ViewModels
 
             OpenAddColumnDialogCommand = ReactiveCommand.Create(OpenAddColumnDialog);
             OpenAddTaskDialogCommand = ReactiveCommand.CreateFromTask<int>(OpenAddTaskDialogAsync);
+
             Observable.Interval(TimeSpan.FromSeconds(1))
                .ObserveOn(RxApp.MainThreadScheduler)
                .Subscribe(_ =>
@@ -203,6 +205,13 @@ namespace AvaloniaClient.ViewModels
             set => this.RaiseAndSetIfChanged(ref _isAddTaskOpen, value);
         }
 
+        private bool _isEditTaskOpen;
+        public bool IsEditTaskOpen
+        {
+            get => _isEditTaskOpen;
+            set => this.RaiseAndSetIfChanged(ref _isEditTaskOpen, value);
+        }
+
         private async Task OpenAddTaskDialogAsync(int columnId)
         {
             AddTask = new AddTaskViewModel(columnId);
@@ -241,5 +250,27 @@ namespace AvaloniaClient.ViewModels
                 System.Diagnostics.Debug.WriteLine($"Error: {ex.Message}");
             }
         }
+
+        private void OpenEditTaskDialog(TaskModel task)
+        {
+            EditTask = new EditTaskViewModel(task);
+            IsEditTaskOpen = true;
+
+            EditTask.SaveCommand.Subscribe(dto =>
+            {
+                if (dto != null)
+                {
+                    CreateTask(task);
+                }
+            });
+
+            EditTask.CancelCommand.Subscribe(_ =>
+            {
+                IsAddColumnOpen = false;
+            });
+        }
+
     }
 }
+
+
