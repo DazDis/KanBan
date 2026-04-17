@@ -15,7 +15,8 @@ namespace AvaloniaClient.ViewModels
         private string _title = string.Empty;
         private string _description = string.Empty;
         private int _columnId;
-
+        private DateTimeOffset? _date;
+        private TimeSpan? _time;
         private DateTime? _deadline;
         private string _deadlineInput = string.Empty;
 
@@ -38,6 +39,16 @@ namespace AvaloniaClient.ViewModels
             get => _deadline;
             set => this.RaiseAndSetIfChanged(ref _deadline, value);
         }
+        public DateTimeOffset? Date
+        {
+            get => _date;
+            set => this.RaiseAndSetIfChanged(ref _date, value);
+        }
+        public TimeSpan? Time
+        {
+            get => _time;
+            set => this.RaiseAndSetIfChanged(ref _time, value);
+        }
 
         public string DeadlineInput
         {
@@ -57,6 +68,8 @@ namespace AvaloniaClient.ViewModels
 
         private void DataTimeParse()
         {
+            DeadlineInput = Date.ToString() + Time;
+
             if (!string.IsNullOrWhiteSpace(DeadlineInput))
             {
                 if (DateTime.TryParseExact(DeadlineInput, new[] { "dd.MM.yyyy HH:mm", "dd.MM.yyyy HH.mm" }, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var dataParse))

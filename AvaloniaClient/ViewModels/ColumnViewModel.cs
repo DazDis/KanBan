@@ -256,27 +256,27 @@ namespace AvaloniaClient.ViewModels
             }
         }
 
-        private void OpenEditTaskDialog(TaskModel task)
-        {
-            EditTask = new EditTaskViewModel(task);
-            IsEditTaskOpen = true;
+//        private void OpenEditTaskDialog(TaskModel task)
+//        {
+//            EditTask = new EditTaskViewModel(task);
+//            IsEditTaskOpen = true;
 
-            EditTask.SaveCommand.Subscribe(dto =>
-            {
-                if (dto != null)
-                {
-                    CreateTask(task);
-                }
-            });
+//            EditTask.SaveCommand.Subscribe(dto =>
+//            {
+//                if (dto != null)
+//                {
+//                    CreateTask(task);
+//                }
+//            });
 
-            EditTask.CancelCommand.Subscribe(_ =>
-            {
-                IsAddColumnOpen = false;
-            });
-        }
+//            EditTask.CancelCommand.Subscribe(_ =>
+//            {
+//                IsAddColumnOpen = false;
+//            });
+//        }
 
-    }
-}
+//    }
+//}
 
 
         private async Task NavigateToSettingsAsync()
