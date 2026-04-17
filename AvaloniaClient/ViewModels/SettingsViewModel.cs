@@ -22,9 +22,48 @@ namespace AvaloniaClient.ViewModels
 
         public UserModel SelectedUser { get; set; }
         public LabelModel SelectedLabels { get; set; }
+        public TeamModel SelectedTeam { get; set; }
 
         private bool IsInitialized;
 
+        private int _id;
+        public int Id
+        {
+            get => _id;
+            set => this.RaiseAndSetIfChanged(ref _id, value);
+        }
+
+        private string _firstName;
+        public string FirstName
+        {
+            get => _firstName;
+            set => this.RaiseAndSetIfChanged(ref _firstName, value);
+        }
+
+        private string _lastName;
+        public string LastName
+        {
+            get => _lastName;
+            set => this.RaiseAndSetIfChanged(ref _lastName, value);
+        }
+
+        private string _email;
+        public string Email
+        {
+            get => _email;
+            set => this.RaiseAndSetIfChanged(ref _email, value);
+        }
+
+        public class TeamModel
+        {
+            public string Title { get; set; }
+
+            public string ColorTeam { get; set; }
+
+    
+            public ObservableCollection<UserModel> Users { get; set; }
+                = new ObservableCollection<UserModel>();
+        }
         public string? UrlPathSegment => "settings";
         public string UrlServerPath {
             get;
@@ -74,6 +113,7 @@ namespace AvaloniaClient.ViewModels
                 Labels.Add(label);
             }
         }
+
 
     }
 }
