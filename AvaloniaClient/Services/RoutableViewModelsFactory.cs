@@ -20,6 +20,6 @@ public class RoutableViewModelsFactory(SignalRService signalRService, IColumnSer
 
     public ColumnViewModel CreateColumnViewModel(NavigationService navigationService, IScreen screen) => new ColumnViewModel(_signalRService, _columnService, _taskService, navigationService, screen);
     public ErrorViewModel CreateErrorViewModel(NavigationService navigationService, IScreen screen) => new ErrorViewModel(navigationService, _healthService, _configuration, screen);
-    public SettingsViewModel CreateSettingsViewModel(NavigationService navigationService, IScreen screen) => new SettingsViewModel(_configuration, _userService, _labelService, screen, navigationService);
+    public SettingsViewModel CreateSettingsViewModel(NavigationService navigationService, IScreen screen) => new SettingsViewModel(_configuration, _healthService, _userService, _labelService, screen, navigationService);
 
 }

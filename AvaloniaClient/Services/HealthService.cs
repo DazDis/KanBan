@@ -48,5 +48,33 @@ namespace AvaloniaClient.Services
                 };
             }
         }
+        public async Task<HealthStatus> DropDBAsync()
+        {
+            try
+            {
+                var response = await _apiClient.PostAsync<object>("api/health", "");
+                return new HealthStatus
+                {
+                    IsAvailable = true,
+                    Message = "БД удалена"
+                };
+            }
+            catch (HttpRequestException ex)
+            {
+                return new HealthStatus
+                {
+                    IsAvailable = false,
+                    Message = $"Сервер недоступен ({_configService.GetApiUrl()}): {ex.Message}"
+                };
+            }
+            catch (Exception ex)
+            {
+                return new HealthStatus
+                {
+                    IsAvailable = false,
+                    Message = $"Не удалось подключиться к серверу ({_configService.GetApiUrl()}): {ex.Message}"
+                };
+            }
+        }
     }
 }

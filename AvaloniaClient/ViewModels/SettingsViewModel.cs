@@ -13,7 +13,8 @@ namespace AvaloniaClient.ViewModels
     {
 		IConfigurationService _configurationService; 
 		IUserService _userService;
-		ILabelService _labelService;
+		IHealthService _healthService;
+        ILabelService _labelService;
         NavigationService _navigationService;
         //public IReadOnlyList<UserModel> Users = new List<UserModel>();
         public ObservableCollection<UserModel> Users { get; set; } = new();
@@ -33,23 +34,38 @@ namespace AvaloniaClient.ViewModels
 
         public IScreen HostScreen { get; }
         public ReactiveCommand<Unit, Task> NavigateToColumnCommand { get; }
+        public ReactiveCommand<Unit, Task> DropDBCommand { get; }
+        public ReactiveCommand<UserModel, Unit> CreateUserCommand { get; }
 
-        public SettingsViewModel( IConfigurationService configurationService, IUserService userService, ILabelService labelService, IScreen screen, NavigationService navigationService) 
+        public SettingsViewModel( IConfigurationService configurationService, IHealthService healthService ,IUserService userService, ILabelService labelService, IScreen screen, NavigationService navigationService) 
 		{
 			_configurationService = configurationService;
 			_labelService = labelService;
 			_userService = userService;
             _navigationService = navigationService;
+            _healthService = healthService;
             HostScreen = screen;
 
             NavigateToColumnCommand = ReactiveCommand.Create(NavigateToColumnAsync);
+            DropDBCommand = ReactiveCommand.Create(DropDBAsync);
+            CreateUserCommand = ReactiveCommand.CreateFromTask<UserModel>(CreateUserAsync);
+        }
+
+        private async Task CreateUserAsync(UserModel user)
+        {
+            if (user == null) return;
+
+            var createdUser = await _userService.CreateUserAsync(user);
         }
 
         private async Task NavigateToColumnAsync()
         {
             await _navigationService.NavigateToColumnAsync();
         }
-
+        private async Task DropDBAsync()
+        {
+            await _healthService.DropDBAsync();
+        }
         public async Task InitializeAsync()
         {
             if (!IsInitialized)
