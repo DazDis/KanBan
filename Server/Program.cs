@@ -52,7 +52,13 @@ builder.Services.AddSignalR();
 {
     app.MapOpenApi();
 }*/
+var ip = "26.151.79.11";  
+var port = 5015;
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.Listen(System.Net.IPAddress.Parse(ip), port);
+});
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())

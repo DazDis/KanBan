@@ -7,6 +7,7 @@ namespace AvaloniaClient.Services
 {
     public interface IHealthService
     {
+        Task<HealthStatus> DropDBAsync();
         Task<HealthStatus> GetHealthStatusAsync();
         void ResetUrl(string url);
     }

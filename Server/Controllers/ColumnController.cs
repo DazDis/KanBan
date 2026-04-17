@@ -1,7 +1,9 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Server.Database.Repositories;
 using Server.DataBase;
 using Server.DTOs;
+using Server.Hubs;
 
 namespace Server.Controllers
 {
@@ -10,10 +12,12 @@ namespace Server.Controllers
     public class ColumnController : ControllerBase
     {
         private readonly ColumnRepository _columnRepository;
+        private readonly IHubContext<TaskHub> _hubContext;
 
-        public ColumnController(ColumnRepository labelRepository)
+        public ColumnController(ColumnRepository labelRepository, IHubContext<TaskHub> hubContext)
         {
             _columnRepository = labelRepository;
+            _hubContext = hubContext;
         }
 
         [HttpGet]
@@ -27,12 +31,14 @@ namespace Server.Controllers
         public async Task<IActionResult> CreateColumn(ColumnDTO column)
         {
             await _columnRepository.AddColumnAsync(column);
+            await _hubContext.Clients.All.SendAsync("ColumnCreated", column);
             return CreatedAtAction(nameof(GetColumns), new { id = column.Id }, column);
         }
         [HttpPut]
         public async Task<IActionResult> UpdateColumn(ColumnDTO column)
         {
             await _columnRepository.UpdateColumnAsync(column);
+            await _hubContext.Clients.All.SendAsync("ColumnUpdated", column);
             return NoContent();
         }
         [HttpDelete("{id}")]

@@ -1,12 +1,14 @@
 ﻿using ReactiveUI;
-using System.Threading.Tasks;
+using System;
 using System.Reactive.Linq;
+using System.Threading.Tasks;
 
 namespace AvaloniaClient.Services;
 
 public sealed class NavigationService
 {
     private RoutableViewModelsFactory _routableViewModelsFactory;
+    private readonly IServiceProvider _serviceProvider;
     private IScreen _screen;
 
     public NavigationService(RoutableViewModelsFactory routableViewModelsFactory, IScreen screen)

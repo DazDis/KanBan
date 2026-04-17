@@ -11,7 +11,7 @@ namespace Server.Controllers
     public class TaskController : ControllerBase
     {
         private readonly TaskRepository _taskRepository;
-        private readonly IHubContext<TaskHub> _hubContext;  // ← SignalR
+        private readonly IHubContext<TaskHub> _hubContext;  
         public TaskController(TaskRepository taskRepository, IHubContext<TaskHub> hubContext)
         {
             _taskRepository = taskRepository;

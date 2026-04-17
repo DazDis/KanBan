@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Server.Database.Repositories;
 using Server.DataBase;
 using Server.DTOs;
@@ -9,8 +10,10 @@ namespace Server.Controllers
     [Route("api/[controller]")]
     public class HealthController : ControllerBase
     {
-        public HealthController()
+        private readonly ApplicationDbContext _context;  
+        public HealthController(ApplicationDbContext context)
         {
+            _context = context;
         }
         [HttpGet]
         public async Task<IActionResult> GetHealth()
@@ -21,6 +24,20 @@ namespace Server.Controllers
                 message = "Сервер работает"
             });
         }
+
+        [HttpPost]
+        public async Task<IActionResult> DropDB()
+        {
+            await _context.Database.EnsureDeletedAsync();
+            await _context.Database.EnsureCreatedAsync();
+
+            return Ok(new
+            {
+                status = "ok",
+                message = "Сервер работает"
+            });
+        }
+
 
     }
 }
