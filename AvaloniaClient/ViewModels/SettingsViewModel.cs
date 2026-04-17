@@ -26,6 +26,10 @@ namespace AvaloniaClient.ViewModels
         private bool IsInitialized;
 
         public string? UrlPathSegment => "settings";
+        public string UrlServerPath {
+            get;
+            set => _configurationService.SaveApiUrl(value);
+        }
 
         public IScreen HostScreen { get; }
         public ReactiveCommand<Unit, Task> NavigateToColumnCommand { get; }

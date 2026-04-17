@@ -1,4 +1,5 @@
 ﻿using Avalonia.Media;
+using Avalonia.Threading;
 using AvaloniaClient.DataBase;
 using AvaloniaClient.Services;
 using ReactiveUI;
@@ -38,12 +39,20 @@ namespace AvaloniaClient.ViewModels
             set => this.RaiseAndSetIfChanged(ref _now, value);
         }
         public NavigationService _navigationService;
-        public ColumnViewModel(IColumnService columnService, ITaskService taskService, NavigationService navigationService, IScreen screen)
+        private readonly SignalRService _signalRService;
+        public ColumnViewModel(SignalRService signalRService, IColumnService columnService, ITaskService taskService, NavigationService navigationService, IScreen screen)
         {
             _columnService = columnService;
             _taskService = taskService;
             _navigationService = navigationService;
             HostScreen = screen;
+
+            _signalRService = signalRService;
+
+            // Подписываемся на реальные обновления
+            _signalRService.TaskUpdated += OnTaskUpdatedFromServer;
+            _signalRService.TaskCreated += OnTaskCreatedFromServer;
+
 
             NavigateToSettingsCommand = ReactiveCommand.Create(NavigateToSettingsAsync);
             OpenAddColumnDialogCommand = ReactiveCommand.Create(OpenAddColumnDialog);
@@ -70,6 +79,7 @@ namespace AvaloniaClient.ViewModels
         {
             if (!IsInitialized)
             {
+                await _signalRService.StartAsync();
                 await ReloadData();
                 await LoadColumns();
                 IsInitialized = true;
@@ -102,7 +112,28 @@ namespace AvaloniaClient.ViewModels
                 Columns[task.ColumnId-1].Tasks.Add(task);
             }
         }
-
+        private async void OnTaskUpdatedFromServer(TaskModel task)
+        {
+            // Обновляем локальный список
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                var existing = Columns.SelectMany(c => c.Tasks).FirstOrDefault(t => t.Id == task.Id);
+                if (existing != null)
+                {
+                    existing.Title = task.Title;
+                    existing.Description = task.Description;
+                    existing.ColumnId = task.ColumnId;
+                }
+            });
+        }
+        private async void OnTaskCreatedFromServer(TaskModel task)
+        {
+            // Обновляем локальный список
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                Columns[task.ColumnId - 1].Tasks.Add(task);
+            });
+        }
         public string GetTimeLeft(TaskModel task)
         {
             if (!task.Deadline.HasValue)

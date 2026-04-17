@@ -80,7 +80,7 @@ namespace AvaloniaClient.ViewModels
         private async Task RetryConnect()
         {
             _configService.SaveApiUrl(ServerUrl);
-            _healthService.ResetUrl();
+            //_healthService.ResetUrl();
             var health = await _healthService.GetHealthStatusAsync();
 
             if (health.IsAvailable)

@@ -1,6 +1,8 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.SignalR;
 using Server.Database.Repositories;
 using Server.DTOs;
+using Server.Hubs;
 
 namespace Server.Controllers
 {
@@ -9,10 +11,11 @@ namespace Server.Controllers
     public class TaskController : ControllerBase
     {
         private readonly TaskRepository _taskRepository;
-
-        public TaskController(TaskRepository taskRepository)
+        private readonly IHubContext<TaskHub> _hubContext;  // ← SignalR
+        public TaskController(TaskRepository taskRepository, IHubContext<TaskHub> hubContext)
         {
             _taskRepository = taskRepository;
+            _hubContext = hubContext;
         }
 
         [HttpGet]
@@ -26,12 +29,14 @@ namespace Server.Controllers
         public async Task<IActionResult> CreateTask(TaskDTO task)
         {
             await _taskRepository.AddTaskAsync(task);
+            await _hubContext.Clients.All.SendAsync("TaskCreated", task);
             return CreatedAtAction(nameof(GetTasks), new { id = task.Id }, task);
         }
         [HttpPut]
         public async Task<IActionResult> UpdateTask(TaskDTO task)
         {
             await _taskRepository.UpdateTaskAsync(task);
+            await _hubContext.Clients.All.SendAsync("TaskUpdated", task);
             return NoContent();
         }
         [HttpDelete("{id}")]

@@ -93,6 +93,7 @@ namespace AvaloniaClient
             services.AddTransient<ColumnViewModel>();
             services.AddTransient<ErrorViewModel>();
             services.AddTransient<SettingsViewModel>();
+            services.AddSingleton<SignalRService>();
             services.AddScoped<IConfigurationService, ConfigurationService>();
             services.AddScoped<IHealthService, HealthService>();
             services.AddScoped<IColumnService, ColumnService>();
