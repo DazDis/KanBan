@@ -1,4 +1,5 @@
 ﻿using Avalonia.Media;
+using Avalonia.Threading;
 using AvaloniaClient.DataBase;
 using AvaloniaClient.Services;
 using AvaloniaClient.ViewModels;
@@ -26,7 +27,9 @@ namespace AvaloniaClient.ViewModels
         private bool IsInitialized;
         public ReactiveCommand<Unit, Task> NavigateToSettingsCommand { get; }
         public ReactiveCommand<Unit, Unit> OpenAddColumnDialogCommand { get; }
+        public ReactiveCommand<Unit, Unit> OpenEditColumnDialogCommand { get; }
         public ReactiveCommand<int, Unit> OpenAddTaskDialogCommand { get; }
+        public ReactiveCommand<TaskModel, Unit> OpenEditTaskDialogCommand { get; }
         public ReactiveCommand<TaskModel, Unit> EditTaskCommand { get; }
         public ReactiveCommand<TaskModel, Unit> DeleteTaskCommand { get; }
 
@@ -37,12 +40,20 @@ namespace AvaloniaClient.ViewModels
             set => this.RaiseAndSetIfChanged(ref _now, value);
         }
         public NavigationService _navigationService;
-        public ColumnViewModel(IColumnService columnService, ITaskService taskService, NavigationService navigationService, IScreen screen)
+        private readonly SignalRService _signalRService;
+        public ColumnViewModel(SignalRService signalRService, IColumnService columnService, ITaskService taskService, NavigationService navigationService, IScreen screen)
         {
             _columnService = columnService;
             _taskService = taskService;
             _navigationService = navigationService;
             HostScreen = screen;
+
+            _signalRService = signalRService;
+
+            // Подписываемся на реальные обновления
+            _signalRService.TaskUpdated += OnTaskUpdatedFromServer;
+            _signalRService.TaskCreated += OnTaskCreatedFromServer;
+
 
             NavigateToSettingsCommand = ReactiveCommand.Create(NavigateToSettingsAsync);
             OpenAddColumnDialogCommand = ReactiveCommand.Create(OpenAddColumnDialog);
@@ -70,6 +81,7 @@ namespace AvaloniaClient.ViewModels
         {
             if (!IsInitialized)
             {
+                await _signalRService.StartAsync();
                 await ReloadData();
                 await LoadColumns();
                 IsInitialized = true;
@@ -102,7 +114,28 @@ namespace AvaloniaClient.ViewModels
                 Columns[task.ColumnId-1].Tasks.Add(task);
             }
         }
-
+        private async void OnTaskUpdatedFromServer(TaskModel task)
+        {
+            // Обновляем локальный список
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                var existing = Columns.SelectMany(c => c.Tasks).FirstOrDefault(t => t.Id == task.Id);
+                if (existing != null)
+                {
+                    existing.Title = task.Title;
+                    existing.Description = task.Description;
+                    existing.ColumnId = task.ColumnId;
+                }
+            });
+        }
+        private async void OnTaskCreatedFromServer(TaskModel task)
+        {
+            // Обновляем локальный список
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                Columns[task.ColumnId - 1].Tasks.Add(task);
+            });
+        }
         public string GetTimeLeft(TaskModel task)
         {
             if (!task.Deadline.HasValue)
@@ -219,7 +252,7 @@ namespace AvaloniaClient.ViewModels
 
         private async Task OpenAddTaskDialogAsync(int columnId)
         {
-            AddTask = new AddTaskViewModel(columnId);
+            AddTask = new AddTaskViewModel(columnId, _navigationService);
             IsAddTaskOpen = true;
 
             AddTask.SaveCommand.Subscribe(task =>

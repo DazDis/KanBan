@@ -72,6 +72,8 @@
                         CornerRadius="10"
 						Command="{Binding SaveCommand}"
 						x:Name="SaveButton"/>
+                <Button Content="Настройки"
+                        Command="{Binding NavigateToSettingsCommand}" />
             </StackPanel>
 
         </Border>

@@ -1,10 +1,12 @@
 ﻿using Avalonia.Media;
 using AvaloniaClient.DataBase;
+using AvaloniaClient.Services;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Reactive;
+using System.Threading.Tasks;
 
 
 
@@ -12,6 +14,7 @@ namespace AvaloniaClient.ViewModels
 {
     public sealed class AddTaskViewModel : ViewModelBase
     {
+        public NavigationService _navigationService;
         private string _title = string.Empty;
         private string _description = string.Empty;
         private int _columnId;
@@ -91,10 +94,12 @@ namespace AvaloniaClient.ViewModels
 
         public ReactiveCommand<Unit, TaskModel?> SaveCommand { get; }
         public ReactiveCommand<Unit, Unit> CancelCommand { get; }
+        public ReactiveCommand<Unit, Task> NavigateToSettingsCommand { get; }
 
-        public AddTaskViewModel(int columnId)
+        public AddTaskViewModel(int columnId, NavigationService navigationService)
         {
             _columnId = columnId;
+            _navigationService = navigationService;
 
             SaveCommand = ReactiveCommand.CreateFromTask(async () =>
             {
@@ -121,6 +126,11 @@ namespace AvaloniaClient.ViewModels
 
             CancelCommand = ReactiveCommand.Create(() => { });
 
+            NavigateToSettingsCommand = ReactiveCommand.Create(NavigateToSettingsAsync);
+        }
+        private async Task NavigateToSettingsAsync()
+        {
+            await _navigationService.NavigateToSettingsAsync();
         }
     }
 }

@@ -8,6 +8,6 @@ namespace AvaloniaClient.Services
     public interface IHealthService
     {
         Task<HealthStatus> GetHealthStatusAsync();
-        void ResetUrl();
+        void ResetUrl(string url);
     }
 }

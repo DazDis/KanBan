@@ -13,10 +13,12 @@ namespace AvaloniaClient.Services
         {
             _apiClient = apiClient;
             _configService = configService;
+
+            _configService.UrlChanged += ResetUrl;
         }
-        public void ResetUrl()
+        public void ResetUrl(string? url)
         {
-            _apiClient.SetUrl(_configService.GetApiUrl());
+            _apiClient.SetUrl(url);
         }
         public async Task<HealthStatus> GetHealthStatusAsync()
         {
