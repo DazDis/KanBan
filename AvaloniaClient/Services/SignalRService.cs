@@ -13,6 +13,8 @@ public class SignalRService
 
     public event Action<TaskModel>? TaskUpdated;
     public event Action<TaskModel>? TaskCreated;
+    public event Action<ColumnModel>? ColumnUpdated;
+    public event Action<ColumnModel>? ColumnCreated;
 
     public SignalRService(IConfigurationService configService)
     {
@@ -35,6 +37,16 @@ public class SignalRService
         _hubConnection.On<TaskModel>("TaskCreated", task =>
         {
             TaskCreated?.Invoke(task);
+        });
+
+        _hubConnection.On<ColumnModel>("ColumnCreated", column =>
+        {
+            ColumnCreated?.Invoke(column);
+        });
+
+        _hubConnection.On<ColumnModel>("ColumnUpdated", column =>
+        {
+            ColumnUpdated?.Invoke(column);
         });
 
         await _hubConnection.StartAsync();

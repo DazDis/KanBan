@@ -52,7 +52,8 @@ namespace AvaloniaClient.ViewModels
             // Подписываемся на реальные обновления
             _signalRService.TaskUpdated += OnTaskUpdatedFromServer;
             _signalRService.TaskCreated += OnTaskCreatedFromServer;
-
+            _signalRService.ColumnUpdated += OnColumnUpdatedFromServer;
+            _signalRService.ColumnCreated += OnColumnCreatedFromServer;
 
             NavigateToSettingsCommand = ReactiveCommand.Create(NavigateToSettingsAsync);
             OpenAddColumnDialogCommand = ReactiveCommand.Create(OpenAddColumnDialog);
@@ -134,6 +135,29 @@ namespace AvaloniaClient.ViewModels
                 Columns[task.ColumnId - 1].Tasks.Add(task);
             });
         }
+
+
+        private async void OnColumnUpdatedFromServer(ColumnModel column)
+        {
+            // Обновляем локальный список
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                var existing = Columns.FirstOrDefault(t => t.Id == column.Id);
+                if (existing != null)
+                {
+                    existing.Title = column.Title;
+                }
+            });
+        }
+        private async void OnColumnCreatedFromServer(ColumnModel column)
+        {
+            // Обновляем локальный список
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                Columns.Add(column);
+            });
+        }
+
         public string GetTimeLeft(TaskModel task)
         {
             if (!task.Deadline.HasValue)
@@ -209,7 +233,7 @@ namespace AvaloniaClient.ViewModels
 
                 var created = await _columnService.CreateColumnAsync(dto);
 
-                if (created != null)
+               /* if (created != null)
                 {
                     Columns.Add(new ColumnModel
                     {
@@ -217,7 +241,7 @@ namespace AvaloniaClient.ViewModels
                         Title = created.Title,
                         Tasks = new ObservableCollection<TaskModel>()
                     });
-                }
+                }*/
             }
             catch (Exception ex)
             {
@@ -268,11 +292,11 @@ namespace AvaloniaClient.ViewModels
 
                 var created = await _taskService.CreateTaskAsync(task);
 
-                if (created != null)
+                /*if (created != null)
                 {
                     var column = Columns.FirstOrDefault(x => x.Id == created.ColumnId);
                     column?.Tasks.Add(created);
-                }
+                }*/
             }
             catch (Exception ex)
             {
