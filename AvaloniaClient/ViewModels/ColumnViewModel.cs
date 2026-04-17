@@ -25,7 +25,9 @@ namespace AvaloniaClient.ViewModels
         private bool IsInitialized;
         public ReactiveCommand<Unit, Task> NavigateToSettingsCommand { get; }
         public ReactiveCommand<Unit, Unit> OpenAddColumnDialogCommand { get; }
+        public ReactiveCommand<Unit, Unit> OpenEditColumnDialogCommand { get; }
         public ReactiveCommand<int, Unit> OpenAddTaskDialogCommand { get; }
+        public ReactiveCommand<TaskModel, Unit> OpenEditTaskDialogCommand { get; }
         public ReactiveCommand<TaskModel, Unit> EditTaskCommand { get; }
         public ReactiveCommand<TaskModel, Unit> DeleteTaskCommand { get; }
 
