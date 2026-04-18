@@ -4,10 +4,12 @@
              xmlns:views="using:AvaloniaClient"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:conv="AvaloniaClient.Converters"
+             xmlns:converters="using:AvaloniaClient.Converters"
              mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="900"
              x:Class="AvaloniaClient.ColumnView"
              x:DataType="vm:ColumnViewModel">
-
+     
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="#f3f4f6" >
         
         <ScrollViewer HorizontalScrollBarVisibility="Auto">
@@ -77,7 +79,12 @@
 
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-
+                                                 <Border 
+                                              
+                                               CornerRadius="12"
+                                                        Padding="12"
+                                                        Margin="0,0,0,10"
+                                              >
                                                 <!-- КАРТОЧКА ЗАДАЧИ -->
                                                 <Border 
                                               Background="{Binding Color}"
@@ -134,6 +141,7 @@
                                                         </StackPanel>
 
                                                     </StackPanel>
+                                                    </Border>
                                                 </Border>
 
                                             </DataTemplate>
@@ -173,23 +181,32 @@
             HorizontalAlignment="Center"
             VerticalAlignment="Center"/>
                 </Border>
+        
+        <Border Background="#80000000"
+            IsVisible="{Binding IsEditTaskOpen}">
 
-      <!--  <Border Background="#80000000"
-            IsVisible="{Binding IsAddColumnOpen}">
-
-       
-            <views:EditTaskView
-            DataContext="{Binding Edit}"
+        <views:EditTaskView
+            DataContext="{Binding EditTask}"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"/>
                 </Border>
 
+     <!-- <Border Background="#80000000"
+            IsVisible="{Binding IsEditTaskOpen}">
 
-        <Border Background="#80000000"
+       
+            <views:EditTaskView
+            DataContext="{Binding EditTask}"
+            HorizontalAlignment="Center"
+            VerticalAlignment="Center"/>
+                </Border>-->
+
+
+       <!-- <Border Background="#80000000"
             IsVisible="{Binding IsAddTaskOpen}">
 
         <views:EditСolumnView
-            DataContext="{Binding AddTask}"
+            DataContext="{Binding EditTask}"
             HorizontalAlignment="Center"
             VerticalAlignment="Center"/>
                 </Border>-->

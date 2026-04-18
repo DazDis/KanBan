@@ -47,6 +47,24 @@
                          Height="80"
                          TextWrapping="Wrap"
                          Text="{Binding Description}"/>
+                 <TextBlock Text="Task Color"/>
+
+                <!--<ColorPicker Color="{Binding SelectedColor}"/>
+                <TextBlock Text="Due Date"/>
+
+<DatePicker SelectedDate="{Binding Date}"/>
+
+<TextBlock Text="Time"/>
+
+<TimePicker SelectedTime="{Binding Time}"/>
+
+                <Border Height="20"
+                        CornerRadius="5"
+                        Background="{Binding SelectedColor}"/>-->
+                
+
+        
+
                  <Grid>
                 <Button Content="Confirm"
                         HorizontalAlignment="Center"

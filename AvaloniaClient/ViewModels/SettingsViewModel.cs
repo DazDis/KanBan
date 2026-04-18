@@ -20,9 +20,27 @@ namespace AvaloniaClient.ViewModels
         public ObservableCollection<UserModel> Users { get; set; } = new();
         public ObservableCollection<TeamModel> Teams { get; set; } = new();
         public ObservableCollection<LabelModel> Labels { get; } = new();
+        public ReactiveCommand<Unit, Unit> AddUserCommand { get; }
+        public ReactiveCommand<UserModel, Unit> DeleteUserCommand { get; }
 
-        public UserModel SelectedUser { get; set; }
-        public LabelModel SelectedLabels { get; set; }
+        public ReactiveCommand<Unit, Unit> AddLabelCommand { get; }
+        public ReactiveCommand<LabelModel, Unit> DeleteLabelCommand { get; }
+        private UserModel _selectedUser;
+        public UserModel SelectedUser
+        {
+            get => _selectedUser;
+            set => this.RaiseAndSetIfChanged(ref _selectedUser, value);
+        }
+
+
+
+
+        private LabelModel _selectedLabel;
+        public LabelModel SelectedLabel
+        {
+            get => _selectedLabel;
+            set => this.RaiseAndSetIfChanged(ref _selectedLabel, value);
+        }
         public TeamModel SelectedTeam { get; set; }
 
         private bool IsInitialized;
@@ -55,15 +73,30 @@ namespace AvaloniaClient.ViewModels
             set => this.RaiseAndSetIfChanged(ref _email, value);
         }
 
-        public class TeamModel
+        public class TeamModel : ReactiveObject
         {
             public string Title { get; set; }
-
             public string ColorTeam { get; set; }
 
-    
-            public ObservableCollection<UserModel> Users { get; set; }
-                = new ObservableCollection<UserModel>();
+            public ObservableCollection<UserModel> Users { get; set; } = new();
+
+            private UserModel _selectedUserToAdd;
+            public UserModel SelectedUserToAdd
+            {
+                get => _selectedUserToAdd;
+                set => this.RaiseAndSetIfChanged(ref _selectedUserToAdd, value);
+            }
+
+            public ReactiveCommand<Unit, Unit> AddUserToTeamCommand { get; }
+
+            public TeamModel()
+            {
+                AddUserToTeamCommand = ReactiveCommand.Create(() =>
+                {
+                    if (SelectedUserToAdd != null && !Users.Contains(SelectedUserToAdd))
+                        Users.Add(SelectedUserToAdd);
+                });
+            }
         }
         public string? UrlPathSegment => "settings";
         public string UrlServerPath {
@@ -75,7 +108,6 @@ namespace AvaloniaClient.ViewModels
         public ReactiveCommand<Unit, Task> NavigateToColumnCommand { get; }
         public ReactiveCommand<Unit, Task> DropDBCommand { get; }
         public ReactiveCommand<UserModel, Unit> CreateUserCommand { get; }
-
         public SettingsViewModel( IConfigurationService configurationService, IHealthService healthService ,IUserService userService, ILabelService labelService, IScreen screen, NavigationService navigationService) 
 		{
 			_configurationService = configurationService;
@@ -88,6 +120,7 @@ namespace AvaloniaClient.ViewModels
             NavigateToColumnCommand = ReactiveCommand.Create(NavigateToColumnAsync);
             DropDBCommand = ReactiveCommand.Create(DropDBAsync);
             CreateUserCommand = ReactiveCommand.CreateFromTask<UserModel>(CreateUserAsync);
+
         }
 
         private async Task CreateUserAsync(UserModel user)

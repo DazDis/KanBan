@@ -8,5 +8,7 @@ namespace Server.DataBase
         public string Title { get; set; }
         public List<int> UserIds { get; set; } = new();
 
+        public string? ColorTeam { get; set; }
+
     }
 }

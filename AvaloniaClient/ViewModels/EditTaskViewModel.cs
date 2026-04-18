@@ -9,11 +9,17 @@ namespace AvaloniaClient.ViewModels
 	public class EditTaskViewModel : ViewModelBase
 
     {
+        
         private readonly TaskModel _task;
 
         private string _title = string.Empty;
         private string _description = string.Empty;
         private int _columnId;
+        private string _selectedColor = string.Empty;
+        private DateTime? _date;
+        private TimeSpan? _time;
+
+
 
         public string Title
         {

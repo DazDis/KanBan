@@ -59,7 +59,7 @@ namespace AvaloniaClient.ViewModels
             NavigateToSettingsCommand = ReactiveCommand.Create(NavigateToSettingsAsync);
             OpenAddColumnDialogCommand = ReactiveCommand.Create(OpenAddColumnDialog);
             OpenAddTaskDialogCommand = ReactiveCommand.CreateFromTask<int>(OpenAddTaskDialogAsync);
-
+            EditTaskCommand = ReactiveCommand.Create<TaskModel>(OpenEditTaskDialog);
             Observable.Interval(TimeSpan.FromSeconds(1))
                .ObserveOn(RxApp.MainThreadScheduler)
                .Subscribe(_ =>
@@ -112,7 +112,7 @@ namespace AvaloniaClient.ViewModels
 
             foreach (var task in Tasks)
             {
-                Columns[task.ColumnId-1].Tasks.Add(task);
+                Columns[task.ColumnId - 1].Tasks.Add(task);
             }
         }
         private async void OnTaskUpdatedFromServer(TaskModel task)
@@ -165,7 +165,7 @@ namespace AvaloniaClient.ViewModels
             if (!task.Deadline.HasValue)
                 return "Без дедлайна";
 
-            var deadline = task.Deadline.Value.Kind == DateTimeKind.Utc? task.Deadline.Value.ToLocalTime(): task.Deadline.Value;
+            var deadline = task.Deadline.Value.Kind == DateTimeKind.Utc ? task.Deadline.Value.ToLocalTime() : task.Deadline.Value;
             var time = deadline - Now;
 
             if (time.TotalSeconds < 0)
@@ -235,15 +235,15 @@ namespace AvaloniaClient.ViewModels
 
                 var created = await _columnService.CreateColumnAsync(dto);
 
-               /* if (created != null)
-                {
-                    Columns.Add(new ColumnModel
-                    {
-                        Id = created.Id,
-                        Title = created.Title,
-                        Tasks = new ObservableCollection<TaskModel>()
-                    });
-                }*/
+                /* if (created != null)
+                 {
+                     Columns.Add(new ColumnModel
+                     {
+                         Id = created.Id,
+                         Title = created.Title,
+                         Tasks = new ObservableCollection<TaskModel>()
+                     });
+                 }*/
             }
             catch (Exception ex)
             {
@@ -268,6 +268,8 @@ namespace AvaloniaClient.ViewModels
         }
 
         private bool _isEditTaskOpen;
+
+        public EditTaskViewModel EditTask { get; private set; }
         public bool IsEditTaskOpen
         {
             get => _isEditTaskOpen;
@@ -292,6 +294,43 @@ namespace AvaloniaClient.ViewModels
                 IsAddTaskOpen = false;
             });
         }
+        private void OpenEditTaskDialog(TaskModel task)
+        {
+            EditTask = new EditTaskViewModel(task);
+            IsEditTaskOpen = true;
+
+            EditTask.SaveCommand.Subscribe(updatedTask =>
+            {
+                if (updatedTask == null)
+                    return;
+
+                try
+                {
+                    IsEditTaskOpen = false;
+
+                    
+                    }
+                
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                }
+            });
+
+            EditTask.CancelCommand.Subscribe(_ =>
+            {
+                IsEditTaskOpen = false;
+            });
+        }
+
+
+
+
+
+
+
+
+
 
         private async Task CreateTask(TaskModel task)
         {
@@ -313,30 +352,12 @@ namespace AvaloniaClient.ViewModels
             }
         }
 
-//        private void OpenEditTaskDialog(TaskModel task)
-//        {
-//            EditTask = new EditTaskViewModel(task);
-//            IsEditTaskOpen = true;
-
-//            EditTask.SaveCommand.Subscribe(dto =>
-//            {
-//                if (dto != null)
-//                {
-//                    CreateTask(task);
-//                }
-//            });
-
-//            EditTask.CancelCommand.Subscribe(_ =>
-//            {
-//                IsAddColumnOpen = false;
-//            });
-//        }
-
-//    }
-//}
+        
+    
 
 
-        private async Task NavigateToSettingsAsync()
+
+private async Task NavigateToSettingsAsync()
         {
             await _navigationService.NavigateToSettingsAsync();
         }

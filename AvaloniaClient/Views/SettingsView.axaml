@@ -10,137 +10,83 @@
   <Grid ColumnDefinitions="2*,3*,1.5*" Margin="10">
 
     <!-- ЛЕВО: команды -->
-    <ScrollViewer Grid.Column="0">
-      <ItemsControl ItemsSource="{Binding Teams}">
-        <ItemsControl.ItemsPanel>
-          <ItemsPanelTemplate>
-            <WrapPanel />
-          </ItemsPanelTemplate>
-        </ItemsControl.ItemsPanel>
+    <ItemsControl ItemsSource="{Binding Teams}">
+  <ItemsControl.ItemTemplate>
+    <DataTemplate>
 
-        <ItemsControl.ItemTemplate>
-          <DataTemplate>
-            <Border Width="200" Margin="5" Padding="10" Background="#DDD">
+      <Border Padding="10" Margin="5" Background="#DDD">
+        <StackPanel>
 
-              <StackPanel>
+          <TextBlock Text="{Binding Title}" FontWeight="Bold"/>
 
-                <!-- Заголовок -->
-                <DockPanel>
-                  <TextBlock Text="{Binding Title}" FontWeight="Bold"/>
+          <StackPanel Orientation="Horizontal">
 
-                  <Button DockPanel.Dock="Right"
-                          Width="20"
-                          Height="20"
-                          Background="{Binding ColorTeam}">
+            <!--<ComboBox ItemsSource="{Binding DataContext.Users, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                      SelectedItem="{Binding SelectedUser}"/>-->
 
-                    <Button.Flyout>
-                      <Flyout>
-                        <ColorPicker Color="{Binding ColorTeam, Mode=TwoWay}"/>
-                      </Flyout>
-                    </Button.Flyout>
+            <!--<Button Content="Добавить"
+                    Command="{Binding DataContext.AddUserToTeamCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                    CommandParameter="{Binding}">
+            </Button>-->
 
-                  </Button>
-                </DockPanel>
+          </StackPanel>
 
-                <!-- Участники -->
-                <ItemsControl ItemsSource="{Binding Users}">
-                  <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                      <TextBlock Text="{Binding FirstName}"/>
-                    </DataTemplate>
-                  </ItemsControl.ItemTemplate>
-                </ItemsControl>
+          <ItemsControl ItemsSource="{Binding Users}">
+            <ItemsControl.ItemTemplate>
+              <DataTemplate>
+                <TextBlock Text="{Binding FirstName}"/>
+              </DataTemplate>
+            </ItemsControl.ItemTemplate>
+          </ItemsControl>
 
-                <!-- Добавление -->
-                <ComboBox ItemsSource="{Binding DataContext.Users, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                          SelectedItem="{Binding SelectedUserToAdd}"/>
+        </StackPanel>
+      </Border>
 
-                <Button Content="Добавить"
-                        Command="{Binding AddUserToTeamCommand}"/>
-
-              </StackPanel>
-
-            </Border>
-          </DataTemplate>
-        </ItemsControl.ItemTemplate>
-      </ItemsControl>
-    </ScrollViewer>
+    </DataTemplate>
+  </ItemsControl.ItemTemplate>
+</ItemsControl>
 
     <!-- ЦЕНТР: пользователи -->
-    <Border Grid.Column="1" Background="#F5F5F5" Padding="10" Margin="5">
-      <DockPanel>
+   <DataGrid ItemsSource="{Binding Users}"
+          SelectedItem="{Binding SelectedUser}"
+          AutoGenerateColumns="False">
 
-        <TextBlock Text="Пользователи" DockPanel.Dock="Top"/>
+  <DataGrid.Columns>
+    <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60"/>
+    <DataGridTextColumn Header="Имя" Binding="{Binding FirstName}" Width="*"/>
+    <DataGridTextColumn Header="Фамилия" Binding="{Binding LastName}" Width="*"/>
+    <DataGridTextColumn Header="Email" Binding="{Binding Email}" Width="*"/>
+  </DataGrid.Columns>
 
-        <DataGrid ItemsSource="{Binding Users}"
-                  SelectedItem="{Binding SelectedUser}"
-                  AutoGenerateColumns="False"
-                  IsReadOnly="False">
+</DataGrid>
 
-          <DataGrid.Columns>
-            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60"/>
-            <DataGridTextColumn Header="Имя" Binding="{Binding FirstName, Mode=TwoWay}" Width="*"/>
-            <DataGridTextColumn Header="Фамилия" Binding="{Binding LastName, Mode=TwoWay}" Width="*"/>
-            <DataGridTextColumn Header="Email" Binding="{Binding Email, Mode=TwoWay}" Width="*"/>
-          </DataGrid.Columns>
+<StackPanel Orientation="Horizontal">
+  <Button Content="Добавить" Command="{Binding AddUserCommand}"/>
+  <Button Content="Удалить" Command="{Binding DeleteUserCommand}"/>
+</StackPanel>
 
-        </DataGrid>
+    <!-- ПРАВО -->
+   <ItemsControl ItemsSource="{Binding Labels}">
+  <ItemsControl.ItemTemplate>
+    <DataTemplate>
 
-        <StackPanel Orientation="Horizontal" DockPanel.Dock="Bottom" Margin="0,10,0,0">
-          <Button Content="Добавить" Command="{Binding AddUserCommand}"/>
-          <Button Content="Удалить"
-                  Command="{Binding DeleteUserCommand}"
-                  CommandParameter="{Binding SelectedUser}"/>
-        </StackPanel>
+      <Grid ColumnDefinitions="*,Auto" Margin="5">
 
-      </DockPanel>
-    </Border>
+        <TextBox Text="{Binding Name, Mode=TwoWay}"/>
 
-    <!-- ПРАВО: права -->
-    <Border Grid.Column="2" Background="#EEE" Padding="10" Margin="5">
+        <Button Grid.Column="1"
+                Width="30"
+                Background="{Binding Color}">
+        </Button>
 
-      <DockPanel>
+      </Grid>
 
-        <TextBlock Text="Права" DockPanel.Dock="Top"/>
+    </DataTemplate>
+  </ItemsControl.ItemTemplate>
+</ItemsControl>
 
-        <StackPanel Orientation="Horizontal" Margin="0,5">
-          <Button Content="Добавить" Command="{Binding AddLabelCommand}"/>
-          <Button Content="Удалить"
-                  Command="{Binding DeleteLabelCommand}"
-                  CommandParameter="{Binding SelectedLabel}"/>
-        </StackPanel>
-
-        <ItemsControl ItemsSource="{Binding Labels}">
-          <ItemsControl.ItemTemplate>
-            <DataTemplate>
-
-              <Grid ColumnDefinitions="*,Auto" Margin="0,5">
-
-                <TextBox Text="{Binding Name, Mode=TwoWay}"/>
-
-                <Button Grid.Column="1"
-                        Width="30"
-                        Height="30"
-                        Margin="5,0,0,0"
-                        Background="{Binding Color}">
-
-                  <Button.Flyout>
-                    <Flyout>
-                      <ColorPicker Color="{Binding Color, Mode=TwoWay}"/>
-                    </Flyout>
-                  </Button.Flyout>
-
-                </Button>
-
-              </Grid>
-
-            </DataTemplate>
-          </ItemsControl.ItemTemplate>
-        </ItemsControl>
-
-      </DockPanel>
-
-    </Border>
+<Button Content="Добавить" Command="{Binding AddLabelCommand}"/>
+<Button Content="Удалить" Command="{Binding DeleteLabelCommand}"/>
 
   </Grid>
 </UserControl>
