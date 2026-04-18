@@ -18,7 +18,7 @@ public class RoutableViewModelsFactory(SignalRService signalRService, IColumnSer
 
     //public CreateShapeViewModel CreateCreateUsersViewModel(NavigationService service) => new CreateUserViewModel(_screen, service, _userRepository);
 
-    public ColumnViewModel CreateColumnViewModel(NavigationService navigationService, IScreen screen) => new ColumnViewModel(_signalRService, _columnService, _taskService, navigationService, screen);
+    public ColumnViewModel CreateColumnViewModel(NavigationService navigationService, IScreen screen) => new ColumnViewModel(_signalRService, _columnService, _taskService, _userService, _labelService, _teamService, navigationService, screen);
     public ErrorViewModel CreateErrorViewModel(NavigationService navigationService, IScreen screen) => new ErrorViewModel(navigationService, _healthService, _configuration, screen);
     public SettingsViewModel CreateSettingsViewModel(NavigationService navigationService, IScreen screen) => new SettingsViewModel(_configuration, _healthService, _userService, _teamService,_labelService, screen, navigationService);
 
