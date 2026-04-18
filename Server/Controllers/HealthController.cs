@@ -28,14 +28,26 @@ namespace Server.Controllers
         [HttpPost]
         public async Task<IActionResult> DropDB()
         {
-            await _context.Database.EnsureDeletedAsync();
-            await _context.Database.EnsureCreatedAsync();
-
-            return Ok(new
+            try
             {
-                status = "ok",
-                message = "Сервер работает"
-            });
+                // Проверяем, существует ли БД
+                if (await _context.Database.CanConnectAsync())
+                {
+                    await _context.Database.EnsureDeletedAsync();
+                }
+
+                await _context.Database.EnsureCreatedAsync();
+
+                return Ok(new
+                {
+                    status = "ok",
+                    message = "База данных пересоздана"
+                });
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new { message = ex.Message });
+            }
         }
 
 

@@ -89,6 +89,7 @@ namespace AvaloniaClient.ViewModels
         {
             if (!IsInitialized)
             {
+                await _signalRService.StopAsync();
                 await _signalRService.StartAsync();
                 await ReloadData();
                 await LoadColumns();
