@@ -7,10 +7,15 @@
              x:Class="AvaloniaClient.SettingsView"
              x:DataType="vm:SettingsViewModel">
 
-  <Grid ColumnDefinitions="2*,3*,1.5*" Margin="10">
+  <Grid RowDefinitions="Auto, *" Margin="10">
+<StackPanel Grid.Row="0" Orientation="Horizontal" Spacing="10" Margin="0,0,0,10">
+            <Button Content="Назад" Command="{Binding NavigateToColumnCommand}"/>
+            <Button Content="Удалить БД" Command="{Binding DropDBCommand}"/>
+        </StackPanel>
 
+      <Grid Grid.Row="1" ColumnDefinitions="2*,3*,1.5*">
     <!-- ЛЕВО: команды -->
-    <ItemsControl ItemsSource="{Binding Teams}">
+    <ItemsControl Grid.Column="0" ItemsSource="{Binding Teams}">
   <ItemsControl.ItemTemplate>
     <DataTemplate>
 
@@ -47,6 +52,7 @@
 </ItemsControl>
 
     <!-- ЦЕНТР: пользователи -->
+    <StackPanel Grid.Column="1">
    <DataGrid ItemsSource="{Binding Users}"
           SelectedItem="{Binding SelectedUser}"
           AutoGenerateColumns="False">
@@ -64,9 +70,9 @@
   <Button Content="Добавить" Command="{Binding AddUserCommand}"/>
   <Button Content="Удалить" Command="{Binding DeleteUserCommand}"/>
 </StackPanel>
-
+        </StackPanel>
     <!-- ПРАВО -->
-   <ItemsControl ItemsSource="{Binding Labels}">
+   <ItemsControl Grid.Column="2"  ItemsSource="{Binding Labels}">
   <ItemsControl.ItemTemplate>
     <DataTemplate>
 
@@ -85,8 +91,6 @@
   </ItemsControl.ItemTemplate>
 </ItemsControl>
 
-<Button Content="Добавить" Command="{Binding AddLabelCommand}"/>
-<Button Content="Удалить" Command="{Binding DeleteLabelCommand}"/>
-
+          </Grid>
   </Grid>
 </UserControl>

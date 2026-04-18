@@ -11,10 +11,11 @@ namespace AvaloniaClient.ViewModels
 {
 	public class SettingsViewModel : ReactiveObject, IRoutableViewModel
     {
-		IConfigurationService _configurationService; 
-		IUserService _userService;
-		IHealthService _healthService;
-        ILabelService _labelService;
+        private IConfigurationService _configurationService;
+        private IUserService _userService;
+		private ITeamService _teamService;
+        private IHealthService _healthService;
+        private ILabelService _labelService;
         NavigationService _navigationService;
         //public IReadOnlyList<UserModel> Users = new List<UserModel>();
         public ObservableCollection<UserModel> Users { get; set; } = new();
@@ -73,7 +74,7 @@ namespace AvaloniaClient.ViewModels
             set => this.RaiseAndSetIfChanged(ref _email, value);
         }
 
-        public class TeamModel : ReactiveObject
+        /*public class TeamModel : ReactiveObject
         {
             public string Title { get; set; }
             public string ColorTeam { get; set; }
@@ -97,7 +98,7 @@ namespace AvaloniaClient.ViewModels
                         Users.Add(SelectedUserToAdd);
                 });
             }
-        }
+        }*/
         public string? UrlPathSegment => "settings";
         public string UrlServerPath {
             get;
@@ -108,11 +109,12 @@ namespace AvaloniaClient.ViewModels
         public ReactiveCommand<Unit, Task> NavigateToColumnCommand { get; }
         public ReactiveCommand<Unit, Task> DropDBCommand { get; }
         public ReactiveCommand<UserModel, Unit> CreateUserCommand { get; }
-        public SettingsViewModel( IConfigurationService configurationService, IHealthService healthService ,IUserService userService, ILabelService labelService, IScreen screen, NavigationService navigationService) 
+        public SettingsViewModel( IConfigurationService configurationService, IHealthService healthService ,IUserService userService, ITeamService teamService, ILabelService labelService, IScreen screen, NavigationService navigationService) 
 		{
 			_configurationService = configurationService;
 			_labelService = labelService;
 			_userService = userService;
+			_teamService = teamService;
             _navigationService = navigationService;
             _healthService = healthService;
             HostScreen = screen;
@@ -150,13 +152,17 @@ namespace AvaloniaClient.ViewModels
         private async Task LoadData()
         {
             var users = await _userService.GetUsersAsync();
+            var teams = await _teamService.GetTeamsAsync();
             var labels = await _labelService.GetLabelsAsync();
 
             foreach (var user in users ?? new())
             {
                 Users.Add(user);
             }
-
+            foreach (var team in teams ?? new())
+            {
+                Teams.Add(team);
+            }
             foreach (var label in labels ?? new())
             {
                 Labels.Add(label);
