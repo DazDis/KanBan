@@ -31,6 +31,7 @@ namespace AvaloniaClient.ViewModels
         public ObservableCollection<UserModel> Users { get; } = new();
         public ObservableCollection<LabelModel> Labels { get; } = new();
         public ObservableCollection<TeamModel> Teams { get; } = new();
+        public ObservableCollection<ColumnModel> Columns { get; } = new();
 
         private UserModel? _selectedUser;
         public UserModel? SelectedUser

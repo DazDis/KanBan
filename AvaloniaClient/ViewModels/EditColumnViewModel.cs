@@ -6,9 +6,6 @@ using System.Reactive;
 namespace AvaloniaClient.ViewModels
 {
 	public class EditColumnViewModel : ReactiveObject
-	{
-	}
-    public class EditColumnViewModel : ReactiveObject
     {
         private readonly ColumnModel _column;
 
