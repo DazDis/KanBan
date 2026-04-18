@@ -21,13 +21,16 @@ namespace AvaloniaClient.ViewModels
         public IScreen HostScreen { get; }
         private readonly IColumnService _columnService;
         private readonly ITaskService _taskService;
+        private readonly IUserService _userService;
+        private readonly ILabelService _labelService;
+        private readonly ITeamService _teamService;
         public ObservableCollection<ColumnModel> Columns { get; } = new();
         private IReadOnlyList<TaskModel> Tasks = new List<TaskModel>();
 
         private bool IsInitialized;
         public ReactiveCommand<Unit, Task> NavigateToSettingsCommand { get; }
         public ReactiveCommand<Unit, Unit> OpenAddColumnDialogCommand { get; }
-        public ReactiveCommand<Unit, Unit> OpenEditColumnDialogCommand { get; }
+        public ReactiveCommand<ColumnModel, Unit> OpenEditColumnDialogCommand { get; }
         public ReactiveCommand<int, Unit> OpenAddTaskDialogCommand { get; }
         public ReactiveCommand<TaskModel, Unit> OpenEditTaskDialogCommand { get; }
         public ReactiveCommand<TaskModel, Unit> EditTaskCommand { get; }
@@ -41,10 +44,13 @@ namespace AvaloniaClient.ViewModels
         }
         public NavigationService _navigationService;
         private readonly SignalRService _signalRService;
-        public ColumnViewModel(SignalRService signalRService, IColumnService columnService, ITaskService taskService, NavigationService navigationService, IScreen screen)
+        public ColumnViewModel(SignalRService signalRService, IColumnService columnService, ITaskService taskService, IUserService userService, ILabelService labelService, ITeamService teamService, NavigationService navigationService, IScreen screen)
         {
             _columnService = columnService;
             _taskService = taskService;
+            _userService = userService;
+            _labelService = labelService;
+            _teamService = teamService;
             _navigationService = navigationService;
             HostScreen = screen;
 
@@ -60,6 +66,7 @@ namespace AvaloniaClient.ViewModels
             OpenAddColumnDialogCommand = ReactiveCommand.Create(OpenAddColumnDialog);
             OpenAddTaskDialogCommand = ReactiveCommand.CreateFromTask<int>(OpenAddTaskDialogAsync);
             EditTaskCommand = ReactiveCommand.Create<TaskModel>(OpenEditTaskDialog);
+
             Observable.Interval(TimeSpan.FromSeconds(1))
                .ObserveOn(RxApp.MainThreadScheduler)
                .Subscribe(_ =>
@@ -227,6 +234,14 @@ namespace AvaloniaClient.ViewModels
             });
         }
 
+        public EditColumnViewModel EditColumn { get; private set; }
+        public bool IsEditColumnOpen
+        {
+            get => _isEditColumnOpen;
+            set => this.RaiseAndSetIfChanged(ref _isEditColumnOpen, value);
+        }
+        private bool _isEditColumnOpen;
+        
         private async Task CreateColumn(ColumnDTO dto)
         {
             try
@@ -278,7 +293,7 @@ namespace AvaloniaClient.ViewModels
 
         private async Task OpenAddTaskDialogAsync(int columnId)
         {
-            AddTask = new AddTaskViewModel(columnId, _navigationService);
+            AddTask = new AddTaskViewModel(columnId, _navigationService, _userService, _labelService, _teamService);
             IsAddTaskOpen = true;
 
             AddTask.SaveCommand.Subscribe(task =>
@@ -296,10 +311,10 @@ namespace AvaloniaClient.ViewModels
         }
         private void OpenEditTaskDialog(TaskModel task)
         {
-            EditTask = new EditTaskViewModel(task);
+            EditTask = new EditTaskViewModel(task, _userService, _labelService, _teamService);
             IsEditTaskOpen = true;
 
-            EditTask.SaveCommand.Subscribe(updatedTask =>
+            EditTask.SaveCommand.Subscribe(async updatedTask =>
             {
                 if (updatedTask == null)
                     return;
@@ -307,15 +322,30 @@ namespace AvaloniaClient.ViewModels
                 try
                 {
                     IsEditTaskOpen = false;
+                    await _taskService.UpdateTaskAsync(updatedTask);
 
-                    
-                    }
+                }
                 
                 catch (Exception ex)
                 {
                     System.Diagnostics.Debug.WriteLine(ex.Message);
                 }
             });
+
+            EditTask.DeleteCommand.Subscribe(async deleteTask =>
+            {
+                if (deleteTask == null)
+                    return;
+
+                IsEditTaskOpen = false;
+
+                await _taskService.DeleteTaskAsync(deleteTask.Id);
+
+                var column = Columns.FirstOrDefault(c => c.Id == deleteTask.ColumnId);
+                column?.Tasks.Remove(deleteTask);
+            });
+
+
 
             EditTask.CancelCommand.Subscribe(_ =>
             {
@@ -357,7 +387,7 @@ namespace AvaloniaClient.ViewModels
 
 
 
-private async Task NavigateToSettingsAsync()
+        private async Task NavigateToSettingsAsync()
         {
             await _navigationService.NavigateToSettingsAsync();
         }
