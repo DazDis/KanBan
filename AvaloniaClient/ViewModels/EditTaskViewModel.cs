@@ -7,11 +7,12 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Reactive;
+using System.Reactive.Linq;
 using System.Threading.Tasks;
 
 namespace AvaloniaClient.ViewModels
 {
-	public class EditTaskViewModel : ReactiveObject
+	public sealed class EditTaskViewModel : ReactiveObject
 
     {
         private readonly TaskModel _task;
@@ -22,12 +23,17 @@ namespace AvaloniaClient.ViewModels
         private string _title = string.Empty;
         private string _description = string.Empty;
         private int _columnId;
-        private string _selectedColor = string.Empty;
+        private string _selectedColor;
         private DateTime? _date;
         private TimeSpan? _time;
+        private Color Color;
 
         public ObservableCollection<UserModel> Users { get; } = new();
         public ObservableCollection<LabelModel> Labels { get; } = new();
+
+        public ReactiveCommand<Unit, TaskModel?> SaveCommand { get; }
+        public ReactiveCommand<Unit, Unit> CancelCommand { get; }
+        public ReactiveCommand<Unit, TaskModel> DeleteCommand { get; }
         public ObservableCollection<TeamModel> Teams { get; } = new();
 
         public string Title
@@ -69,10 +75,6 @@ namespace AvaloniaClient.ViewModels
             set => this.RaiseAndSetIfChanged(ref _selectedTeam, value);
         }
 
-        public ReactiveCommand<Unit, TaskModel?> SaveCommand { get; }
-        public ReactiveCommand<Unit, Unit> CancelCommand { get; }
-        public ReactiveCommand<Unit, TaskModel> DeleteCommand { get; }
-
         public EditTaskViewModel(TaskModel task, IUserService userService, ILabelService labelService, ITeamService teamService)
         {
             _task = task ?? throw new ArgumentNullException(nameof(task));
@@ -81,14 +83,13 @@ namespace AvaloniaClient.ViewModels
             Description = _task.Description;
             //Deadline = _task.Deadline;
             _columnId = _task.ColumnId;
-
+            _selectedColor = _task.Color;
             _userService = userService;
             _labelService = labelService;
             _teamService = teamService;
 
             _ = LoadAsync();
-
-            SaveCommand = ReactiveCommand.Create(() =>
+            SaveCommand = ReactiveCommand.CreateFromTask(async () =>
             {
                 try
                 {

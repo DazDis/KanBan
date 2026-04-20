@@ -285,7 +285,12 @@ namespace AvaloniaClient.ViewModels
 
         private bool _isEditTaskOpen;
 
-        public EditTaskViewModel EditTask { get; private set; }
+        public EditTaskViewModel _editTask;
+        public EditTaskViewModel EditTask
+        {
+            get => _editTask;
+            set => this.RaiseAndSetIfChanged(ref _editTask, value);
+        }
         public bool IsEditTaskOpen
         {
             get => _isEditTaskOpen;

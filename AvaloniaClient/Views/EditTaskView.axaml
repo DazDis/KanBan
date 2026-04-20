@@ -27,14 +27,14 @@
                                FontSize="20"
                                FontWeight="SemiBold"
                                VerticalAlignment="Center"/>
-
-                    <Button Content="✕"
+               <Button Content="✕"
                             HorizontalAlignment="Right"
                             Width="28" Height="28"
                             Background="Transparent"
                             BorderThickness="0"
                             FontSize="14"
                             Command="{Binding CancelCommand}"/>
+
                 </Grid>
 
                 <TextBox Watermark="Title..." Text="{Binding Title}"/>
@@ -81,6 +81,7 @@
                         Background="#ffffff"
                         Foreground="#C51D34"
                         CornerRadius="10"
+						Command="{Binding DeleteCommand}"
 						x:Name="DeleteButton"/>
                  </Grid>
                 
