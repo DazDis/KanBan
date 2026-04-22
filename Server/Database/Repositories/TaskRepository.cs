@@ -19,7 +19,7 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
         using var context = _contextFactory.CreateApplicationContext();
 
         // var entities = await context.Tasks.ToListAsync();
-        var entities = await context.Tasks.Include(x => x.Users).Include(x => x.Labels).ToListAsync();
+        var entities = await context.Tasks.Include(x => x.Users).Include(x => x.Labels).OrderBy(t => t.Position).ToListAsync();
 
         return entities.Select(x => new TaskDTO
         {
