@@ -31,10 +31,13 @@ namespace AvaloniaClient.ViewModels
         public ReactiveCommand<Unit, Task> NavigateToSettingsCommand { get; }
         public ReactiveCommand<Unit, Unit> OpenAddColumnDialogCommand { get; }
         public ReactiveCommand<ColumnModel, Unit> OpenEditColumnDialogCommand { get; }
+        public ReactiveCommand<ColumnModel, Unit> EditColumnCommand { get; }
+
         public ReactiveCommand<int, Unit> OpenAddTaskDialogCommand { get; }
         public ReactiveCommand<TaskModel, Unit> OpenEditTaskDialogCommand { get; }
         public ReactiveCommand<TaskModel, Unit> EditTaskCommand { get; }
         public ReactiveCommand<TaskModel, Unit> DeleteTaskCommand { get; }
+
 
         private DateTime _now = DateTime.Now;
         public DateTime Now
@@ -68,6 +71,7 @@ namespace AvaloniaClient.ViewModels
             OpenAddColumnDialogCommand = ReactiveCommand.Create(OpenAddColumnDialog);
             OpenAddTaskDialogCommand = ReactiveCommand.CreateFromTask<int>(OpenAddTaskDialogAsync);
             EditTaskCommand = ReactiveCommand.Create<TaskModel>(OpenEditTaskDialog);
+            EditColumnCommand = ReactiveCommand.Create<ColumnModel>(OpenEditColumnDialog);
 
             Observable.Interval(TimeSpan.FromSeconds(1))
                .ObserveOn(RxApp.MainThreadScheduler)
@@ -342,6 +346,55 @@ namespace AvaloniaClient.ViewModels
                 IsAddTaskOpen = false;
             });
         }
+
+
+        private void OpenEditColumnDialog(ColumnModel column)
+        {
+            EditColumn = new EditColumnViewModel(column);
+            IsEditColumnOpen = true;
+
+            EditColumn.SaveCommand.Subscribe(async updatedColumn =>
+            {
+                if (updatedColumn == null)
+                    return;
+
+                try
+                {
+
+                    IsEditColumnOpen = false;
+                    await _columnService.UpdateColumnAsync(updatedColumn);
+
+                }
+
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                }
+            });
+
+            EditColumn.DeleteCommand.Subscribe(async deleteColumn =>
+            {
+                if (deleteColumn == null)
+                    return;
+
+                IsEditColumnOpen = false;
+
+                await _columnService.DeleteColumnAsync(deleteColumn);
+
+                var column = Columns.FirstOrDefault(c => c.Id == deleteColumn);
+                Columns.Remove(column);
+            });
+
+            EditColumn.CancelCommand.Subscribe(_ =>
+            {
+                IsEditColumnOpen = false;
+            });
+
+        }
+
+
+
+
         private void OpenEditTaskDialog(TaskModel task)
         {
             EditTask = new EditTaskViewModel(task, _userService, _labelService, _teamService);
