@@ -43,8 +43,8 @@ xmlns:local="using:AvaloniaClient.Services"
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
 
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
+					<ItemsControl.ItemTemplate>
+						<DataTemplate>
 
                             <!-- КОЛОНКА -->
                             <Border Width="280"
@@ -57,31 +57,31 @@ xmlns:local="using:AvaloniaClient.Services"
                                         </i:Interaction.Behaviors>
                                 <StackPanel>
 
-                                    <!-- ЗАГОЛОВОК -->
-                                    <Grid Margin="0,0,0,10">
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition Width="Auto"/>
-                                        </Grid.ColumnDefinitions>
+									<!-- ЗАГОЛОВОК -->
+									<Grid Margin="0,0,0,10">
+										<Grid.ColumnDefinitions>
+											<ColumnDefinition/>
+											<ColumnDefinition Width="Auto"/>
+										</Grid.ColumnDefinitions>
 
-                                        <TextBlock Text="{Binding Title}"
-                                                   FontSize="18"
-                                                   FontWeight="SemiBold"/>
+										<TextBlock Text="{Binding Title}"
+												   FontSize="18"
+												   FontWeight="SemiBold"/>
 
-                                        <!-- СЧЁТЧИК -->
-                                        <TextBlock Grid.Column="1"
-                                                   Text="{Binding Tasks.Count}"
-                                                   Foreground="#9ca3af"
-                                                   FontSize="16"/>
-                                    </Grid>
+										<!-- СЧЁТЧИК -->
+										<TextBlock Grid.Column="1"
+												   Text="{Binding Tasks.Count}"
+												   Foreground="#9ca3af"
+												   FontSize="16"/>
+									</Grid>
 
-                                    <!-- КНОПКА ДОБАВИТЬ ЗАДАЧУ -->
-                                    <Button Content="+ Добавить"
-                                            Command="{Binding $parent[UserControl].DataContext.OpenAddTaskDialogCommand}"
-                                            CommandParameter="{Binding Id}"
-                                            Margin="0,0,0,10"
-                                            Background="#f3f4f6"
-                                            CornerRadius="8"/>
+									<!-- КНОПКА ДОБАВИТЬ ЗАДАЧУ -->
+									<Button Content="+ Добавить"
+											Command="{Binding $parent[UserControl].DataContext.OpenAddTaskDialogCommand}"
+											CommandParameter="{Binding Id}"
+											Margin="0,0,0,10"
+											Background="#f3f4f6"
+											CornerRadius="8"/>
 
                                     <!-- СПИСОК ЗАДАЧ -->
                                     <ItemsControl ItemsSource="{Binding Tasks}">
@@ -109,122 +109,125 @@ xmlns:local="using:AvaloniaClient.Services"
 
                                                     <StackPanel>
 
-                                                        <!-- Заголовок -->
-                                                        <TextBlock Text="{Binding Title}"
-                                                                   FontWeight="SemiBold"
-                                                                   FontSize="14"/>
+															<!-- Заголовок -->
+															<TextBlock Text="{Binding Title}"
+																	   FontWeight="SemiBold"
+																	   FontSize="14"/>
 
-                                                        <!-- Описание -->
-                                                        <TextBlock Text="{Binding Description}"
-                                                                   FontSize="11"
-                                                                   Foreground="#6b7280"
-                                                                   Margin="0,4,0,6"
-                                                                   TextWrapping="Wrap"/>
+															<!-- Описание -->
+															<TextBlock Text="{Binding Description}"
+																	   FontSize="11"
+																	   Foreground="#6b7280"
+																	   Margin="0,4,0,6"
+																	   TextWrapping="Wrap"/>
 
-                                                        <Grid>
-                                                            <Grid.ColumnDefinitions>
-                                                                <ColumnDefinition/>
-                                                                <ColumnDefinition Width="Auto"/>
-                                                            </Grid.ColumnDefinitions>
+															<Grid>
+																<Grid.ColumnDefinitions>
+																	<ColumnDefinition/>
+																	<ColumnDefinition Width="Auto"/>
+																</Grid.ColumnDefinitions>
 
-                                                            <!-- тег -->
-                                                            <TextBlock Text="tag"
-                                                                       FontSize="10"
-                                                                       Foreground="#374151"/>
+																<!-- тег -->
+																<TextBlock Text="tag"
+																		   FontSize="10"
+																		   Foreground="#374151"/>
 
-                                                            <!-- иконка -->
-                                                            <Border Grid.Column="1"
-                                                                    Width="24"
-                                                                    Height="24"
-                                                                    CornerRadius="12"
-                                                                    Background="#d9f99d"/>
-                                                        </Grid>
+																<!-- иконка -->
+																<Border Grid.Column="1"
+																		Width="24"
+																		Height="24"
+																		CornerRadius="12"
+																		Background="#d9f99d"/>
+															</Grid>
 
-                                                        <!-- КНОПКИ -->
-                                                        <StackPanel Orientation="Horizontal"
-                                                                    Margin="0,8,0,0">
-                                                            <Button Content="✎"
-                                                                    Width="30"
-                                                                    Command="{Binding $parent[UserControl].DataContext.EditTaskCommand}"
-                                                                    CommandParameter="{Binding}"/>
+															<!-- КНОПКИ -->
+															<StackPanel Orientation="Horizontal"
+																		Margin="0,8,0,0">
+																<Button Content="✎"
+																		Width="30"
+																		Command="{Binding $parent[UserControl].DataContext.EditTaskCommand}"
+																		CommandParameter="{Binding}"/>
 
-                                                            <Button Content="🗑"
-                                                                    Width="30"
-                                                                    Margin="5,0,0,0"
-                                                                    Command="{Binding $parent[UserControl].DataContext.DeleteTaskCommand}"
-                                                                    CommandParameter="{Binding}"/>
-                                                        </StackPanel>
+																<Button Content="🗑"
+																		Width="30"
+																		Margin="5,0,0,0"
+																		Command="{Binding $parent[UserControl].DataContext.DeleteTaskCommand}"
+																		CommandParameter="{Binding}"/>
+															</StackPanel>
 
-                                                    </StackPanel>
-                                                    </Border>
-                                                </Border>
+														</StackPanel>
+													</Border>
+												</Border>
 
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
+											</DataTemplate>
+										</ItemsControl.ItemTemplate>
 
-                                    </ItemsControl>
+									</ItemsControl>
 
-                                </StackPanel>
-                            </Border>
+								</StackPanel>
+							</Border>
 
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
+						</DataTemplate>
+					</ItemsControl.ItemTemplate>
 
-                </ItemsControl>
+				</ItemsControl>
 
-            </StackPanel>
-        </ScrollViewer>
-       
-        
-        	
-
-        	<Border Background="#80000000"
-            IsVisible="{Binding IsAddColumnOpen}">
-
-        <views:AddColumnView
-            DataContext="{Binding AddColumn}"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"/>
-                </Border>
+			</StackPanel>
+		</ScrollViewer>
 
 
-        <Border Background="#80000000"
-            IsVisible="{Binding IsAddTaskOpen}">
 
-        <views:AddTaskView
-            DataContext="{Binding AddTask}"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"/>
-                </Border>
-        
-        <Border Background="#80000000"
-            IsVisible="{Binding IsEditTaskOpen}">
+		
+		<Border Background="#80000000"
+		IsVisible="{Binding IsAddColumnOpen}">
 
-        <views:EditTaskView
-            DataContext="{Binding EditTask}"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"/>
-                </Border>
-
-     <!-- <Border Background="#80000000"
-            IsVisible="{Binding IsEditTaskOpen}">
-
-       
-            <views:EditTaskView
-            DataContext="{Binding EditTask}"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"/>
-                </Border>-->
+		<views:AddColumnView
+		DataContext="{Binding AddColumn}"
+		HorizontalAlignment="Center"
+		VerticalAlignment="Center"/>
+		</Border>
 
 
-       <!-- <Border Background="#80000000"
-            IsVisible="{Binding IsAddTaskOpen}">
+		<Border Background="#80000000"
+		IsVisible="{Binding IsAddTaskOpen}">
 
-        <views:EditСolumnView
-            DataContext="{Binding EditTask}"
-            HorizontalAlignment="Center"
-            VerticalAlignment="Center"/>
-                </Border>-->
+		<views:AddTaskView
+		DataContext="{Binding AddTask}"
+		HorizontalAlignment="Center"
+		VerticalAlignment="Center"/>
+		</Border>
 
-    </Grid>
+		<Border Background="#80000000"
+		IsVisible="{Binding IsEditTaskOpen}">
+
+		<views:EditTaskView
+		DataContext="{Binding EditTask}"
+		HorizontalAlignment="Center"
+		VerticalAlignment="Center"/>
+		</Border>
+
+
+
+		<!--
+		 <Border Background="#80000000"
+		IsVisible="{Binding IsEditTaskOpen}">
+
+
+		<views:EditTaskView
+		DataContext="{Binding EditTask}"
+		HorizontalAlignment="Center"
+		VerticalAlignment="Center"/>
+		</Border>-->
+
+
+		<!-- <Border Background="#80000000"
+		IsVisible="{Binding IsAddTaskOpen}">
+
+		<views:EditСolumnView
+		DataContext="{Binding EditTask}"
+		HorizontalAlignment="Center"
+		VerticalAlignment="Center"/>
+		</Border>-->
+
+	</Grid>
 </UserControl>
