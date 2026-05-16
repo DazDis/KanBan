@@ -131,7 +131,6 @@ namespace AvaloniaClient.ViewModels
         }
         private async void OnTaskUpdatedFromServer(TaskModel task)
         {
-            // Обновляем локальный список
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 var existing = Columns.SelectMany(c => c.Tasks).FirstOrDefault(t => t.Id == task.Id);
@@ -155,15 +154,15 @@ namespace AvaloniaClient.ViewModels
         }
         private async void OnTaskDeletedFromServer(int id)
         {
-            // Обновляем локальный список
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 foreach (var column in Columns ?? new())
                 {
-                    var existing = column.Tasks.FirstOrDefault(t => t.Id == column.Id);
+                    var existing = column.Tasks.FirstOrDefault(t => t.Id == id);
                     if (existing != null)
                     {
-                        existing.Title = column.Title;
+                        column.Tasks.Remove(existing);
+                        return;
                     }
                 }
             });
@@ -171,7 +170,6 @@ namespace AvaloniaClient.ViewModels
 
         private async void OnColumnUpdatedFromServer(ColumnModel column)
         {
-            // Обновляем локальный список
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 var existing = Columns.FirstOrDefault(t => t.Id == column.Id);
@@ -183,7 +181,6 @@ namespace AvaloniaClient.ViewModels
         }
         private async void OnColumnCreatedFromServer(ColumnModel column)
         {
-            // Обновляем локальный список
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 Columns.Add(column);
@@ -191,7 +188,6 @@ namespace AvaloniaClient.ViewModels
         }
         private async void OnColumnDeletedFromServer(int id)
         {
-            // Обновляем локальный список
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 var existing = Columns.FirstOrDefault(u => u.Id == id);
@@ -427,8 +423,8 @@ namespace AvaloniaClient.ViewModels
 
                 await _taskService.DeleteTaskAsync(deleteTask.Id);
 
-                var column = Columns.FirstOrDefault(c => c.Id == deleteTask.ColumnId);
-                column?.Tasks.Remove(deleteTask);
+                //var column = Columns.FirstOrDefault(c => c.Id == deleteTask.ColumnId);
+                //column?.Tasks.Remove(deleteTask);
             });
 
 
