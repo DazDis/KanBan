@@ -30,6 +30,6 @@ public class TaskService : ITaskService
 
     public async Task UpdateTaskAsync(TaskModel task)
     {
-        await _apiClient.PutAsync<TaskModel>("api/task", task);
+        await _apiClient.PutAsync("api/task", task);
     }
 }

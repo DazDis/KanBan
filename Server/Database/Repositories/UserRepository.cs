@@ -46,7 +46,25 @@ public class UserRepository(ApplicationDbContextFactory contextFactory)
         await context.SaveChangesAsync();
         user.Id = entity.UserId;
     }
+    public async Task<UserDTO> UpdateUserAsync(UserDTO user)
+    {
+        using var context = _contextFactory.CreateApplicationContext();
 
+        var entity = await context.Users
+            .FirstOrDefaultAsync(u => u.UserId == user.Id);
+
+        if (entity == null)
+            throw new Exception($"User with id {user.Id} not found");
+
+        // Обновляем поля
+        entity.FirstName = user.FirstName;
+        entity.LastName = user.LastName;
+        entity.Email = user.Email;
+
+        await context.SaveChangesAsync();
+
+        return user;
+    }
     public async Task DeleteUserAsync(UserDTO user)
     {
         using var context = _contextFactory.CreateApplicationContext();

@@ -14,7 +14,7 @@ public class LabelRepository(ApplicationDbContextFactory contextFactory)
 {
     private ApplicationDbContextFactory _contextFactory = contextFactory;
 
-    public async Task<IReadOnlyList<LabelDTO>> GetLabelsAsync()
+    public async Task<IReadOnlyList<LabelDTO>> GetLabelsAsync(CancellationToken ct = default)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
@@ -29,7 +29,7 @@ public class LabelRepository(ApplicationDbContextFactory contextFactory)
 
     }
 
-    public async Task AddLabelAsync(LabelDTO label)
+    public async Task AddLabelAsync(LabelDTO label, CancellationToken ct = default)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
@@ -44,8 +44,21 @@ public class LabelRepository(ApplicationDbContextFactory contextFactory)
         await context.SaveChangesAsync();
         label.Id = entity.Id;
     }
+    public async Task UpdateLabelAsync(LabelDTO label, CancellationToken ct = default)
+    {
+        using var context = _contextFactory.CreateApplicationContext();
 
-    public async Task DeleteLabelAsync(LabelDTO label)
+        var entity = await context.Labels.FindAsync(label.Id);
+
+        if (entity == null)
+            throw new Exception($"Column with id {label.Id} not found");
+
+        // Обновляем поля
+        entity.Name = label.Name;
+        entity.Color = label.Color;
+        await context.SaveChangesAsync();
+    }
+    public async Task DeleteLabelAsync(LabelDTO label, CancellationToken ct = default)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
@@ -62,7 +75,7 @@ public class LabelRepository(ApplicationDbContextFactory contextFactory)
             await context.SaveChangesAsync();
         }
     }
-    public async Task DeleteLabelAsync(int id)
+    public async Task DeleteLabelAsync(int id, CancellationToken ct = default)
     {
         using var context = _contextFactory.CreateApplicationContext();
 

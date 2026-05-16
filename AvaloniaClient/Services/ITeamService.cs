@@ -8,6 +8,7 @@ namespace AvaloniaClient.Services
     {
         Task<List<TeamModel>> GetTeamsAsync();
         Task<TeamModel?> CreateTeamAsync(TeamModel dto);
+        Task UpdateTeamAsync(TeamModel dto);
         Task DeleteTeamAsync(int id);
     }
 }

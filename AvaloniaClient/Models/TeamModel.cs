@@ -7,7 +7,6 @@ namespace AvaloniaClient.DataBase
     {
         public int Id { get; set; }
         public string Title { get; set; }
-        public string? ColorTeam { get; set; }
         public List<int> UserIds { get; set; } = new();
         public ObservableCollection<UserModel?>? Users { get; set; } = new();
 

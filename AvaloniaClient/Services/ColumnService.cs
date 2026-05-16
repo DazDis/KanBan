@@ -35,6 +35,6 @@ public class ColumnService : IColumnService
             Title = dto.Title,
             Position = dto.Position,
         };
-        await _apiClient.PutAsync<ColumnDTO>("api/column", column);
+        await _apiClient.PutAsync("api/column", column);
     }
 }

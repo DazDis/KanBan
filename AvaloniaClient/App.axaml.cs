@@ -16,6 +16,8 @@ using System;
 using System.Configuration;
 using System.Linq;
 using System.Net.Http;
+using System.Text.Json;
+using System.Text.Json.Serialization.Metadata;
 using static System.Net.WebRequestMethods;
 
 namespace AvaloniaClient

@@ -34,11 +34,10 @@ public class ApiClient : IApiClient
         return await response.Content.ReadFromJsonAsync<T>();
     }
 
-    public async Task<T?> PutAsync<T>(string endpoint, object data)
+    public async Task PutAsync(string endpoint, object data)
     {
         var response = await _httpClient.PutAsJsonAsync(endpoint, data);
         response.EnsureSuccessStatusCode();
-        return await response.Content.ReadFromJsonAsync<T>();
     }
 
     public async Task DeleteAsync(string endpoint)

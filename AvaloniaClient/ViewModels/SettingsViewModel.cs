@@ -1,174 +1,356 @@
-using AvaloniaClient.DataBase;
-using AvaloniaClient.Services;
 using ReactiveUI;
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Reactive;
 using System.Threading.Tasks;
+using AvaloniaClient.DataBase;
+using AvaloniaClient.Services;
 
 namespace AvaloniaClient.ViewModels
 {
-	public class SettingsViewModel : ReactiveObject, IRoutableViewModel
+    public class SettingsViewModel : ViewModelBase, IRoutableViewModel
     {
-        private IConfigurationService _configurationService;
-        private IUserService _userService;
-		private ITeamService _teamService;
-        private IHealthService _healthService;
-        private ILabelService _labelService;
-        NavigationService _navigationService;
-        //public IReadOnlyList<UserModel> Users = new List<UserModel>();
-        public ObservableCollection<UserModel> Users { get; set; } = new();
-        public ObservableCollection<TeamModel> Teams { get; set; } = new();
-        public ObservableCollection<LabelModel> Labels { get; } = new();
-        public ReactiveCommand<Unit, Unit> AddUserCommand { get; }
-        public ReactiveCommand<UserModel, Unit> DeleteUserCommand { get; }
+        private string _message;
 
-        public ReactiveCommand<Unit, Unit> AddLabelCommand { get; }
-        public ReactiveCommand<LabelModel, Unit> DeleteLabelCommand { get; }
-        private UserModel _selectedUser;
-        public UserModel SelectedUser
+        private readonly IUserService _userService;
+        private readonly ITeamService _teamService;
+        private readonly ILabelService _labelService;
+        private readonly NavigationService _navigationService;
+        private readonly SignalRService _signalRService;
+
+        private ObservableCollection<UserModel> _users = new();
+        private ObservableCollection<TeamModel> _teams = new();
+        private ObservableCollection<LabelModel> _labels = new();
+
+        private UserModel? _selectedUser;
+        private TeamModel? _selectedTeam;
+        private LabelModel? _selectedLabel;
+
+        public string? UrlPathSegment => "settings";
+        public IScreen HostScreen { get; }
+        public string Message
+        {
+            get => _message;
+            set => this.RaiseAndSetIfChanged(ref _message, value);
+        }
+        public ObservableCollection<UserModel> Users
+        {
+            get => _users;
+            set => this.RaiseAndSetIfChanged(ref _users, value);
+        }
+        public ObservableCollection<TeamModel> Teams
+        {
+            get => _teams;
+            set => this.RaiseAndSetIfChanged(ref _teams, value);
+        }
+        public ObservableCollection<LabelModel> Labels
+        {
+            get => _labels;
+            set => this.RaiseAndSetIfChanged(ref _labels, value);
+        }
+
+        public UserModel? SelectedUser
         {
             get => _selectedUser;
             set => this.RaiseAndSetIfChanged(ref _selectedUser, value);
         }
-
-
-
-
-        private LabelModel _selectedLabel;
-        public LabelModel SelectedLabel
+        public TeamModel? SelectedTeam
+        {
+            get => _selectedTeam;
+            set => this.RaiseAndSetIfChanged(ref _selectedTeam, value);
+        }
+        public LabelModel? SelectedLabel
         {
             get => _selectedLabel;
             set => this.RaiseAndSetIfChanged(ref _selectedLabel, value);
         }
-        public TeamModel SelectedTeam { get; set; }
 
-        private bool IsInitialized;
+        public ReactiveCommand<Unit, Unit> NavigateToColumnCommand { get; }
+        public ReactiveCommand<Unit, Unit> DropDBCommand { get; }
 
-        private int _id;
-        public int Id
+        public ReactiveCommand<Unit, Unit> AddUserCommand { get; }
+        public ReactiveCommand<Unit, Unit> DeleteUserCommand { get; }
+        public ReactiveCommand<Unit, Unit> SaveAllUsersCommand { get; }
+
+        public ReactiveCommand<Unit, Unit> AddTeamCommand { get; }
+        public ReactiveCommand<Unit, Unit> DeleteTeamCommand { get; }
+        public ReactiveCommand<Unit, Unit> SaveAllTeamsCommand { get; }
+
+        public ReactiveCommand<Unit, Unit> AddLabelCommand { get; }
+        public ReactiveCommand<Unit, Unit> DeleteLabelCommand { get; }
+        public ReactiveCommand<Unit, Unit> SaveAllLabelsCommand { get; }
+        public bool IsInitialized { get; private set; }
+
+        public SettingsViewModel(
+            IScreen screen,
+            IUserService userService,
+            ITeamService teamService,
+            ILabelService labelService,
+            NavigationService navigationService,
+            SignalRService signalRService)
         {
-            get => _id;
-            set => this.RaiseAndSetIfChanged(ref _id, value);
-        }
-
-        private string _firstName;
-        public string FirstName
-        {
-            get => _firstName;
-            set => this.RaiseAndSetIfChanged(ref _firstName, value);
-        }
-
-        private string _lastName;
-        public string LastName
-        {
-            get => _lastName;
-            set => this.RaiseAndSetIfChanged(ref _lastName, value);
-        }
-
-        private string _email;
-        public string Email
-        {
-            get => _email;
-            set => this.RaiseAndSetIfChanged(ref _email, value);
-        }
-
-        /*public class TeamModel : ReactiveObject
-        {
-            public string Title { get; set; }
-            public string ColorTeam { get; set; }
-
-            public ObservableCollection<UserModel> Users { get; set; } = new();
-
-            private UserModel _selectedUserToAdd;
-            public UserModel SelectedUserToAdd
-            {
-                get => _selectedUserToAdd;
-                set => this.RaiseAndSetIfChanged(ref _selectedUserToAdd, value);
-            }
-
-            public ReactiveCommand<Unit, Unit> AddUserToTeamCommand { get; }
-
-            public TeamModel()
-            {
-                AddUserToTeamCommand = ReactiveCommand.Create(() =>
-                {
-                    if (SelectedUserToAdd != null && !Users.Contains(SelectedUserToAdd))
-                        Users.Add(SelectedUserToAdd);
-                });
-            }
-        }*/
-        public string? UrlPathSegment => "settings";
-        public string UrlServerPath {
-            get;
-            set => _configurationService.SaveApiUrl(value);
-        }
-
-        public IScreen HostScreen { get; }
-        public ReactiveCommand<Unit, Task> NavigateToColumnCommand { get; }
-        public ReactiveCommand<Unit, Task> DropDBCommand { get; }
-        public ReactiveCommand<UserModel, Unit> CreateUserCommand { get; }
-        public SettingsViewModel( IConfigurationService configurationService, IHealthService healthService ,IUserService userService, ITeamService teamService, ILabelService labelService, IScreen screen, NavigationService navigationService) 
-		{
-			_configurationService = configurationService;
-			_labelService = labelService;
-			_userService = userService;
-			_teamService = teamService;
-            _navigationService = navigationService;
-            _healthService = healthService;
             HostScreen = screen;
+            _userService = userService;
+            _teamService = teamService;
+            _labelService = labelService;
+            _navigationService = navigationService;
+            _signalRService = signalRService;
 
-            NavigateToColumnCommand = ReactiveCommand.Create(NavigateToColumnAsync);
-            DropDBCommand = ReactiveCommand.Create(DropDBAsync);
-            CreateUserCommand = ReactiveCommand.CreateFromTask<UserModel>(CreateUserAsync);
+            NavigateToColumnCommand = ReactiveCommand.CreateFromTask(NavigateToColumnAsync);
+            DropDBCommand = ReactiveCommand.CreateFromTask(DropDatabaseAsync);
 
+            AddUserCommand = ReactiveCommand.CreateFromTask(AddUserAsync);
+            DeleteUserCommand = ReactiveCommand.CreateFromTask(DeleteUserAsync);
+            SaveAllUsersCommand = ReactiveCommand.CreateFromTask(SaveAllUsersAsync);
+
+            AddTeamCommand = ReactiveCommand.CreateFromTask(AddTeamAsync);
+            DeleteTeamCommand = ReactiveCommand.CreateFromTask(DeleteTeamAsync);
+            SaveAllTeamsCommand = ReactiveCommand.CreateFromTask(SaveAllTeamsAsync);
+
+            AddLabelCommand = ReactiveCommand.CreateFromTask(AddLabelAsync);
+            DeleteLabelCommand = ReactiveCommand.CreateFromTask(DeleteLabelAsync);
+            SaveAllLabelsCommand = ReactiveCommand.CreateFromTask(SaveAllLabelsAsync);
+
+            _signalRService.LabelUpdated += OnLabelUpdatedFromServer;
+            _signalRService.LabelCreated += OnLabelCreatedFromServer;
+            _signalRService.TeamUpdated += OnTeamUpdatedFromServer;
+            _signalRService.TeamCreated += OnTeamCreatedFromServer;
+            _signalRService.UserUpdated += OnUserUpdatedFromServer;
+            _signalRService.UserCreated += OnUserCreatedFromServer;
         }
 
-        private async Task CreateUserAsync(UserModel user)
+        private void OnUserCreatedFromServer(UserModel model)
         {
-            if (user == null) return;
-
-            var createdUser = await _userService.CreateUserAsync(user);
+            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            {
+                if (!Users.Any(u => u.Id == model.Id))
+                {
+                    Users.Add(model);
+                }
+            });
         }
 
-        private async Task NavigateToColumnAsync()
+        private void OnUserUpdatedFromServer(UserModel model)
         {
-            await _navigationService.NavigateToColumnAsync();
+            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            {
+                var existing = Users.FirstOrDefault(u => u.Id == model.Id);
+                if (existing != null)
+                {
+                    existing.FirstName = model.FirstName;
+                    existing.LastName = model.LastName;
+                    existing.Email = model.Email;
+                }
+                else
+                {
+                    Users.Add(model);
+                }
+            });
         }
-        private async Task DropDBAsync()
+
+        private void OnTeamCreatedFromServer(TeamModel model)
         {
-            await _healthService.DropDBAsync();
+            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            {
+                if (!Teams.Any(t => t.Id == model.Id))
+                {
+                    Teams.Add(model);
+                }
+            });
         }
+
+        private void OnTeamUpdatedFromServer(TeamModel model)
+        {
+            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            {
+                var existing = Teams.FirstOrDefault(t => t.Id == model.Id);
+                if (existing != null)
+                {
+                    existing.Title = model.Title;
+                }
+                else
+                {
+                    Teams.Add(model);
+                }
+            });
+        }
+
+        private void OnLabelCreatedFromServer(LabelModel model)
+        {
+            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            {
+                if (!Labels.Any(l => l.Id == model.Id))
+                {
+                    Labels.Add(model);
+                }
+            });
+        }
+
+        private void OnLabelUpdatedFromServer(LabelModel model)
+        {
+            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            {
+                var existing = Labels.FirstOrDefault(l => l.Id == model.Id);
+                if (existing != null)
+                {
+                    existing.Name = model.Name;
+                    existing.Color = model.Color;
+                }
+                else
+                {
+                    Labels.Add(model);
+                }
+            });
+        }
+
         public async Task InitializeAsync()
         {
             if (!IsInitialized)
             {
-                await LoadData();
+                await LoadDataAsync();
                 IsInitialized = true;
             }
         }
-
-        private async Task LoadData()
+        private async Task LoadDataAsync()
         {
-            var users = await _userService.GetUsersAsync();
-            var teams = await _teamService.GetTeamsAsync();
-            var labels = await _labelService.GetLabelsAsync();
-
-            foreach (var user in users ?? new())
-            {
-                Users.Add(user);
+            try {
+                await _signalRService.StopAsync();
+                await _signalRService.StartAsync();
+                Users = new ObservableCollection<UserModel>(await _userService.GetUsersAsync());
+                Teams = new ObservableCollection<TeamModel>(await _teamService.GetTeamsAsync());
+                Labels = new ObservableCollection<LabelModel>(await _labelService.GetLabelsAsync());
             }
-            foreach (var team in teams ?? new())
+            catch
             {
-                Teams.Add(team);
-            }
-            foreach (var label in labels ?? new())
-            {
-                Labels.Add(label);
+                Message = "Не удалось загрузить таблицы";
             }
         }
 
+        // ========== ПОЛЬЗОВАТЕЛИ ==========
+        private async Task AddUserAsync()
+        {
+            try { 
+                var newUser = new UserModel { FirstName = "Новый", LastName = "Пользователь", Email = "user@example.com" };
+                var created = await _userService.CreateUserAsync(newUser);
+            }
+            catch
+            {
+                Message = "Не удалось добавить пользователя";
+            }
+        }
 
+        private async Task DeleteUserAsync()
+        {
+            try
+            {
+                if (SelectedUser == null) return;
+                await _userService.DeleteUserAsync(SelectedUser.Id);
+                Users.Remove(SelectedUser);
+                SelectedUser = Users.FirstOrDefault();
+            }
+            catch
+            {
+                Message = "Не удалось удалить пользователя";
+            }
+        }
+
+        private async Task SaveAllUsersAsync()
+        {
+            try { 
+            foreach (var user in Users)
+                await _userService.UpdateUserAsync(user);
+            }
+            catch
+            {
+                Message = "Не удалось обновить пользователя";
+            }
+        }
+
+        // ========== КОМАНДЫ ==========
+        private async Task AddTeamAsync()
+        {
+            try
+            {
+                var newTeam = new TeamModel { Title = "Новая команда" };
+                var created = await _teamService.CreateTeamAsync(newTeam);
+            }
+            catch
+            {
+                Message = "Не удалось создать команду";
+            }
+        }
+
+        private async Task DeleteTeamAsync()
+        {
+            try
+            {
+                if (SelectedTeam == null) return;
+                await _teamService.DeleteTeamAsync(SelectedTeam.Id);
+                Teams.Remove(SelectedTeam);
+                SelectedTeam = Teams.FirstOrDefault();
+            }
+            catch
+            {
+                Message = "Не удалось удалить команду";
+            }
+        }
+
+        private async Task SaveAllTeamsAsync()
+        {
+            try
+            {
+                foreach (var team in Teams)
+                    await _teamService.UpdateTeamAsync(team);
+            }
+            catch
+            {
+                Message = "Не удалось обновить команду";
+            }
+        }
+
+        // ========== ТЕГИ ==========
+        private async Task AddLabelAsync()
+        {
+            try { 
+                var newLabel = new LabelModel { Name = "Новый тег", Color = "#CCCCCC" };
+                var created = await _labelService.CreateLabelAsync(newLabel);
+            }
+            catch
+            {
+                Message = "Не удалось добавить тэг";
+            }
+        }
+
+        private async Task DeleteLabelAsync()
+        {
+            try {
+                if (SelectedLabel == null) return;
+                await _labelService.DeleteLabelAsync(SelectedLabel.Id);
+                Labels.Remove(SelectedLabel);
+                SelectedLabel = Labels.FirstOrDefault();
+            }
+            catch
+            {
+                Message = "Не удалось удалить тэг";
+            }
+        }
+
+        private async Task SaveAllLabelsAsync()
+        {
+            try 
+            { 
+                foreach (var label in Labels)
+                    await _labelService.UpdateLabelAsync(label);
+            }
+            catch
+            {
+                Message = "Не удалось обновить тэг";
+            }
+        }
+
+        // ========== НАВИГАЦИЯ ==========
+        private async Task NavigateToColumnAsync() => await _navigationService.NavigateToColumnAsync();
+        private async Task DropDatabaseAsync() { /* логика удаления БД */ }
     }
 }

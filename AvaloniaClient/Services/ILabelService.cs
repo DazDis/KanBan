@@ -8,6 +8,7 @@ namespace AvaloniaClient.Services
     {
         Task<List<LabelModel>> GetLabelsAsync();
         Task<LabelModel?> CreateLabelAsync(LabelModel dto);
+        Task UpdateLabelAsync(LabelModel dto);
         Task DeleteLabelAsync(int id);
     }
 }

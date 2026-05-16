@@ -21,6 +21,10 @@ public class LabelService : ILabelService
     {
         return await _apiClient.PostAsync<LabelModel>("api/label", dto);
     }
+    public async Task UpdateLabelAsync(LabelModel dto)
+    {
+        await _apiClient.PutAsync("api/label", dto);
+    }
 
     public async Task DeleteLabelAsync(int id)
     {

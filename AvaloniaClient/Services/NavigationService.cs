@@ -19,19 +19,19 @@ public sealed class NavigationService
 
     public async Task NavigateToColumnAsync()
     {
-        var columnViewModel = _routableViewModelsFactory.CreateColumnViewModel(this, _screen);
+        var columnViewModel = _routableViewModelsFactory.CreateColumnViewModel();
         await columnViewModel.InitializeAsync();
         await _screen.Router.Navigate.Execute(columnViewModel);
     }
     public async Task NavigateToErrorAsync()
     {
-        var errorViewModel = _routableViewModelsFactory.CreateErrorViewModel(this, _screen);
+        var errorViewModel = _routableViewModelsFactory.CreateErrorViewModel();
         await errorViewModel.InitializeAsync();
         await _screen.Router.Navigate.Execute(errorViewModel);
     }
     public async Task NavigateToSettingsAsync()
     {
-        var settingsViewModel = _routableViewModelsFactory.CreateSettingsViewModel(this, _screen);
+        var settingsViewModel = _routableViewModelsFactory.CreateSettingsViewModel();
         await settingsViewModel.InitializeAsync();
         await _screen.Router.Navigate.Execute(settingsViewModel);
     }

@@ -8,6 +8,7 @@ namespace AvaloniaClient.Services
     {
         Task<List<UserModel>> GetUsersAsync();
         Task<UserModel?> CreateUserAsync(UserModel dto);
+        Task UpdateUserAsync(UserModel dto);
         Task DeleteUserAsync(int id);
     }
 }

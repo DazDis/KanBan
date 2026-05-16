@@ -21,7 +21,10 @@ public class UserService : IUserService
     {
         return await _apiClient.PostAsync<UserModel>("api/user", dto);
     }
-
+    public async Task UpdateUserAsync(UserModel dto)
+    {
+        await _apiClient.PutAsync("api/user", dto);
+    }
     public async Task DeleteUserAsync(int id)
     {
         await _apiClient.DeleteAsync($"api/user/{id}");

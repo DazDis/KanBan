@@ -23,6 +23,7 @@ public class TeamRepository(ApplicationDbContextFactory contextFactory)
         {
             Id = x.Id,
             Title = x.Title,
+            
         }).ToList();
 
     }
@@ -41,7 +42,23 @@ public class TeamRepository(ApplicationDbContextFactory contextFactory)
         await context.SaveChangesAsync();
         team.Id = entity.Id;
     }
-    
+    public async Task<TeamDTO> UpdateTeamAsync(TeamDTO team)
+    {
+        using var context = _contextFactory.CreateApplicationContext();
+
+        var entity = await context.Teams
+            .FirstOrDefaultAsync(t => t.Id == team.Id);
+
+        if (entity == null)
+            throw new Exception($"Team with id {team.Id} not found");
+
+        // Обновляем поля
+        entity.Title = team.Title;
+
+        await context.SaveChangesAsync();
+
+        return team;
+    }
     public async Task DeleteTeamAsync(TeamDTO team)
     {
         using var context = _contextFactory.CreateApplicationContext();

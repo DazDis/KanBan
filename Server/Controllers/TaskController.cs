@@ -37,7 +37,7 @@ namespace Server.Controllers
         {
             await _taskRepository.UpdateTaskAsync(task);
             await _hubContext.Clients.All.SendAsync("TaskUpdated", task);
-            return NoContent();
+            return Ok();
         }
         [HttpDelete("{id}")]
         public async Task<IActionResult> DeleteTask(int id)

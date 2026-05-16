@@ -21,7 +21,11 @@ public class TeamService : ITeamService
     {
         return await _apiClient.PostAsync<TeamModel>("api/team", dto);
     }
-
+    public async Task UpdateTeamAsync(TeamModel dto)
+    {
+        await _apiClient.PutAsync("api/team", dto);
+    }
+    
     public async Task DeleteTeamAsync(int id)
     {
         await _apiClient.DeleteAsync($"api/team/{id}");
