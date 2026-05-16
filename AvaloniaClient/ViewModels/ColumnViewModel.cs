@@ -134,6 +134,9 @@ namespace AvaloniaClient.ViewModels
                     existing.Title = task.Title;
                     existing.Description = task.Description;
                     existing.ColumnId = task.ColumnId;
+                    existing.Deadline = task.Deadline;
+                    existing.Color = task.Color;
+                    existing.Position = task.Position;
                 }
             });
         }
@@ -400,16 +403,15 @@ namespace AvaloniaClient.ViewModels
         public void ReorderTaskInColumn(int columnId, int oldPosition, int newPosition)
         {
             var column = Columns.First(c => c.Id == columnId);
-            var tasks = column.Tasks.OrderBy(t => t.Position).ToList();
 
-            var task = tasks[oldPosition];
-            tasks.RemoveAt(oldPosition);
-            tasks.Insert(newPosition, task);
+            var task = column.Tasks[oldPosition];
+            column.Tasks.RemoveAt(oldPosition);
+            column.Tasks.Insert(newPosition, task);
 
-            for (int i = 0; i < tasks.Count; i++)
+            for (int i = 0; i < column.Tasks.Count; i++)
             {
-                tasks[i].Position = i;
-                _taskService.UpdateTaskAsync(tasks[i]); 
+                column.Tasks[i].Position = i;
+                _taskService.UpdateTaskAsync(column.Tasks[i]); 
             }
         }
         public async Task MoveTaskToColumnAsync(TaskModel task, int newColumnId, int newPosition)

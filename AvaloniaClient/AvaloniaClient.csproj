@@ -32,6 +32,8 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="10.0.5" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.5" />
     <PackageReference Include="Tmds.DBus.Protocol" Version="0.92.0" />
+	  <PackageReference Include="Avalonia.Xaml.Behaviors" Version="11.3.0.6" />
+	  <PackageReference Include="Avalonia.Xaml.Interactions.DragAndDrop" Version="11.3.0.6" />
   </ItemGroup>
 
   <ItemGroup>
