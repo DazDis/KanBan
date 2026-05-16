@@ -45,6 +45,7 @@ namespace Server.Controllers
         public async Task<IActionResult> DeleteColumn(int id)
         {
             await _columnRepository.DeleteColumnAsync(id);
+            await _hubContext.Clients.All.SendAsync("ColumnDeleted", id);
             return NoContent();
         }
     }

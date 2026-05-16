@@ -114,10 +114,43 @@ namespace AvaloniaClient.ViewModels
 
             _signalRService.LabelUpdated += OnLabelUpdatedFromServer;
             _signalRService.LabelCreated += OnLabelCreatedFromServer;
+            _signalRService.LabelDeleted += OnLabelDeletedFromServer;
             _signalRService.TeamUpdated += OnTeamUpdatedFromServer;
             _signalRService.TeamCreated += OnTeamCreatedFromServer;
+            _signalRService.TeamDeleted += OnTeamDeletedFromServer;
             _signalRService.UserUpdated += OnUserUpdatedFromServer;
             _signalRService.UserCreated += OnUserCreatedFromServer;
+            _signalRService.UserDeleted += OnUserDeletedFromServer;
+        }
+
+        private void OnUserDeletedFromServer(int id)
+        {
+            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            {
+                var existing = Users.FirstOrDefault(u => u.Id == id);
+                if (existing != null)
+                    Users.Remove(existing);
+            });
+        }
+
+        private void OnTeamDeletedFromServer(int id)
+        {
+            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            {
+                var existing = Teams.FirstOrDefault(u => u.Id == id);
+                if (existing != null)
+                    Teams.Remove(existing);
+            });
+        }
+
+        private void OnLabelDeletedFromServer(int id)
+        {
+            Avalonia.Threading.Dispatcher.UIThread.Post(() =>
+            {
+                var existing = Labels.FirstOrDefault(u => u.Id == id);
+                if (existing != null)
+                    Labels.Remove(existing);
+            });
         }
 
         private void OnUserCreatedFromServer(UserModel model)

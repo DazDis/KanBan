@@ -59,8 +59,10 @@ namespace AvaloniaClient.ViewModels
             // Подписываемся на реальные обновления
             _signalRService.TaskUpdated += OnTaskUpdatedFromServer;
             _signalRService.TaskCreated += OnTaskCreatedFromServer;
+            _signalRService.TaskDeleted += OnTaskDeletedFromServer;
             _signalRService.ColumnUpdated += OnColumnUpdatedFromServer;
             _signalRService.ColumnCreated += OnColumnCreatedFromServer;
+            _signalRService.ColumnDeleted += OnColumnDeletedFromServer;
 
             NavigateToSettingsCommand = ReactiveCommand.Create(NavigateToSettingsAsync);
             OpenAddColumnDialogCommand = ReactiveCommand.Create(OpenAddColumnDialog);
@@ -142,13 +144,26 @@ namespace AvaloniaClient.ViewModels
         }
         private async void OnTaskCreatedFromServer(TaskModel task)
         {
-            // Обновляем локальный список
             await Dispatcher.UIThread.InvokeAsync(() =>
             {
                 Columns[task.ColumnId - 1].Tasks.Add(task);
             });
         }
-
+        private async void OnTaskDeletedFromServer(int id)
+        {
+            // Обновляем локальный список
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                foreach (var column in Columns ?? new())
+                {
+                    var existing = column.Tasks.FirstOrDefault(t => t.Id == column.Id);
+                    if (existing != null)
+                    {
+                        existing.Title = column.Title;
+                    }
+                }
+            });
+        }
 
         private async void OnColumnUpdatedFromServer(ColumnModel column)
         {
@@ -170,7 +185,16 @@ namespace AvaloniaClient.ViewModels
                 Columns.Add(column);
             });
         }
-
+        private async void OnColumnDeletedFromServer(int id)
+        {
+            // Обновляем локальный список
+            await Dispatcher.UIThread.InvokeAsync(() =>
+            {
+                var existing = Columns.FirstOrDefault(u => u.Id == id);
+                if (existing != null)
+                    Columns.Remove(existing);
+            });
+        }
         public string GetTimeLeft(TaskModel task)
         {
             if (!task.Deadline.HasValue)

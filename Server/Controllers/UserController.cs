@@ -45,6 +45,7 @@ namespace Server.Controllers
         public async Task<IActionResult> DeleteUser(int id)
         {
             await _userRepository.DeleteUserAsync(id);
+            await _hubContext.Clients.All.SendAsync("UserDeleted", id);
             return NoContent();
         }
     }

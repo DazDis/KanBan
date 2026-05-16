@@ -45,6 +45,7 @@ namespace Server.Controllers
         public async Task<IActionResult> DeleteLabel(int id)
         {
             await _labelRepository.DeleteLabelAsync(id);
+            await _hubContext.Clients.All.SendAsync("LabelDeleted", id);
             return NoContent();
         }
     }

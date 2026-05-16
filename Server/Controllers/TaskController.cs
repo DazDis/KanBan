@@ -43,6 +43,7 @@ namespace Server.Controllers
         public async Task<IActionResult> DeleteTask(int id)
         {
             await _taskRepository.DeleteTaskAsync(id);
+            await _hubContext.Clients.All.SendAsync("TaskDeleted", id);
             return NoContent();
         }
     }

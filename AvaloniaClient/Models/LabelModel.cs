@@ -1,12 +1,29 @@
-﻿using System.Collections.ObjectModel;
+﻿using ReactiveUI;
 
 namespace AvaloniaClient.DataBase
 {
-    public class LabelModel
+    public class LabelModel : ReactiveObject
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Color { get; set; }
+        private int _id;
+        private string _name;
+        private string _color;
 
+        public int Id
+        {
+            get => _id;
+            set => this.RaiseAndSetIfChanged(ref _id, value);
+        }
+
+        public string Name
+        {
+            get => _name;
+            set => this.RaiseAndSetIfChanged(ref _name, value);
+        }
+
+        public string Color
+        {
+            get => _color;
+            set => this.RaiseAndSetIfChanged(ref _color, value);
+        }
     }
 }

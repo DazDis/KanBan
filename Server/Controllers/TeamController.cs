@@ -45,6 +45,7 @@ namespace Server.Controllers
         public async Task<IActionResult> DeleteTeam(int id)
         {
             await _teamRepository.DeleteTeamAsync(id);
+            await _hubContext.Clients.All.SendAsync("TeamDeleted", id);
             return NoContent();
         }
     }

@@ -13,14 +13,24 @@ public class SignalRService
 
     public event Action<TaskModel>? TaskUpdated;
     public event Action<TaskModel>? TaskCreated;
+    public event Action<int>? TaskDeleted;
+
     public event Action<ColumnModel>? ColumnUpdated;
     public event Action<ColumnModel>? ColumnCreated;
+    public event Action<int>? ColumnDeleted;
+
     public event Action<LabelModel>? LabelUpdated;
     public event Action<LabelModel>? LabelCreated;
+    public event Action<int>? LabelDeleted;
+
     public event Action<UserModel>? UserUpdated;
     public event Action<UserModel>? UserCreated;
+    public event Action<int>? UserDeleted;
+
     public event Action<TeamModel>? TeamUpdated;
     public event Action<TeamModel>? TeamCreated;
+    public event Action<int>? TeamDeleted;
+
     public SignalRService(IConfigurationService configService)
     {
         _configService = configService;
@@ -44,6 +54,11 @@ public class SignalRService
             TaskCreated?.Invoke(task);
         });
 
+        _hubConnection.On<int>("TaskDeleted", id =>
+        {
+            TaskDeleted?.Invoke(id);
+        });
+
         _hubConnection.On<ColumnModel>("ColumnCreated", column =>
         {
             ColumnCreated?.Invoke(column);
@@ -52,6 +67,11 @@ public class SignalRService
         _hubConnection.On<ColumnModel>("ColumnUpdated", column =>
         {
             ColumnUpdated?.Invoke(column);
+        });
+
+        _hubConnection.On<int>("ColumnDeleted", id =>
+        {
+            ColumnDeleted?.Invoke(id);
         });
 
         _hubConnection.On<LabelModel>("LabelCreated", label =>
@@ -64,6 +84,11 @@ public class SignalRService
             LabelUpdated?.Invoke(label);
         });
 
+        _hubConnection.On<int>("LabelDeleted", id =>
+        {
+            LabelDeleted?.Invoke(id);
+        });
+
         _hubConnection.On<UserModel>("UserCreated", user =>
         {
             UserCreated?.Invoke(user);
@@ -74,6 +99,11 @@ public class SignalRService
             UserUpdated?.Invoke(user);
         });
 
+        _hubConnection.On<int>("UserDeleted", id =>
+        {
+            UserDeleted?.Invoke(id);
+        });
+
         _hubConnection.On<TeamModel>("TeamCreated", team =>
         {
             TeamCreated?.Invoke(team);
@@ -82,6 +112,11 @@ public class SignalRService
         _hubConnection.On<TeamModel>("TeamUpdated", team =>
         {
             TeamUpdated?.Invoke(team);
+        });
+
+        _hubConnection.On<int>("TeamDeleted", id =>
+        {
+            TeamDeleted?.Invoke(id);
         });
         await _hubConnection.StartAsync();
     }

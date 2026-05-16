@@ -1,14 +1,38 @@
-﻿using System.Collections.Generic;
+﻿using ReactiveUI;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace AvaloniaClient.DataBase
 {
-    public class TeamModel
+    public class TeamModel : ReactiveObject
     {
-        public int Id { get; set; }
-        public string Title { get; set; }
-        public List<int> UserIds { get; set; } = new();
-        public ObservableCollection<UserModel?>? Users { get; set; } = new();
+        private int _id;
+        private string _title;
+        private List<int> _userIds = new();
+        private ObservableCollection<UserModel?> _users = new();
 
+        public int Id
+        {
+            get => _id;
+            set => this.RaiseAndSetIfChanged(ref _id, value);
+        }
+
+        public string Title
+        {
+            get => _title;
+            set => this.RaiseAndSetIfChanged(ref _title, value);
+        }
+
+        public List<int> UserIds
+        {
+            get => _userIds;
+            set => this.RaiseAndSetIfChanged(ref _userIds, value);
+        }
+
+        public ObservableCollection<UserModel?> Users
+        {
+            get => _users;
+            set => this.RaiseAndSetIfChanged(ref _users, value);
+        }
     }
 }
