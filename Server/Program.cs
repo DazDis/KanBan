@@ -52,8 +52,8 @@ builder.Services.AddSignalR();
 {
     app.MapOpenApi();
 }*/
-var ip = "26.151.79.11";  
-var port = 5015;
+var ip = configuration.GetValue<string>("DbIp");
+var port = configuration.GetValue<int>("DbPort");
 
 builder.WebHost.ConfigureKestrel(options =>
 {

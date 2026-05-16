@@ -11,30 +11,51 @@
                     VerticalAlignment="Center" 
                     Spacing="20">
             
+            <Grid Height="48" Width="48">
             <TextBlock Text="⚠️" 
                        FontSize="48" 
-                       HorizontalAlignment="Center"/>
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       IsVisible="{Binding !IsServerAvailable}"/>
+            
+            <ProgressBar IsIndeterminate="True"
+                         Width="30" Height="30"
+                         IsVisible="{Binding IsServerAvailable}"
+                         VerticalAlignment="Center"
+                         HorizontalAlignment="Center"/>
+        </Grid>
+
             <TextBlock Text="{Binding StatusMessage}" 
                        FontSize="16" 
                        Foreground="Black"
-                       HorizontalAlignment="Center"/>
+                       HorizontalAlignment="Center"
+                       TextWrapping="Wrap"
+                       MaxWidth="400"
+                       TextAlignment="Center"/>
+
             <Border Background="White" 
+                    IsVisible="{Binding !IsServerAvailable}"
                     CornerRadius="8" 
                     Padding="10"
-                    Margin="0,10,0,0">
+                    Margin="0,10,0,0"
+                    MaxWidth="400">
                 <StackPanel Spacing="8">
-                    <TextBlock Text="Адрес сервера:" 
-                               FontSize="12" 
-                               Foreground="Gray"/>
+                    <TextBlock Text="Попробуйте сменить адрес сервера:" 
+                                FontSize="12" 
+                                Foreground="Gray"/>
                     <TextBox Text="{Binding ServerUrl, Mode=TwoWay}"
-                             Watermark="{Binding ServerUrl}"
-                             FontSize="13"/>
+                                Watermark="{Binding ServerUrl}"
+                                FontSize="13"
+                                MinWidth="250"/>
                 </StackPanel>
             </Border>
+
             <Button Content="Повторить подключение" 
+                    IsVisible="{Binding !IsServerAvailable}"
                     Command="{Binding RetryCommand}"
                     HorizontalAlignment="Center"
-                    Padding="20,10"/>
+                    Padding="20,10"
+                    MinWidth="200"/>
             
         </StackPanel>
     </Grid>
