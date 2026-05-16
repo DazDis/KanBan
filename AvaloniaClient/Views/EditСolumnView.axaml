@@ -6,6 +6,64 @@
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="AvaloniaClient.EditСolumnView"
 			 x:DataType="vm:EditColumnViewModel">
-       
-    
+      
+
+  <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+            
+            <Border Width="320"
+                    Padding="20"
+                    CornerRadius="20"
+                    Background="#F2F2F2">
+
+    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+        
+        <Border Width="320"
+                Padding="20"
+                CornerRadius="20"
+                Background="#F2F2F2">
+
+            <StackPanel Spacing="12">
+                <Grid>
+                    <TextBlock Text="Editing"
+                               FontSize="20"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"/>
+               <Button Content="✕"
+                            HorizontalAlignment="Right"
+                            Width="28" Height="28"
+                            Background="Transparent"
+                            BorderThickness="0"
+                            FontSize="14"
+                            Command="{Binding CancelCommand}"/>
+
+                </Grid>
+
+                <TextBox Watermark="Title..." Text="{Binding Title}"/>
+
+                 <Grid>
+                <Button Content="Confirm"
+                        HorizontalAlignment="Center"
+                        Padding="12,6"
+                        Background="#E6E6FA"
+                        Foreground="#6C7BFF"
+                        CornerRadius="10"
+						Command="{Binding SaveCommand}"
+						x:Name="SaveButton"/>
+
+                 <Button Content="Delete"
+                        HorizontalAlignment="Right"
+                        Padding="12,6"
+                        Background="#ffffff"
+                        Foreground="#C51D34"
+                        CornerRadius="10"
+						Command="{Binding DeleteCommand}"
+						x:Name="DeleteButton"/>
+                 </Grid>
+                
+            </StackPanel>
+
+        </Border>
+    </Grid>
+                 </Border>
+        </Grid>
 </UserControl>

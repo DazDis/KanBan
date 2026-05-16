@@ -20,7 +20,7 @@
     <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#f3f4f6">
         
         <ScrollViewer HorizontalScrollBarVisibility="Auto">
-            <StackPanel Orientation="Horizontal" Margin="20,80,0,0">
+            <StackPanel Orientation="Horizontal" Margin="20,20,0,0">
                 <Grid>
                     <!-- кнопка + -->
                     <Button Content="＋"
@@ -74,9 +74,26 @@
                                             <ColumnDefinition Width="Auto"/>
                                         </Grid.ColumnDefinitions>
 
-                                        <TextBlock Text="{Binding Title}"
+                                        <!--<TextBlock Text="{Binding Title}"
                                                    FontSize="18"
-                                                   FontWeight="SemiBold"/>
+                                                   FontWeight="SemiBold"/>-->
+
+
+                                        <Button Grid.Column="0"
+                                                Background="Transparent"
+                                                BorderThickness="0"
+                                                Padding="0"
+                                                HorizontalAlignment="Left"
+                                                Command="{Binding $parent[UserControl].DataContext.EditColumnCommand}"
+                                                CommandParameter="{Binding}">
+    
+                                            <TextBlock Text="{Binding Title}"
+                                                       FontSize="18"
+                                                       FontWeight="SemiBold"/>
+                                        </Button>
+
+
+
 
                                         <!-- СЧЁТЧИК -->
                                         <TextBlock Grid.Column="1"
@@ -174,7 +191,6 @@
             </StackPanel>
         </ScrollViewer>
 
-        <!-- Диалог добавления колонки -->
         <Border Background="#80000000"
                 IsVisible="{Binding IsAddColumnOpen}">
             <views:AddColumnView
@@ -201,5 +217,12 @@
                 VerticalAlignment="Center"/>
         </Border>
 
+        <Border Background="#80000000"
+                IsVisible="{Binding IsEditColumnOpen}">
+            <views:EditСolumnView
+                DataContext="{Binding EditColumn}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"/>
+        </Border>
     </Grid>
 </UserControl>

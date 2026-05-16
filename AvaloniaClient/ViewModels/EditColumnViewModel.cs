@@ -17,7 +17,7 @@ namespace AvaloniaClient.ViewModels
             set => this.RaiseAndSetIfChanged(ref _title, value);
         }
 
-        public ReactiveCommand<Unit, ColumnDTO?> SaveCommand { get; }
+        public ReactiveCommand<Unit, ColumnModel?> SaveCommand { get; }
         public ReactiveCommand<Unit, int> DeleteCommand { get; }
         public ReactiveCommand<Unit, Unit> CancelCommand { get; }
 
@@ -31,11 +31,12 @@ namespace AvaloniaClient.ViewModels
             {
                 try
                 {
-                    return new ColumnDTO
-                    {
-                        Id = _column.Id,
-                        Title = Title
-                    };
+                    return _column;
+                    //return new ColumnDTO
+                    //{
+                    //    Id = _column.Id,
+                    //    Title = Title
+                    //};
                 }
                 catch (Exception ex)
                 {
