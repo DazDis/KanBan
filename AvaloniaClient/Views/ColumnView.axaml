@@ -5,8 +5,8 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:i="using:Avalonia.Xaml.Interactivity"
-xmlns:dd="using:Avalonia.Xaml.Interactions.DragAndDrop"
-xmlns:local="using:AvaloniaClient.Services"
+             xmlns:dd="using:Avalonia.Xaml.Interactions.DragAndDrop"
+             xmlns:local="using:AvaloniaClient.Services"
              xmlns:conv="AvaloniaClient.Converters"
              xmlns:converters="using:AvaloniaClient.Converters"
              mc:Ignorable="d" d:DesignWidth="1200" d:DesignHeight="900"
@@ -14,220 +14,192 @@ xmlns:local="using:AvaloniaClient.Services"
              x:DataType="vm:ColumnViewModel">
 
     <UserControl.Resources>
-    <local:TaskDropHandler x:Key="TaskDropHandler" />
-</UserControl.Resources>
-     
-    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch"  Background="#f3f4f6" >
+        <local:TaskDropHandler x:Key="TaskDropHandler" />
+    </UserControl.Resources>
+
+    <Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Background="#f3f4f6">
         
         <ScrollViewer HorizontalScrollBarVisibility="Auto">
-            
-            <StackPanel Orientation="Horizontal" Margin="20">
+            <StackPanel Orientation="Horizontal" Margin="20,80,0,0">
+                <Grid>
+                    <!-- кнопка + -->
+                    <Button Content="＋"
+                            VerticalContentAlignment="Center"
+                            HorizontalContentAlignment="Center"
+                            Width="50" Height="50"
+                            FontSize="20"
+                            Background="#e5e7eb"
+                            CornerRadius="12"
+                            Command="{Binding OpenAddColumnDialogCommand}"
+                            Margin="0,0,20,750"/>
 
-                <!-- кнопка +  -->
-                <Button Content="＋"
-                        VerticalContentAlignment="Center"
-                        HorizontalContentAlignment="Center"
-                        Width="50" Height="50"
-                        FontSize="20"
-                        Background="#e5e7eb"
-                        CornerRadius="12"
-                        Command="{Binding OpenAddColumnDialogCommand}"
-                        Margin="0,0,20,0"/>
+                    <!-- кнопка настроек -->
+                    <Button Width="50"
+                            Height="50"
+                            VerticalAlignment="Top"
+                            HorizontalAlignment="Center"
+                            Margin="0,0,20,0"
+                            Background="#e5e7eb"
+                            CornerRadius="12"
+                            Command="{Binding NavigateToSettingsCommand}">
+                        <Image Source="/Assets/application-settings.png"/>
+                    </Button>
+                </Grid>
 
                 <!-- СПИСОК КОЛОНОК -->
                 <ItemsControl ItemsSource="{Binding Columns}">
-                    
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Horizontal"/>
                         </ItemsPanelTemplate>
                     </ItemsControl.ItemsPanel>
 
-					<ItemsControl.ItemTemplate>
-						<DataTemplate>
-
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
                             <!-- КОЛОНКА -->
                             <Border Width="280"
                                     Margin="0,0,20,0"
                                     Background="#ffffff"
                                     CornerRadius="16"
                                     Padding="15">
-                                        <i:Interaction.Behaviors>
-                                            <dd:ContextDropBehavior Handler="{StaticResource TaskDropHandler}" />
-                                        </i:Interaction.Behaviors>
+                                <i:Interaction.Behaviors>
+                                    <dd:ContextDropBehavior Handler="{StaticResource TaskDropHandler}" />
+                                </i:Interaction.Behaviors>
+
                                 <StackPanel>
+                                    <!-- ЗАГОЛОВОК -->
+                                    <Grid Margin="0,0,0,10">
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
 
-									<!-- ЗАГОЛОВОК -->
-									<Grid Margin="0,0,0,10">
-										<Grid.ColumnDefinitions>
-											<ColumnDefinition/>
-											<ColumnDefinition Width="Auto"/>
-										</Grid.ColumnDefinitions>
+                                        <TextBlock Text="{Binding Title}"
+                                                   FontSize="18"
+                                                   FontWeight="SemiBold"/>
 
-										<TextBlock Text="{Binding Title}"
-												   FontSize="18"
-												   FontWeight="SemiBold"/>
+                                        <!-- СЧЁТЧИК -->
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding Tasks.Count}"
+                                                   Foreground="#9ca3af"
+                                                   FontSize="16"/>
+                                    </Grid>
 
-										<!-- СЧЁТЧИК -->
-										<TextBlock Grid.Column="1"
-												   Text="{Binding Tasks.Count}"
-												   Foreground="#9ca3af"
-												   FontSize="16"/>
-									</Grid>
-
-									<!-- КНОПКА ДОБАВИТЬ ЗАДАЧУ -->
-									<Button Content="+ Добавить"
-											Command="{Binding $parent[UserControl].DataContext.OpenAddTaskDialogCommand}"
-											CommandParameter="{Binding Id}"
-											Margin="0,0,0,10"
-											Background="#f3f4f6"
-											CornerRadius="8"/>
+                                    <!-- КНОПКА ДОБАВИТЬ ЗАДАЧУ -->
+                                    <Button Content="+ Добавить"
+                                            Command="{Binding $parent[UserControl].DataContext.OpenAddTaskDialogCommand}"
+                                            CommandParameter="{Binding Id}"
+                                            Margin="0,0,0,10"
+                                            Background="#f3f4f6"
+                                            CornerRadius="8"/>
 
                                     <!-- СПИСОК ЗАДАЧ -->
                                     <ItemsControl ItemsSource="{Binding Tasks}">
                                         <ItemsControl.ItemTemplate>
                                             <DataTemplate>
-                                                 <Border DataContext="{Binding}"
-                                               CornerRadius="12"
+                                                <Border CornerRadius="12"
                                                         Padding="12"
                                                         Margin="0,0,0,10"
-                                                  DragDrop.AllowDrop="True">
-                                                     <i:Interaction.Behaviors>
+                                                        DragDrop.AllowDrop="True">
+                                                    <i:Interaction.Behaviors>
                                                         <dd:ContextDropBehavior Handler="{StaticResource TaskDropHandler}" />
                                                     </i:Interaction.Behaviors>
 
-                                                <!-- КАРТОЧКА ЗАДАЧИ -->
-                                                <Border 
-                                              Background="{Binding Color}"
-                                                CornerRadius="12"
-                                                        Padding="12"
-                                                        Margin="0,0,0,10">
+                                                    <!-- КАРТОЧКА ЗАДАЧИ -->
+                                                    <Border Background="{Binding Color}"
+                                                            CornerRadius="12"
+                                                            Padding="12"
+                                                            Margin="0,0,0,10">
+                                                        <i:Interaction.Behaviors>
+                                                            <dd:ContextDragBehavior Context="{Binding}" />
+                                                        </i:Interaction.Behaviors>
 
-                                                    <i:Interaction.Behaviors>
-                                                         <dd:ContextDragBehavior Context="{Binding}" />
-                                                    </i:Interaction.Behaviors>
+                                                        <StackPanel>
+                                                            <!-- Заголовок -->
+                                                            <TextBlock Text="{Binding Title}"
+                                                                       FontWeight="SemiBold"
+                                                                       FontSize="14"/>
 
-                                                    <StackPanel>
+                                                            <!-- Описание -->
+                                                            <TextBlock Text="{Binding Description}"
+                                                                       FontSize="11"
+                                                                       Foreground="#6b7280"
+                                                                       Margin="0,4,0,6"
+                                                                       TextWrapping="Wrap"/>
 
-															<!-- Заголовок -->
-															<TextBlock Text="{Binding Title}"
-																	   FontWeight="SemiBold"
-																	   FontSize="14"/>
+                                                            <Grid>
+                                                                <Grid.ColumnDefinitions>
+                                                                    <ColumnDefinition/>
+                                                                    <ColumnDefinition Width="Auto"/>
+                                                                </Grid.ColumnDefinitions>
 
-															<!-- Описание -->
-															<TextBlock Text="{Binding Description}"
-																	   FontSize="11"
-																	   Foreground="#6b7280"
-																	   Margin="0,4,0,6"
-																	   TextWrapping="Wrap"/>
+                                                                <!-- тег -->
+                                                                <TextBlock Text="tag"
+                                                                           FontSize="10"
+                                                                           Foreground="#374151"/>
 
-															<Grid>
-																<Grid.ColumnDefinitions>
-																	<ColumnDefinition/>
-																	<ColumnDefinition Width="Auto"/>
-																</Grid.ColumnDefinitions>
+                                                                <!-- иконка -->
+                                                                <Border Grid.Column="1"
+                                                                        Width="24"
+                                                                        Height="24"
+                                                                        CornerRadius="12"
+                                                                        Background="#d9f99d"/>
+                                                            </Grid>
 
-																<!-- тег -->
-																<TextBlock Text="tag"
-																		   FontSize="10"
-																		   Foreground="#374151"/>
+                                                            <!-- КНОПКИ -->
+                                                            <StackPanel Orientation="Horizontal"
+                                                                        Margin="0,8,0,0">
+                                                                <Button Content="✎"
+                                                                        Width="30"
+                                                                        Command="{Binding $parent[UserControl].DataContext.EditTaskCommand}"
+                                                                        CommandParameter="{Binding}"/>
 
-																<!-- иконка -->
-																<Border Grid.Column="1"
-																		Width="24"
-																		Height="24"
-																		CornerRadius="12"
-																		Background="#d9f99d"/>
-															</Grid>
+                                                                <Button Content="🗑"
+                                                                        Width="30"
+                                                                        Margin="5,0,0,0"
+                                                                        Command="{Binding $parent[UserControl].DataContext.DeleteTaskCommand}"
+                                                                        CommandParameter="{Binding}"/>
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                    </Border>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+        </ScrollViewer>
 
-															<!-- КНОПКИ -->
-															<StackPanel Orientation="Horizontal"
-																		Margin="0,8,0,0">
-																<Button Content="✎"
-																		Width="30"
-																		Command="{Binding $parent[UserControl].DataContext.EditTaskCommand}"
-																		CommandParameter="{Binding}"/>
+        <!-- Диалог добавления колонки -->
+        <Border Background="#80000000"
+                IsVisible="{Binding IsAddColumnOpen}">
+            <views:AddColumnView
+                DataContext="{Binding AddColumn}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"/>
+        </Border>
 
-																<Button Content="🗑"
-																		Width="30"
-																		Margin="5,0,0,0"
-																		Command="{Binding $parent[UserControl].DataContext.DeleteTaskCommand}"
-																		CommandParameter="{Binding}"/>
-															</StackPanel>
+        <!-- Диалог добавления задачи -->
+        <Border Background="#80000000"
+                IsVisible="{Binding IsAddTaskOpen}">
+            <views:AddTaskView
+                DataContext="{Binding AddTask}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"/>
+        </Border>
 
-														</StackPanel>
-													</Border>
-												</Border>
+        <!-- Диалог редактирования задачи -->
+        <Border Background="#80000000"
+                IsVisible="{Binding IsEditTaskOpen}">
+            <views:EditTaskView
+                DataContext="{Binding EditTask}"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"/>
+        </Border>
 
-											</DataTemplate>
-										</ItemsControl.ItemTemplate>
-
-									</ItemsControl>
-
-								</StackPanel>
-							</Border>
-
-						</DataTemplate>
-					</ItemsControl.ItemTemplate>
-
-				</ItemsControl>
-
-			</StackPanel>
-		</ScrollViewer>
-
-
-
-		
-		<Border Background="#80000000"
-		IsVisible="{Binding IsAddColumnOpen}">
-
-		<views:AddColumnView
-		DataContext="{Binding AddColumn}"
-		HorizontalAlignment="Center"
-		VerticalAlignment="Center"/>
-		</Border>
-
-
-		<Border Background="#80000000"
-		IsVisible="{Binding IsAddTaskOpen}">
-
-		<views:AddTaskView
-		DataContext="{Binding AddTask}"
-		HorizontalAlignment="Center"
-		VerticalAlignment="Center"/>
-		</Border>
-
-		<Border Background="#80000000"
-		IsVisible="{Binding IsEditTaskOpen}">
-
-		<views:EditTaskView
-		DataContext="{Binding EditTask}"
-		HorizontalAlignment="Center"
-		VerticalAlignment="Center"/>
-		</Border>
-
-
-
-		<!--
-		 <Border Background="#80000000"
-		IsVisible="{Binding IsEditTaskOpen}">
-
-
-		<views:EditTaskView
-		DataContext="{Binding EditTask}"
-		HorizontalAlignment="Center"
-		VerticalAlignment="Center"/>
-		</Border>-->
-
-
-		<!-- <Border Background="#80000000"
-		IsVisible="{Binding IsAddTaskOpen}">
-
-		<views:EditСolumnView
-		DataContext="{Binding EditTask}"
-		HorizontalAlignment="Center"
-		VerticalAlignment="Center"/>
-		</Border>-->
-
-	</Grid>
+    </Grid>
 </UserControl>
