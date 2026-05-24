@@ -196,7 +196,7 @@
                                                                 <!--<TextBlock Text="{Binding Labels}"
                                                                            FontSize="10"
                                                                            Foreground="#374151"/>-->
-                                                                <ItemsControl ItemsSource="{Binding Labels}">
+                                                                <!--<ItemsControl ItemsSource="{Binding Labels}">
 
                                                                     <ItemsControl.ItemsPanel>
                                                                         <ItemsPanelTemplate>
@@ -212,7 +212,7 @@
                                                                                     Padding="6,2"
                                                                                     Margin="0,0,4,0">
 
-                                                                                <!-- текущий элемент списка -->
+                                                                                --><!-- текущий элемент списка --><!--
                                                                                 <TextBlock Text="{Binding}"
                                                                                            FontSize="10"
                                                                                            Foreground="#374151"/>
@@ -222,7 +222,36 @@
                                                                         </DataTemplate>
                                                                     </ItemsControl.ItemTemplate>
 
-                                                                </ItemsControl>
+                                                                </ItemsControl>-->
+                                                                <ItemsControl Grid.Column="0"
+                                                                          ItemsSource="{Binding Labels}">
+
+                                                                <ItemsControl.ItemsPanel>
+                                                                    <ItemsPanelTemplate>
+                                                                        <WrapPanel Orientation="Horizontal"/>
+                                                                    </ItemsPanelTemplate>
+                                                                </ItemsControl.ItemsPanel>
+
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate>
+
+                                                                        <Border Background="{Binding Color}"
+                                                                                CornerRadius="8"
+                                                                                Padding="6,2"
+                                                                                Margin="0,0,4,4">
+
+                                                                            <TextBlock Text="{Binding Name}"
+                                                                                       FontSize="10"
+                                                                                       Foreground="White"/>
+
+                                                                        </Border>
+
+
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+
+                                                            </ItemsControl>
+
 
                                                                 <!-- ИКОНКА -->
                                                                 <Border Grid.Column="1"

@@ -154,11 +154,11 @@ namespace AvaloniaClient.ViewModels
 
                     _task.UserIds = SelectedUser != null ? new List<int?> { SelectedUser.Id } : new();
 
-                    _task.LabelIds = SelectedLabel != null ? new List<int?> { SelectedLabel.Id } : new();
+                    _task.LabelIds = Labels.Where(x => x.IsSelected).Select(x => (int?)x.Id).ToList();
 
                     _task.TeamIds = SelectedTeam != null ? new List<int?> { SelectedTeam.Id } : new();
 
-                    _task.Labels = SelectedLabel != null ? new ObservableCollection<string> { SelectedLabel.Name } : new();
+                    _task.Labels = new ObservableCollection<LabelModel>(Labels.Where(x => x.IsSelected));
 
                     return _task;
                 }
@@ -185,7 +185,10 @@ namespace AvaloniaClient.ViewModels
                 Users.Add(user);
 
             foreach (var label in labels ?? new())
+            {
+                label.IsSelected = _task.LabelIds?.Contains(label.Id) == true;
                 Labels.Add(label);
+            }
 
             foreach (var team in teams ?? new())
                 Teams.Add(team);
@@ -202,7 +205,7 @@ namespace AvaloniaClient.ViewModels
             //if (_task.TeamIds?.Count > 0)
             //    SelectedTeam = Teams.FirstOrDefault(x => x.Id == _task.TeamIds[0]);
 
-            SelectedColumnStatus =  Columns.FirstOrDefault(x => x.Id == _task.ColumnId);
+            //SelectedColumnStatus =  Columns.FirstOrDefault(x => x.Id == _task.ColumnId);
         }
     }
 }

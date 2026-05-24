@@ -9,6 +9,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Reactive;
 using System.Threading.Tasks;
+using System.Linq;
 
 
 
@@ -48,7 +49,6 @@ namespace AvaloniaClient.ViewModels
             get => _selectedLabel;
             set => this.RaiseAndSetIfChanged(ref _selectedLabel, value);
         }
-
         private TeamModel? _selectedTeam;
         public TeamModel? SelectedTeam
         {
@@ -150,9 +150,9 @@ namespace AvaloniaClient.ViewModels
                         ColumnId = SelectedColumnStatus?.Id ?? _columnId,
                         Color = SelectedColor.ToString(),
                         UserIds = SelectedUser != null ? new List<int?> { SelectedUser.Id } : new(),
-                        LabelIds = SelectedLabel != null ? new List<int?> { SelectedLabel.Id } : new(),
+                        LabelIds = Labels.Where(x => x.IsSelected).Select(x => (int?)x.Id).ToList(),
                         TeamIds = SelectedTeam != null ? new List<int?> { SelectedTeam.Id } : new(),
-                        Labels = SelectedLabel != null ? new ObservableCollection<string> { SelectedLabel.Name } : new()
+                        Labels = new ObservableCollection<LabelModel>(Labels.Where(x => x.IsSelected))
                     };
                 }
                 catch (Exception ex)

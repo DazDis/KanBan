@@ -32,7 +32,12 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
             Color = x.Color,
             // преобразование сущностей в Id
             LabelIds = x.Labels.Select(l => l?.Id).ToList(),
-            Labels = x.Labels.Select(l => l.Name).ToList(),
+            Labels = x.Labels.Select(l => new LabelDTO
+            {
+                Id = l.Id,
+                Name = l.Name,
+                Color = l.Color
+            }).ToList(),
             UserIds = x.Users.Select(l => l?.UserId).ToList(),
             TeamIds = x.Teams.Select(l => l?.Id).ToList(),
         }).ToList();
