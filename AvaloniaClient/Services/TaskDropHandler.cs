@@ -44,7 +44,7 @@ namespace AvaloniaClient.Services
             {
                 // Бросаем на колонку (пустое место)
                 targetColumn = column;
-                targetIndex = targetColumn.Tasks.Count; // в конец
+                targetIndex = targetColumn.Tasks.Count - 1; // в конец
             }
             else if (sender is ItemsControl itemsControl && itemsControl.DataContext is ColumnModel columnFromSender)
             {
