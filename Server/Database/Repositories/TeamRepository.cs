@@ -17,13 +17,15 @@ public class TeamRepository(ApplicationDbContextFactory contextFactory)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
-        var entities = await context.Teams.ToListAsync(token);
+        var entities = await context.Teams.Include(t => t.Users).ToListAsync(token);
 
         return entities.Select(x => new TeamDTO
         {
             Id = x.Id,
             Title = x.Title,
             Color = x.Color,
+            UserIds = x.Users?.Select(l => (int?)l.UserId).ToList() ?? new List<int?>(),
+
         }).ToList();
 
     }
@@ -48,17 +50,30 @@ public class TeamRepository(ApplicationDbContextFactory contextFactory)
         using var context = _contextFactory.CreateApplicationContext();
 
         var entity = await context.Teams
-            .FirstOrDefaultAsync(t => t.Id == team.Id);
+            .Include(t => t.Users)
+            .FirstOrDefaultAsync(t => t.Id == team.Id, token);
 
         if (entity == null)
             throw new Exception($"Team with id {team.Id} not found");
 
-        // Обновляем поля
         entity.Title = team.Title;
         entity.Color = team.Color;
 
-        await context.SaveChangesAsync(token);
+        entity.Users.Clear();
 
+        if (team.UserIds != null && team.UserIds.Any())
+        {
+            var users = await context.Users
+                .Where(u => team.UserIds.Contains(u.UserId))
+                .ToListAsync(token);
+
+            foreach (var user in users)
+            {
+                entity.Users.Add(user);
+            }
+        }
+
+        await context.SaveChangesAsync(token);
         return team;
     }
     public async Task DeleteTeamAsync(TeamDTO team, CancellationToken token = default)
