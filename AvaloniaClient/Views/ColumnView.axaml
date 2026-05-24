@@ -148,7 +148,9 @@
                                                     <Border Background="{Binding Color}"
                                                             CornerRadius="12"
                                                             Padding="12"
-                                                            Margin="0,0,0,10">
+                                                            Margin="0,0,0,10"
+                                                            BorderBrush="{Binding DeadlineBorderBrush}"
+                                                            BorderThickness="{Binding DeadlineBorderThickness}">
 
                                                         <i:Interaction.Behaviors>
                                                             <dd:ContextDragBehavior Context="{Binding}" />
@@ -214,22 +216,21 @@
 
                                                             </Grid>
 
-                                                            <StackPanel Margin="0,8,0,0"
-            Spacing="2">
+                                                            <StackPanel Spacing="2">
 
-    <!-- дата -->
-    <TextBlock Text="{Binding Deadline,
-                              StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"
-               FontSize="11"
-               Foreground="#6b7280"/>
+                                                                <!-- дата -->
+                                                                <TextBlock Text="{Binding Deadline,
+                                                                                          StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"
+                                                                           FontSize="11"
+                                                                           Foreground="#6b7280"/>
 
-    <!-- таймер -->
-    <TextBlock Text="{Binding TimeLeft}"
-               FontSize="11"
-               FontWeight="SemiBold"
-               Foreground="#ef4444"/>
+                                                                <!-- таймер -->
+                                                                <TextBlock Text="{Binding TimeLeft}"
+                                                                           FontSize="11"
+                                                                           FontWeight="SemiBold"
+                                                                           Foreground="#ef4444"/>
 
-</StackPanel>
+                                                            </StackPanel>
 
                                                             <StackPanel Orientation="Horizontal"
                                                                         Margin="0,8,0,0">

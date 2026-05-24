@@ -3,7 +3,6 @@ using Avalonia.Threading;
 using AvaloniaClient.DataBase;
 using AvaloniaClient.Services;
 using AvaloniaClient.ViewModels;
-using DynamicData;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -144,6 +143,10 @@ namespace AvaloniaClient.ViewModels
                        {
                            task.TimeLeft = GetTimeLeft(task);
                            task.OverDeadline = IsOverDeadline(task);
+
+                           task.RaisePropertyChanged(nameof(TaskModel.DeadlineBorderBrush));
+                           task.RaisePropertyChanged(nameof(TaskModel.DeadlineBorderThickness));
+
                        }
                    }
                });
@@ -197,6 +200,8 @@ namespace AvaloniaClient.ViewModels
                     existing.Description = task.Description;
                     existing.ColumnId = task.ColumnId;
                     existing.Deadline = task.Deadline;
+                    existing.TimeLeft = GetTimeLeft(existing);
+                    existing.OverDeadline = IsOverDeadline(existing);
                     existing.Color = task.Color;
                     existing.Position = task.Position;
                     existing.Labels = task.Labels;
@@ -265,17 +270,39 @@ namespace AvaloniaClient.ViewModels
             var deadline = task.Deadline.Value.Kind == DateTimeKind.Utc ? task.Deadline.Value.ToLocalTime() : task.Deadline.Value;
             var time = deadline - Now;
 
-            if (time.TotalSeconds < 0)
-                return "Просрочено";
+            // годы
+            if (time.TotalDays >= 365)
+            {
+                var years = (int)(time.TotalDays / 365);
+                var months = (int)((time.TotalDays % 365) / 30);
+                return months > 0 ? $"{years} г. {months} мес." : $"{years} г.";
+            }
 
+            // месяцы
+            if (time.TotalDays >= 30)
+            {
+                var months = (int)(time.TotalDays / 30);
+                var days = (int)(time.TotalDays % 30);
+                return days > 0 ? $"{months} мес. {days} д." : $"{months} мес.";
+            }
+
+            // дни
             if (time.TotalDays >= 1)
-                return $"{time.Days} д. {time.Hours} ч.";
+            {
+                return time.Hours > 0 ? $"{time.Days} д. {time.Hours} ч." : $"{time.Days} д.";
+            }
 
+            // часы
             if (time.TotalHours >= 1)
+            {
                 return $"{time.Hours} ч. {time.Minutes} мин.";
+            }
 
+            // минуты
             if (time.TotalMinutes >= 1)
+            {
                 return $"{time.Minutes} мин.";
+            }
 
             return "Меньше минуты";
         }
@@ -286,7 +313,13 @@ namespace AvaloniaClient.ViewModels
             if (!task.Deadline.HasValue)
                 return false;
 
-            return task.Deadline.Value.ToLocalTime() <= Now.AddHours(24);
+            var deadline = task.Deadline.Value;
+
+            if (deadline.Kind == DateTimeKind.Utc)
+                deadline = deadline.ToLocalTime();
+
+            return deadline <= Now.AddHours(24);
+
         }
 
         #region Колонки
