@@ -205,6 +205,7 @@ namespace AvaloniaClient.ViewModels
                     existing.Deadline = task.Deadline;
                     existing.Color = task.Color;
                     existing.Position = task.Position;
+                    existing.Labels = task.Labels;
                 }
             });
         }
@@ -409,7 +410,8 @@ namespace AvaloniaClient.ViewModels
 
         private void OpenEditTaskDialog(TaskModel task)
         {
-            EditTask = new EditTaskViewModel(task, _userService, _labelService, _teamService);
+            var oldColumnId = task.ColumnId;
+            EditTask = new EditTaskViewModel(task, _userService, _labelService, _teamService, _columnService);
             IsEditTaskOpen = true;
 
             EditTask.SaveCommand.Subscribe(async updatedTask =>
@@ -420,6 +422,13 @@ namespace AvaloniaClient.ViewModels
                 try
                 {
                     IsEditTaskOpen = false;
+                    if (oldColumnId != updatedTask.ColumnId)
+                    {
+                        var newColumn = Columns.First(c => c.Id == updatedTask.ColumnId);
+
+                        await MoveTaskToColumnAsync(updatedTask, updatedTask.ColumnId, newColumn.Tasks.Count);
+                    }
+
                     await _taskService.UpdateTaskAsync(updatedTask);
 
                 }

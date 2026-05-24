@@ -1,6 +1,7 @@
 ﻿using ReactiveUI;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 
 namespace AvaloniaClient.DataBase
 {
@@ -15,6 +16,7 @@ namespace AvaloniaClient.DataBase
         private List<int?> _userIds = new();
         private List<int?> _teamIds = new();
         private List<int?> _labelIds = new();
+        private ObservableCollection<string> _labels = new();
         private int _position;
         private string? _timeLeft;
         private bool? _overDeadline;
@@ -71,6 +73,12 @@ namespace AvaloniaClient.DataBase
         {
             get => _labelIds;
             set => this.RaiseAndSetIfChanged(ref _labelIds, value);
+        }
+
+        public ObservableCollection<string> Labels
+        {
+            get => _labels;
+            set => this.RaiseAndSetIfChanged(ref _labels, value);
         }
 
         public int Position

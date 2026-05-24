@@ -15,7 +15,7 @@ public class ColumnService : IColumnService
 
     public async Task<List<ColumnDTO>> GetColumnsAsync(CancellationToken token = default)
     {
-        return await _apiClient.GetAsync<List<ColumnDTO>>("api/column") ?? new List<ColumnDTO>();
+        return await _apiClient.GetAsync<List<ColumnModel>>("api/column") ?? new List<ColumnModel>();
     }
 
     public async Task<ColumnDTO?> CreateColumnAsync(ColumnDTO dto, CancellationToken token = default)

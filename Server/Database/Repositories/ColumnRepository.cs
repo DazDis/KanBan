@@ -20,7 +20,12 @@ public class ColumnRepository(ApplicationDbContextFactory contextFactory)
 
         var entities = await context.Columns.ToListAsync(token);
 
-        return entities;
+        return entities.Select(x => new ColumnDTO
+        {
+            Id = x.Id,
+            Title = x.Title,
+            Position = x.Position,
+        }).ToList();
 
     }
 
