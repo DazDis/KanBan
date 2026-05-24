@@ -1,5 +1,7 @@
 ﻿using AvaloniaClient.DataBase;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 namespace AvaloniaClient.Services;
@@ -13,9 +15,20 @@ public class ColumnService : IColumnService
         _apiClient = apiClient;
     }
 
-    public async Task<List<ColumnDTO>> GetColumnsAsync(CancellationToken token = default)
+    public async Task<List<ColumnModel>> GetColumnsAsync(CancellationToken token = default)
     {
-        return await _apiClient.GetAsync<List<ColumnModel>>("api/column") ?? new List<ColumnModel>();
+        var DTOs = await _apiClient.GetAsync<List<ColumnDTO>>("api/column") ?? new List<ColumnDTO>();
+        List<ColumnModel> columns = new();
+        foreach (var dto in DTOs) {
+            columns.Add(new ColumnModel
+            {
+                Id = dto.Id,
+                Title = dto.Title,
+                Tasks = new ObservableCollection<TaskModel>(),
+                Position = dto.Position,
+            });
+        }
+        return columns;
     }
 
     public async Task<ColumnDTO?> CreateColumnAsync(ColumnDTO dto, CancellationToken token = default)

@@ -7,7 +7,7 @@ namespace AvaloniaClient.Services
 {
     public interface IColumnService
     {
-        Task<List<ColumnDTO>> GetColumnsAsync(CancellationToken token = default);
+        Task<List<ColumnModel>> GetColumnsAsync(CancellationToken token = default);
         Task<ColumnDTO?> CreateColumnAsync(ColumnDTO dto, CancellationToken token = default);
         Task UpdateColumnAsync(ColumnModel dto, CancellationToken token = default);
         Task DeleteColumnAsync(int id, CancellationToken token = default);

@@ -14,7 +14,7 @@ public class ColumnRepository(ApplicationDbContextFactory contextFactory)
 {
     private ApplicationDbContextFactory _contextFactory = contextFactory;
 
-    public async Task<IReadOnlyList<ColumnEntity>> GetColumnsAsync(CancellationToken token = default)
+    public async Task<IReadOnlyList<ColumnDTO>> GetColumnsAsync(CancellationToken token = default)
     {
         using var context = _contextFactory.CreateApplicationContext();
 

@@ -3,6 +3,7 @@ using Avalonia.Threading;
 using AvaloniaClient.DataBase;
 using AvaloniaClient.Services;
 using AvaloniaClient.ViewModels;
+using DynamicData;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -176,14 +177,7 @@ namespace AvaloniaClient.ViewModels
 
             foreach (var column in columns ?? new())
             {
-                ColumnModel model = new ColumnModel()
-                {
-                    Id = column.Id,
-                    Title = column.Title,
-                    Tasks = new ObservableCollection<TaskModel>(),
-                };
-
-                Columns.Add(model);
+                Columns.Add(column);
             }
 
             foreach (var task in Tasks)
@@ -389,7 +383,7 @@ namespace AvaloniaClient.ViewModels
 
         private async Task OpenAddTaskDialogAsync(int columnId)
         {
-            AddTask = new AddTaskViewModel(columnId, _navigationService, _userService, _labelService, _teamService);
+            AddTask = new AddTaskViewModel(columnId, _navigationService, _userService, _labelService, _teamService, _columnService);
             IsAddTaskOpen = true;
 
             AddTask.SaveCommand.Subscribe(task =>
