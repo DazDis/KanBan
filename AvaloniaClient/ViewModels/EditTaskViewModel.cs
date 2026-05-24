@@ -158,7 +158,7 @@ namespace AvaloniaClient.ViewModels
 
                     _task.TeamIds = SelectedTeam != null ? new List<int?> { SelectedTeam.Id } : new();
 
-                    _task.Labels = SelectedLabel != null ? new ObservableCollection<string> { SelectedLabel.Name } : new();
+                    _task.Labels = SelectedLabel != null ? new ObservableCollection<LabelModel> { SelectedLabel } : new();
 
                     return _task;
                 }
@@ -202,7 +202,7 @@ namespace AvaloniaClient.ViewModels
             //if (_task.TeamIds?.Count > 0)
             //    SelectedTeam = Teams.FirstOrDefault(x => x.Id == _task.TeamIds[0]);
 
-            SelectedColumnStatus =  Columns.FirstOrDefault(x => x.Id == _task.ColumnId);
+            //SelectedColumnStatus =  Columns.FirstOrDefault(x => x.Id == _task.ColumnId);
         }
     }
 }
