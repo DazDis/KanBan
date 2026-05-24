@@ -1,27 +1,45 @@
-﻿using Avalonia.Input;
+﻿using Avalonia.Controls;
+using Avalonia.Input;
+using Avalonia.LogicalTree;
 using Avalonia.Xaml.Interactions.DragAndDrop;
 using AvaloniaClient.DataBase;
+using AvaloniaClient.ViewModels;
+using System.Linq;
 
-namespace AvaloniaClient.Services
+namespace AvaloniaClient.Services;
+
+public class TeamDropHandler : DropHandlerBase
 {
-    public class TeamDropHandler : DropHandlerBase
+    public override bool Validate(object? sender, DragEventArgs e, object? sourceContext, object? targetContext, object? state)
     {
-        public override bool Validate(object? sender, DragEventArgs e, object? sourceContext, object? targetContext, object? state)
-        {
-            return e.Data.Contains("DragData");
-        }
+        return e.Data.Contains("Context");
+    }
 
-        public override bool Execute(object? sender, DragEventArgs e, object? sourceContext, object? targetContext, object? state)
+    public override bool Execute(object? sender, DragEventArgs e, object? sourceContext, object? targetContext, object? state)
+    {
+        var draggedUser = e.Data.Get("Context") as UserModel;
+        if (draggedUser == null) return false;
+
+        if (targetContext is TeamModel targetTeam)
         {
-            var draggedUser = e.Data.Get("DragData") as UserModel;
-            var targetTeam = targetContext as TeamModel;
-            if (draggedUser != null && targetTeam != null)
+            if (sender is Control control && control.FindLogicalAncestorOfType<SettingsView>()?.DataContext is SettingsViewModel vm)
             {
-                System.Diagnostics.Debug.WriteLine($"Перетащен пользователь {draggedUser.FirstName} в команду {targetTeam.Title}");
-                // Здесь будет логика добавления пользователя в команду
+                vm.AddUserToTeam(draggedUser, targetTeam);
                 return true;
             }
-            return false;
         }
+        if (targetContext is SettingsViewModel || sender is ItemsControl)
+        {
+            if (sender is Control control && control.FindLogicalAncestorOfType<SettingsView>()?.DataContext is SettingsViewModel vm)
+            {
+                var teamWithUser = vm.Teams.FirstOrDefault(t => t.Users.Contains(draggedUser));
+                if (teamWithUser != null)
+                {
+                    vm.RemoveUserFromTeam(draggedUser, teamWithUser);
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }

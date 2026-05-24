@@ -16,6 +16,19 @@ namespace AvaloniaClient.ViewModels
             get => _title;
             set => this.RaiseAndSetIfChanged(ref _title, value);
         }
+        private string _error = string.Empty;
+
+        public string Error
+        {
+            get => _error;
+            set => this.RaiseAndSetIfChanged(ref _error, value);
+        }
+        private bool _haveError = false;
+        public bool HaveError
+        {
+            get => _haveError;
+            set => this.RaiseAndSetIfChanged(ref _haveError, value);
+        }
 
         public ReactiveCommand<Unit, ColumnModel?> SaveCommand { get; }
         public ReactiveCommand<Unit, int> DeleteCommand { get; }
@@ -31,6 +44,12 @@ namespace AvaloniaClient.ViewModels
             {
                 try
                 {
+                    if (string.IsNullOrWhiteSpace(Title))
+                    {
+                        Error = "Заполните название";
+                        HaveError = true;
+                        return null;
+                    }
                     _column.Title = Title;
                     return _column;
                 }
