@@ -86,6 +86,7 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
         var entity = await context.Tasks
             .Include(t => t.Users)
             .Include(t => t.Labels)
+            .Include(t => t.Teams)
             .FirstOrDefaultAsync(t => t.Id == task.Id);
 
         if (entity == null)

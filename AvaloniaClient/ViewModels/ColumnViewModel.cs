@@ -223,7 +223,7 @@ namespace AvaloniaClient.ViewModels
                     existing.Position = task.Position;
                     existing.Labels = task.Labels;
                     existing.TeamIds = task.TeamIds;
-                    existing.Team = task.Team;
+                    existing.Team = Teams.FirstOrDefault(t => task.TeamIds.Contains(t.Id));
                 }
             });
         }

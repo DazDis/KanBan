@@ -164,6 +164,7 @@ namespace AvaloniaClient.ViewModels
                 _task.LabelIds = Labels.Where(x => x.IsSelected).Select(x => (int?)x.Id).ToList();
                 _task.TeamIds = SelectedTeam != null ? new List<int?> { SelectedTeam.Id } : new();
                 _task.Labels = new ObservableCollection<LabelModel>(Labels.Where(x => x.IsSelected));
+                _task.Team = SelectedTeam;
                 if (Title != _originalTitle)
                     changes.Add(("Название", _originalTitle ?? "", Title ?? ""));
 
@@ -233,7 +234,7 @@ namespace AvaloniaClient.ViewModels
             //if (_task.TeamIds?.Count > 0)
             //    SelectedTeam = Teams.FirstOrDefault(x => x.Id == _task.TeamIds[0]);
 
-            //SelectedColumnStatus =  Columns.FirstOrDefault(x => x.Id == _task.ColumnId);
+            //SelectedColumnStatus = Columns.FirstOrDefault(x => x.Id == _task.ColumnId);
         }
     }
 }
