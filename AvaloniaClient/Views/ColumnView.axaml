@@ -174,9 +174,36 @@
                                                                 </Grid.ColumnDefinitions>
 
                                                                 <!-- ТЕГ -->
-                                                                <TextBlock Text="tag"
+                                                                <!--<TextBlock Text="{Binding Labels}"
                                                                            FontSize="10"
-                                                                           Foreground="#374151"/>
+                                                                           Foreground="#374151"/>-->
+                                                                <ItemsControl ItemsSource="{Binding Labels}">
+
+                                                                    <ItemsControl.ItemsPanel>
+                                                                        <ItemsPanelTemplate>
+                                                                            <StackPanel Orientation="Horizontal"/>
+                                                                        </ItemsPanelTemplate>
+                                                                    </ItemsControl.ItemsPanel>
+
+                                                                    <ItemsControl.ItemTemplate>
+                                                                        <DataTemplate>
+
+                                                                            <Border Background="blue"
+                                                                                    CornerRadius="8"
+                                                                                    Padding="6,2"
+                                                                                    Margin="0,0,4,0">
+
+                                                                                <!-- текущий элемент списка -->
+                                                                                <TextBlock Text="{Binding}"
+                                                                                           FontSize="10"
+                                                                                           Foreground="#374151"/>
+
+                                                                            </Border>
+
+                                                                        </DataTemplate>
+                                                                    </ItemsControl.ItemTemplate>
+
+                                                                </ItemsControl>
 
                                                                 <!-- ИКОНКА -->
                                                                 <Border Grid.Column="1"

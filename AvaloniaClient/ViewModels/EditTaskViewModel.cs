@@ -24,9 +24,9 @@ namespace AvaloniaClient.ViewModels
         private string _description = string.Empty;
         private int _columnId;
         private string _selectedColor;
-        private DateTime? _date;
+        private DateTimeOffset? _date;
         private TimeSpan? _time;
-        private Color Color;
+        private DateTime? _deadline;
 
         public ObservableCollection<UserModel> Users { get; } = new();
         public ObservableCollection<LabelModel> Labels { get; } = new();
@@ -47,7 +47,24 @@ namespace AvaloniaClient.ViewModels
             get => _description;
             set => this.RaiseAndSetIfChanged(ref _description, value);
         }
-       
+
+        public DateTime? Deadline
+        {
+            get => _deadline;
+            set => this.RaiseAndSetIfChanged(ref _deadline, value);
+        }
+
+        public DateTimeOffset? Date
+        {
+            get => _date;
+            set => this.RaiseAndSetIfChanged(ref _date, value);
+        }
+        public TimeSpan? Time
+        {
+            get => _time;
+            set => this.RaiseAndSetIfChanged(ref _time, value);
+        }
+
         public string SelectedColor
         {
             get => _selectedColor;
@@ -81,7 +98,7 @@ namespace AvaloniaClient.ViewModels
 
             Title = _task.Title;
             Description = _task.Description;
-            //Deadline = _task.Deadline;
+            Deadline = _task.Deadline;
             _columnId = _task.ColumnId;
             _selectedColor = _task.Color;
             _userService = userService;
@@ -96,7 +113,7 @@ namespace AvaloniaClient.ViewModels
                     _task.Title = Title;
                     _task.Description = Description;
                     _task.ColumnId = _columnId;
-                    //_task.Deadline = Deadline;
+                    _task.Deadline = Deadline;
                     _task.Color = SelectedColor.ToString();
 
                     _task.UserIds = SelectedUser != null ? new List<int?> { SelectedUser.Id } : new();

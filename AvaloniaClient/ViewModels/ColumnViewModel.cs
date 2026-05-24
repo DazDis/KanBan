@@ -326,7 +326,7 @@ namespace AvaloniaClient.ViewModels
 
         private async Task OpenAddTaskDialogAsync(int columnId)
         {
-            AddTask = new AddTaskViewModel(columnId, _navigationService, _userService, _labelService, _teamService);
+            AddTask = new AddTaskViewModel(columnId, _navigationService, _userService, _labelService, _teamService, _columnService);
             IsAddTaskOpen = true;
 
             AddTask.SaveCommand.Subscribe(task =>

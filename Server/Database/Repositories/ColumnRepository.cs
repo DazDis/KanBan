@@ -14,13 +14,18 @@ public class ColumnRepository(ApplicationDbContextFactory contextFactory)
 {
     private ApplicationDbContextFactory _contextFactory = contextFactory;
 
-    public async Task<IReadOnlyList<ColumnEntity>> GetColumnsAsync()
+    public async Task<IReadOnlyList<ColumnDTO>> GetColumnsAsync()
     {
         using var context = _contextFactory.CreateApplicationContext();
 
         var entities = await context.Columns.ToListAsync();
 
-        return entities;
+        return entities.Select(x => new ColumnDTO
+        {
+            Id = x.Id,
+            Title = x.Title,
+            Position = x.Position,
+        }).ToList();
 
     }
 
