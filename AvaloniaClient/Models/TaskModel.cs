@@ -21,6 +21,8 @@ namespace AvaloniaClient.DataBase
         private int _position;
         private string? _timeLeft;
         private bool? _overDeadline;
+        private bool _isCompleted;
+
         private ObservableCollection<TaskHistoryEntry> _history = new();
         public ObservableCollection<TaskHistoryEntry> History
         {
@@ -104,8 +106,36 @@ namespace AvaloniaClient.DataBase
             get => _overDeadline;
             set => this.RaiseAndSetIfChanged(ref _overDeadline, value);
         }
-        public string DeadlineBorderBrush => OverDeadline == true ? "#ef4444" : "Transparent";
 
-        public Avalonia.Thickness DeadlineBorderThickness => OverDeadline == true ? new Avalonia.Thickness(2) : new Avalonia.Thickness(0);
+        public string DeadlineBorderBrush
+        {
+            get
+            {
+                if (IsCompleted)
+                    return "#22c55e";
+
+                if (OverDeadline == true)
+                    return "#ef4444";
+
+                return "Transparent";
+            }
+        }
+
+        public Avalonia.Thickness DeadlineBorderThickness
+        {
+            get
+            {
+                if (IsCompleted || OverDeadline == true)
+                    return new Avalonia.Thickness(2);
+
+                return new Avalonia.Thickness(0);
+            }
+        }
+
+        public bool IsCompleted
+        {
+            get => _isCompleted;
+            set => this.RaiseAndSetIfChanged(ref _isCompleted, value);
+        }
     }
 }

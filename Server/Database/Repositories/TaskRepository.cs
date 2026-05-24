@@ -30,6 +30,7 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
             ColumnId = x.ColumnId,
             Position = x.Position,
             Color = x.Color,
+            IsCompleted = x.IsCompleted,
             // преобразование сущностей в Id
             LabelIds = x.Labels.Select(l => l?.Id).ToList(),
             Labels = x.Labels.Select(l => new LabelDTO
@@ -71,6 +72,7 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
             Users = users,
             Teams = teams,
             Position = task.Position,
+            IsCompleted = task.IsCompleted,
         };
 
         await context.Tasks.AddAsync(entity, token);
@@ -94,6 +96,9 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
         entity.Description = task.Description;
         entity.ColumnId = task.ColumnId;
         entity.Position = task.Position;
+        entity.Deadline = task.Deadline;
+        entity.Color = task.Color;
+        entity.IsCompleted = task.IsCompleted;
         // Обновляем связи (многие-ко-многим)
         entity.Users.Clear();
         entity.Users = await context.Users

@@ -102,6 +102,7 @@ namespace AvaloniaClient.ViewModels
         public ReactiveCommand<TaskModel, Unit> OpenEditTaskDialogCommand { get; }
         public ReactiveCommand<TaskModel, Unit> EditTaskCommand { get; }
         public ReactiveCommand<TaskModel, Unit> DeleteTaskCommand { get; }
+        public ReactiveCommand<TaskModel, Unit> CompleteTaskCommand { get; }
 
 
         private DateTime _now = DateTime.Now;
@@ -136,6 +137,7 @@ namespace AvaloniaClient.ViewModels
             OpenAddTaskDialogCommand = ReactiveCommand.CreateFromTask<int>(OpenAddTaskDialogAsync);
             EditTaskCommand = ReactiveCommand.Create<TaskModel>(OpenEditTaskDialog);
             EditColumnCommand = ReactiveCommand.Create<ColumnModel>(OpenEditColumnDialog);
+            CompleteTaskCommand = ReactiveCommand.CreateFromTask<TaskModel>(CompleteTaskAsync);
 
             Observable.Interval(TimeSpan.FromSeconds(1))
                .ObserveOn(RxApp.MainThreadScheduler)
@@ -270,11 +272,17 @@ namespace AvaloniaClient.ViewModels
 
         public string GetTimeLeft(TaskModel task)
         {
+            if (task.IsCompleted)
+                return "Выполнено"; 
+
             if (!task.Deadline.HasValue)
                 return "Без дедлайна";
 
             var deadline = task.Deadline.Value.Kind == DateTimeKind.Utc ? task.Deadline.Value.ToLocalTime() : task.Deadline.Value;
             var time = deadline - Now;
+
+            if (time <= TimeSpan.Zero)
+                return "Просрочено";
 
             // годы
             if (time.TotalDays >= 365)
@@ -316,6 +324,9 @@ namespace AvaloniaClient.ViewModels
         // 24 часа до дедлайна
         public bool IsOverDeadline(TaskModel task)
         {
+            if (task.IsCompleted)
+                return false;
+
             if (!task.Deadline.HasValue)
                 return false;
 
@@ -324,7 +335,9 @@ namespace AvaloniaClient.ViewModels
             if (deadline.Kind == DateTimeKind.Utc)
                 deadline = deadline.ToLocalTime();
 
-            return deadline <= Now.AddHours(24);
+            var timeLeft = deadline - Now;
+
+            return timeLeft <= TimeSpan.FromHours(24);
 
         }
 
@@ -437,6 +450,25 @@ namespace AvaloniaClient.ViewModels
             {
                 IsAddTaskOpen = false;
             });
+        }
+
+
+        private async Task CompleteTaskAsync(TaskModel task)
+        {
+            if (task == null)
+                return;
+
+            try
+            {
+                task.IsCompleted = true;
+                task.TimeLeft = "Выполнено";
+
+                await _taskService.UpdateTaskAsync(task);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
         }
 
 

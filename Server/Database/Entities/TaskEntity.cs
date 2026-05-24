@@ -17,6 +17,7 @@ namespace Server.Database.Entities
         public List<LabelEntity?> Labels { get; set; } = new();
         public ColumnEntity? Column { get; set; }
         public int Position { get; set; }
+        public bool IsCompleted { get; set; }
 
     }
 }

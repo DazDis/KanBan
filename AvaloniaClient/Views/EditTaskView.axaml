@@ -23,7 +23,7 @@
 
             <StackPanel Spacing="12">
                 <Grid>
-                    <TextBlock Text="Editing"
+                    <TextBlock Text="Изменить задачу"
                                FontSize="20"
                                FontWeight="SemiBold"
                                VerticalAlignment="Center"/>
@@ -37,8 +37,9 @@
 
                 </Grid>
 
-                <TextBox Watermark="Title..." Text="{Binding Title}"/>
-                <ComboBox PlaceholderText="Assignee..."
+                <TextBox Watermark="Название..." Text="{Binding Title}"/>
+
+                <ComboBox PlaceholderText="Исполнитель..."
                           ItemsSource="{Binding Users}"
                           SelectedItem="{Binding SelectedUser}">
                     <ComboBox.ItemTemplate>
@@ -47,33 +48,35 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-               <TextBlock Text="Tags"/>
+
+               <TextBlock Text="Теги"/>
+
                 <Border Height="150"
                         BorderThickness="1"
                         CornerRadius="6"
                         BorderBrush="Gray">
 
                     <ScrollViewer MaxHeight="150"
-              VerticalScrollBarVisibility="Auto">
+                                  VerticalScrollBarVisibility="Auto">
 
-    <ItemsControl ItemsSource="{Binding Labels}">
+                        <ItemsControl ItemsSource="{Binding Labels}">
 
-        <ItemsControl.ItemTemplate>
-            <DataTemplate>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
 
-                <CheckBox IsChecked="{Binding IsSelected}"
-                          Content="{Binding Name}" />
+                                    <CheckBox IsChecked="{Binding IsSelected}"
+                                              Content="{Binding Name}" />
 
-            </DataTemplate>
-        </ItemsControl.ItemTemplate>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
 
-    </ItemsControl>
+                        </ItemsControl>
 
-</ScrollViewer>
+                    </ScrollViewer>
 
                 </Border>
 
-                <ComboBox PlaceholderText="Status..."
+                <ComboBox PlaceholderText="Статус..."
                           ItemsSource="{Binding Columns}"
                           SelectedItem="{Binding SelectedColumnStatus}">
                     <ComboBox.ItemTemplate>
@@ -83,41 +86,42 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
 
-                <TextBox Watermark="Description..."
+                <TextBox Watermark="Описание..."
                          AcceptsReturn="True"
                          Height="80"
                          TextWrapping="Wrap"
                          Text="{Binding Description}"/>
-                 <TextBlock Text="Task Color"/>
+
+                 <TextBlock Text="Цвет задачи"/>
 
                 <ColorPicker Color="{Binding SelectedColor}"/>
-                <TextBlock Text="Due Date"/>
 
-<DatePicker SelectedDate="{Binding Date}"/>
+                <TextBlock Text="Срок выполнения"/>
 
-<TextBlock Text="Time"/>
+                <DatePicker SelectedDate="{Binding Date}"/>
 
-<TimePicker SelectedTime="{Binding Time}"/>
-        
+                <TextBlock Text="Время"/>
+
+                <TimePicker SelectedTime="{Binding Time}"/>
 
                  <Grid>
-                <Button Content="Confirm"
-                        HorizontalAlignment="Center"
-                        Padding="12,6"
-                        Background="#E6E6FA"
-                        Foreground="#6C7BFF"
-                        CornerRadius="10"
-						Command="{Binding SaveCommand}"
-						x:Name="SaveButton"/>
+                    <Button Content="Сохранить"
+                            HorizontalAlignment="Center"
+                            Padding="12,6"
+                            Background="#E6E6FA"
+                            Foreground="#6C7BFF"
+                            CornerRadius="10"
+						    Command="{Binding SaveCommand}"
+						    x:Name="SaveButton"/>
 
-                 <Button Content="Delete"
-                        HorizontalAlignment="Right"
-                        Padding="12,6"
-                        Background="#ffffff"
-                        Foreground="#C51D34"
-                        CornerRadius="10"
-						Command="{Binding DeleteCommand}"
-						x:Name="DeleteButton"/>
+                    <Button Content="Удалить"
+                            HorizontalAlignment="Right"
+                            Padding="12,6"
+                            Background="#ffffff"
+                            Foreground="#C51D34"
+                            CornerRadius="10"
+						    Command="{Binding DeleteCommand}"
+						    x:Name="DeleteButton"/>
                  </Grid>
                 <Border Padding="10">
                             <StackPanel Spacing="10">
