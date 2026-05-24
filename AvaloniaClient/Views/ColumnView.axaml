@@ -289,12 +289,7 @@
                                                                         Command="{Binding $parent[UserControl].DataContext.EditTaskCommand}"
                                                                         CommandParameter="{Binding}"/>
 
-                                                                <!-- УДАЛИТЬ -->
-                                                                <Button Content="🗑"
-                                                                        Width="30"
-                                                                        Margin="5,0,0,0"
-                                                                        Command="{Binding $parent[UserControl].DataContext.DeleteTaskCommand}"
-                                                                        CommandParameter="{Binding}"/>
+                                                                
 
                                                                 <!-- ЗАВЕРШИТЬ -->
                                                                 <Button Content="✔"
