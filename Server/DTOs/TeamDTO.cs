@@ -7,7 +7,7 @@ namespace Server.DataBase
         public int Id { get; set; }
         public string Title { get; set; }
         public string? Color { get; set; }
-        public List<int> UserIds { get; set; } = new();
+        public List<int?> UserIds { get; set; } = new();
 
 
     }

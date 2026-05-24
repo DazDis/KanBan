@@ -38,80 +38,91 @@
         <ScrollViewer Grid.Row="2"
                       VerticalScrollBarVisibility="Auto"
                       HorizontalScrollBarVisibility="Disabled">
+            <i:Interaction.Behaviors>
+                <dd:ContextDropBehavior Handler="{StaticResource TeamDropHandler}" />
+            </i:Interaction.Behaviors>
+            <ItemsControl ItemsSource="{Binding Teams}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"
+                                   ItemWidth="260"
+                                   ItemHeight="320" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
 
-           <ListBox ItemsSource="{Binding Teams}"
-         SelectedItem="{Binding SelectedTeam}"
-         BorderThickness="0"
-         Background="Transparent">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Width="250"
+                                Height="300"
+                                Margin="5"
+                                Padding="10"
+                                CornerRadius="10"
+                                Background="#FFFFFF"
+                                BorderBrush="#D0D0D0"
+                                BorderThickness="1">
+                            <i:Interaction.Behaviors>
+                                <dd:ContextDropBehavior Handler="{StaticResource TeamDropHandler}" />
+                            </i:Interaction.Behaviors>
+                            <StackPanel Spacing="10">
 
-    <ListBox.ItemsPanel>
-        <ItemsPanelTemplate>
-            <WrapPanel Orientation="Horizontal"
-                       ItemWidth="260"
-                       ItemHeight="320" />
-        </ItemsPanelTemplate>
-    </ListBox.ItemsPanel>
+                                <Grid ColumnDefinitions="*,Auto">
 
-    <ListBox.ItemTemplate>
-        <DataTemplate>
-            <Border Width="250"
-                    Height="300"
-                    Margin="5"
-                    Padding="10"
-                    CornerRadius="10"
-                    Background="#FFFFFF"
-                    BorderBrush="#D0D0D0"
-                    BorderThickness="1">
+                                    <TextBox Text="{Binding Title, Mode=TwoWay}"
+                                             FontWeight="Bold"
+                                             FontSize="16"
+                                             BorderThickness="0"
+                                             Background="Transparent" />
 
-                <StackPanel Spacing="10">
-
-                    <Grid ColumnDefinitions="*,Auto">
-
-                        <TextBox Text="{Binding Title, Mode=TwoWay}"
-                                 FontWeight="Bold"
-                                 FontSize="16"
-                                 BorderThickness="0"
-                                 Background="Transparent" />
-
-                        <Button Grid.Column="1"
-                                Width="36"
-                                Height="36"
-                                CornerRadius="6"
-                                Background="{Binding Color}">
-                            <Button.Flyout>
-                                <Flyout>
-                                    <ColorPicker Color="{Binding Color, Mode=TwoWay}" />
-                                </Flyout>
-                            </Button.Flyout>
-                        </Button>
-
-                    </Grid>
-
-                    <Border Background="#F7F7F7"
-                            CornerRadius="6"
-                            Padding="5"
-                            MinHeight="220">
-
-                        <ListBox ItemsSource="{Binding Users}">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Padding="8"
-                                            Margin="0,0,0,5"
+                                    <Button Grid.Column="1"
+                                            Width="36"
+                                            Height="36"
                                             CornerRadius="6"
-                                            Background="#ECECEC">
-                                        <TextBlock Text="{Binding FirstName}" />
-                                    </Border>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
+                                            Background="{Binding Color}">
+                                        <Button.Flyout>
+                                            <Flyout>
+                                                <ColorPicker Color="{Binding Color, Mode=TwoWay}" />
+                                            </Flyout>
+                                        </Button.Flyout>
+                                    </Button>
 
-                    </Border>
+                                </Grid>
 
-                </StackPanel>
-            </Border>
-        </DataTemplate>
-    </ListBox.ItemTemplate>
-</ListBox>
+                                <Border Background="#F7F7F7"
+                                        CornerRadius="6"
+                                        Padding="1"
+                                        MinHeight="220">
+
+                                    <ListBox ItemsSource="{Binding Users}"
+                                             Background="Transparent"
+                                             BorderThickness="0">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <!-- Весь блок перетаскивается -->
+                                                <Border Padding="8"
+                                                        Margin="0,0,0,5"
+                                                        CornerRadius="6"
+                                                        Background="#ECECEC"
+                                                        Cursor="Hand">
+                                                    <i:Interaction.Behaviors>
+                                                        <dd:ContextDragBehavior Context="{Binding}" />
+                                                    </i:Interaction.Behaviors>
+                
+                                                    <!-- Текст внутри -->
+                                                    <TextBlock Text="{Binding FirstName}"
+                                                               VerticalAlignment="Center"
+                                                               FontSize="13" />
+                                                </Border>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+
+                                </Border>
+
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
         </ScrollViewer>
 
     </Grid>
@@ -137,19 +148,80 @@
             <Button Content="💾 Сохранить" Command="{Binding SaveAllUsersCommand}" />
         </StackPanel>
 
-        <DataGrid Grid.Row="2"
-                  ItemsSource="{Binding Users}"
-                  SelectedItem="{Binding SelectedUser}"
-                  AutoGenerateColumns="False">
+        <DataGrid Grid.Row="2" 
+          ItemsSource="{Binding Users}" 
+          SelectedItem="{Binding SelectedUser}" 
+          AutoGenerateColumns="False">
+    <DataGrid.Columns>
+        <DataGridTemplateColumn Header="" Width="30">
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <Border Background="Transparent" 
+                            Cursor="Hand"
+                            Padding="4">
+                        <i:Interaction.Behaviors>
+                            <dd:ContextDragBehavior Context="{Binding}" />
+                        </i:Interaction.Behaviors>
+                        <PathIcon Data="{StaticResource DragHandleIcon}" 
+                                  Foreground="Gray" />
+                    </Border>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+        </DataGridTemplateColumn>
+        <!-- ID (только для чтения) -->
+        <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" IsReadOnly="True" />
 
-            <DataGrid.Columns>
-                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" IsReadOnly="True" />
-                <DataGridTextColumn Header="Имя" Binding="{Binding FirstName, Mode=TwoWay}" Width="*" />
-                <DataGridTextColumn Header="Фамилия" Binding="{Binding LastName, Mode=TwoWay}" Width="*" />
-                <DataGridTextColumn Header="Email" Binding="{Binding Email, Mode=TwoWay}" Width="*" />
-            </DataGrid.Columns>
+        <!-- Имя (с редактированием и Drag&Drop) -->
+        <DataGridTemplateColumn Header="Имя" Width="*">
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <!-- Режим просмотра -->
+                    <Border Background="Transparent" Padding="2">
+                        <i:Interaction.Behaviors>
+                            <dd:ContextDragBehavior Context="{Binding}" />
+                        </i:Interaction.Behaviors>
+                        <TextBlock Text="{Binding FirstName}" VerticalAlignment="Center" />
+                    </Border>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+            <DataGridTemplateColumn.CellEditingTemplate>
+                <DataTemplate>
+                    <!-- Режим редактирования -->
+                    <TextBox Text="{Binding FirstName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Padding="2"
+                             BorderThickness="1"
+                             BorderBrush="Gray" />
+                </DataTemplate>
+            </DataGridTemplateColumn.CellEditingTemplate>
+        </DataGridTemplateColumn>
 
-        </DataGrid>
+        <!-- Фамилия (с редактированием и Drag&Drop) -->
+        <DataGridTemplateColumn Header="Фамилия" Width="*">
+            <DataGridTemplateColumn.CellTemplate>
+                <DataTemplate>
+                    <Border Background="Transparent" Padding="2">
+                        <i:Interaction.Behaviors>
+                            <dd:ContextDragBehavior Context="{Binding}" />
+                        </i:Interaction.Behaviors>
+                        <TextBlock Text="{Binding LastName}" VerticalAlignment="Center" />
+                    </Border>
+                </DataTemplate>
+            </DataGridTemplateColumn.CellTemplate>
+            <DataGridTemplateColumn.CellEditingTemplate>
+                <DataTemplate>
+                    <TextBox Text="{Binding LastName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                             Padding="2"
+                             BorderThickness="1"
+                             BorderBrush="Gray" />
+                </DataTemplate>
+            </DataGridTemplateColumn.CellEditingTemplate>
+        </DataGridTemplateColumn>
+
+        <!-- Email (стандартная колонка с редактированием) -->
+        <DataGridTextColumn Header="Email" Binding="{Binding Email, Mode=TwoWay}" Width="*" />
+        
+    </DataGrid.Columns>
+</DataGrid>
 
     </Grid>
 </Border>
@@ -174,6 +246,7 @@
             <Button Content="💾 Сохранить" Command="{Binding SaveAllLabelsCommand}" />
         </StackPanel>
 
+        <!-- УБРАЛ MaxHeight -->
         <ListBox Grid.Row="2"
                  ItemsSource="{Binding Labels}"
                  SelectedItem="{Binding SelectedLabel}">

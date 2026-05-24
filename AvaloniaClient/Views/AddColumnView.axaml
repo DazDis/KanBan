@@ -42,20 +42,22 @@
                         <TextBox Watermark="Название..."
                                  Text="{Binding Title}"/>
                
-                        <Button Content="Сохранить"
-                                HorizontalAlignment="Right"
-                                Padding="12,6"
-                                Background="#E6E6FA"
-                                Foreground="#6C7BFF"
-                                CornerRadius="10"
-						        Command="{Binding SaveCommand}"
-						        x:Name="SaveButton"/>
-
-                    </StackPanel>
-
-                </Border>
-            </Grid>
-
+                <Button Content="Сохранить"
+                        HorizontalAlignment="Right"
+                        Padding="12,6"
+                        Background="#E6E6FA"
+                        Foreground="#6C7BFF"
+                        CornerRadius="10"
+						Command="{Binding SaveCommand}"
+						x:Name="SaveButton"/>
+                <TextBlock Text="{Binding Error}"
+                               FontSize="10"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"
+                               IsVisible="{Binding HaveError}"/>
+            </StackPanel>
         </Border>
     </Grid>
+                 </Border>
+        </Grid>
 </UserControl>

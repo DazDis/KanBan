@@ -252,6 +252,14 @@ namespace AvaloniaClient.ViewModels
                 await _signalRService.StartAsync();
                 Users = new ObservableCollection<UserModel>(await _userService.GetUsersAsync());
                 Teams = new ObservableCollection<TeamModel>(await _teamService.GetTeamsAsync());
+                foreach (var team in Teams)
+                {
+                    var teamUsers = Users.Where(u => team.UserIds.Contains(u.Id)).ToList();
+                    foreach (var user in teamUsers)
+                    {
+                        team.Users.Add(user);
+                    }
+                }
                 Labels = new ObservableCollection<LabelModel>(await _labelService.GetLabelsAsync());
             }
             catch
@@ -381,7 +389,30 @@ namespace AvaloniaClient.ViewModels
                 Message = "Не удалось обновить тэг";
             }
         }
+        public void AddUserToTeam(UserModel user, TeamModel team)
+        {
+            if (team.Users.Any(u => u.Id == user.Id))
+                return;
 
+            team.Users.Add(user);
+
+            if (!team.UserIds.Contains(user.Id))
+                team.UserIds.Add(user.Id);
+            _ = _teamService.UpdateTeamAsync(team);
+
+        }
+        public void RemoveUserFromTeam(UserModel user, TeamModel team)
+        {
+            if (!team.Users.Contains(user))
+                return;
+            team.Users.Remove(user);
+
+            if (team.UserIds.Contains(user.Id))
+                team.UserIds.Remove(user.Id);
+
+            _ = _teamService.UpdateTeamAsync(team);
+            this.RaisePropertyChanged(nameof(Teams));
+        }
         // ========== НАВИГАЦИЯ ==========
         private async Task NavigateToColumnAsync() => await _navigationService.NavigateToColumnAsync();
         private async Task DropDatabaseAsync() { /* логика удаления БД */ }

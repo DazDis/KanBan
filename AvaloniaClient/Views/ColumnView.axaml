@@ -285,7 +285,7 @@
                                                                 <TextBlock Text="{Binding TimeLeft}"
                                                                            FontSize="11"
                                                                            FontWeight="SemiBold"
-                                                                           Foreground="#ef4444"/>
+                                                                           Foreground="{Binding DeadlineBorderBrush}"/>
 
                                                             </StackPanel>
 
@@ -303,6 +303,13 @@
                                                                         Width="30"
                                                                         Margin="5,0,0,0"
                                                                         Command="{Binding $parent[UserControl].DataContext.DeleteTaskCommand}"
+                                                                        CommandParameter="{Binding}"/>
+
+                                                                <!-- ЗАВЕРШИТЬ -->
+                                                                <Button Content="✔"
+                                                                        Width="30"
+                                                                        Margin="5,0,0,0"
+                                                                        Command="{Binding $parent[UserControl].DataContext.CompleteTaskCommand}"
                                                                         CommandParameter="{Binding}"/>
 
                                                             </StackPanel>
