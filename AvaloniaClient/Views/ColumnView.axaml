@@ -165,11 +165,25 @@
                                                                        FontWeight="SemiBold"
                                                                        FontSize="14"/>
 
+
                                                             <TextBlock Text="{Binding Description}"
                                                                        FontSize="11"
                                                                        Foreground="#6b7280"
                                                                        Margin="0,4,0,6"
                                                                        TextWrapping="Wrap"/>
+                                                                    <ToolTip.Tip>
+                                                            <StackPanel>
+                                                                <TextBlock Text="{Binding Title}"
+                                                                            FontWeight="Bold"
+                                                                            FontSize="14"/>
+                                                                <TextBlock Text="{Binding Description}"
+                                                                            FontSize="12"
+                                                                            TextWrapping="Wrap"
+                                                                            Width="250"/>
+                                                            </StackPanel>
+                                                        </ToolTip.Tip>
+
+
 
                                                             <Grid>
 
