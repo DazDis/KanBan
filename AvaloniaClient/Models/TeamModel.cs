@@ -35,11 +35,6 @@ namespace AvaloniaClient.DataBase
             get => _userIds;
             set => this.RaiseAndSetIfChanged(ref _userIds, value);
         }
-        public string Color
-        {
-            get => _color;
-            set => this.RaiseAndSetIfChanged(ref _color, value);
-        }
 
         public ObservableCollection<UserModel?> Users
         {
