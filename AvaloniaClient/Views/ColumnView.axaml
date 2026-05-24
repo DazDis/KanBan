@@ -154,7 +154,18 @@
                                                             Margin="0,0,0,10"
                                                             BorderBrush="{Binding DeadlineBorderBrush}"
                                                             BorderThickness="{Binding DeadlineBorderThickness}">
+                                                          <ToolTip.Tip>
+                                                            <StackPanel>
+                                                                <TextBlock Text="{Binding Title}"
+                                                                           FontWeight="Bold"
+                                                                           FontSize="14"/>
 
+                                                                <TextBlock Text="{Binding Description}"
+                                                                           FontSize="12"
+                                                                           Width="250"
+                                                                           TextWrapping="Wrap"/>
+                                                            </StackPanel>
+                                                        </ToolTip.Tip>
                                                         <i:Interaction.Behaviors>
                                                             <dd:ContextDragBehavior Context="{Binding}" />
                                                         </i:Interaction.Behaviors>
