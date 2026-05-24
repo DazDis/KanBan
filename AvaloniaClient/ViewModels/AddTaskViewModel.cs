@@ -9,7 +9,7 @@ using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Reactive;
 using System.Threading.Tasks;
-using AvaloniaClient.Models;
+
 
 
 namespace AvaloniaClient.ViewModels
@@ -36,7 +36,6 @@ namespace AvaloniaClient.ViewModels
         public ObservableCollection<ColumnModel> Columns { get; } = new();
 
         private UserModel? _selectedUser;
-        private Color _selectedColor;
         public UserModel? SelectedUser
         {
             get => _selectedUser;
@@ -100,6 +99,7 @@ namespace AvaloniaClient.ViewModels
                 DataTimeParse();
             }
         }
+
         private Color _selectedColor;
         public Color SelectedColor
         {
