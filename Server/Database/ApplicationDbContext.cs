@@ -52,5 +52,11 @@ public class ApplicationDbContext : DbContext
             .HasMany(l => l.Teams)
             .WithMany(t => t.Users)
             .UsingEntity(j => j.ToTable("UserTeams"));
+
+        modelBuilder.Entity<TaskEntity>()
+            .HasOne(t => t.Column)
+            .WithMany(c => c.Tasks)
+            .HasForeignKey(t => t.ColumnId)
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }

@@ -9,5 +9,7 @@ namespace Server.Database.Entities
         public string Title { get; set; }
         public int Position { get; set; }
 
+        public List<TaskEntity> Tasks { get; set; } = new();
+
     }
 }

@@ -1,6 +1,7 @@
 ﻿using Avalonia.Media;
 using AvaloniaClient.DataBase;
 using AvaloniaClient.Services;
+using DynamicData;
 using ReactiveUI;
 using System;
 using System.Collections.Generic;
@@ -19,6 +20,7 @@ namespace AvaloniaClient.ViewModels
         private readonly IUserService _userService;
         private readonly ILabelService _labelService;
         private readonly ITeamService _teamService;
+        private readonly IColumnService _columnService;
 
         private string _title = string.Empty;
         private string _description = string.Empty;
@@ -27,6 +29,7 @@ namespace AvaloniaClient.ViewModels
         private TimeSpan? _time;
         private DateTime? _deadline;
         private string _deadlineInput = string.Empty;
+
 
         public ObservableCollection<UserModel> Users { get; } = new();
         public ObservableCollection<LabelModel> Labels { get; } = new();
@@ -53,6 +56,14 @@ namespace AvaloniaClient.ViewModels
             get => _selectedTeam;
             set => this.RaiseAndSetIfChanged(ref _selectedTeam, value);
         }
+
+        private ColumnModel? _selectedColumnStatus;
+        public ColumnModel? SelectedColumnStatus
+        {
+            get => _selectedColumnStatus;
+            set => this.RaiseAndSetIfChanged(ref _selectedColumnStatus, value);
+        }
+
 
         public string Title
         {
@@ -125,13 +136,14 @@ namespace AvaloniaClient.ViewModels
         public ReactiveCommand<Unit, Unit> CancelCommand { get; }
         public ReactiveCommand<Unit, Task> NavigateToSettingsCommand { get; }
 
-        public AddTaskViewModel(int columnId, NavigationService navigationService, IUserService userService, ILabelService labelService, ITeamService teamService)
+        public AddTaskViewModel(int columnId, NavigationService navigationService, IUserService userService, ILabelService labelService, ITeamService teamService, IColumnService columnService)
         {
             _columnId = columnId;
             _navigationService = navigationService;
             _userService = userService;
             _labelService = labelService;
             _teamService = teamService;
+            _columnService = columnService;
 
             _ = LoadAsync();
 
@@ -144,11 +156,11 @@ namespace AvaloniaClient.ViewModels
                         Title = Title,
                         Description = Description,
                         Deadline = Deadline,
-                        ColumnId = _columnId,
+                        ColumnId = SelectedColumnStatus?.Id ?? _columnId,
                         Color = SelectedColor.ToString(),
                         UserIds = SelectedUser != null ? new List<int?> { SelectedUser.Id } : new(),
                         LabelIds = SelectedLabel != null ? new List<int?> { SelectedLabel.Id } : new(),
-                        TeamIds = SelectedTeam != null ? new List<int?> { SelectedTeam.Id } : new()
+                        TeamIds = SelectedTeam != null ? new List<int?> { SelectedTeam.Id } : new(),
                     };
                 }
                 catch (Exception ex)
@@ -172,6 +184,8 @@ namespace AvaloniaClient.ViewModels
             var users = await _userService.GetUsersAsync();
             var labels = await _labelService.GetLabelsAsync();
             var teams = await _teamService.GetTeamsAsync();
+            var columns = await _columnService.GetColumnsAsync();
+
 
             foreach (var user in users ?? new())
                 Users.Add(user);
@@ -181,6 +195,9 @@ namespace AvaloniaClient.ViewModels
 
             foreach (var team in teams ?? new())
                 Teams.Add(team);
+
+            foreach (var column in columns ?? new())
+                Columns.Add(column);
         }
     }
 }
