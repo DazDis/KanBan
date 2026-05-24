@@ -11,7 +11,7 @@
         public List<int?> UserIds { get; set; }
         public List<int?> TeamIds { get; set; }
         public List<int?> LabelIds { get; set; }
-        public List<string> Labels { get; set; } = new();
+        public List<LabelDTO> Labels { get; set; } = new();
         public int Position { get; set; }
 
     }

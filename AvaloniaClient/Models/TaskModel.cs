@@ -16,7 +16,7 @@ namespace AvaloniaClient.DataBase
         private List<int?> _userIds = new();
         private List<int?> _teamIds = new();
         private List<int?> _labelIds = new();
-        private ObservableCollection<string> _labels = new();
+        private ObservableCollection<LabelModel> _labels = new();
         private int _position;
         private string? _timeLeft;
         private bool? _overDeadline;
@@ -75,7 +75,7 @@ namespace AvaloniaClient.DataBase
             set => this.RaiseAndSetIfChanged(ref _labelIds, value);
         }
 
-        public ObservableCollection<string> Labels
+        public ObservableCollection<LabelModel> Labels
         {
             get => _labels;
             set => this.RaiseAndSetIfChanged(ref _labels, value);

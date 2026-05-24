@@ -47,15 +47,31 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <ComboBox PlaceholderText="Tag..."
-                          ItemsSource="{Binding Labels}"
-                          SelectedItem="{Binding SelectedLabel}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Name}"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+               <TextBlock Text="Tags"/>
+                <Border Height="150"
+                        BorderThickness="1"
+                        CornerRadius="6"
+                        BorderBrush="Gray">
+
+                    <ScrollViewer MaxHeight="150"
+              VerticalScrollBarVisibility="Auto">
+
+    <ItemsControl ItemsSource="{Binding Labels}">
+
+        <ItemsControl.ItemTemplate>
+            <DataTemplate>
+
+                <CheckBox IsChecked="{Binding IsSelected}"
+                          Content="{Binding Name}" />
+
+            </DataTemplate>
+        </ItemsControl.ItemTemplate>
+
+    </ItemsControl>
+
+</ScrollViewer>
+
+                </Border>
 
                 <ComboBox PlaceholderText="Status..."
                           ItemsSource="{Binding Columns}"

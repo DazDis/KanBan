@@ -49,7 +49,7 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
                 </ComboBox>
-                <ComboBox PlaceholderText="Tag..."
+                <!--<ComboBox PlaceholderText="Tag..."
                           ItemsSource="{Binding Labels}"
                           SelectedItem="{Binding SelectedLabel}">
                     <ComboBox.ItemTemplate>
@@ -57,7 +57,39 @@
                             <TextBlock Text="{Binding Name}"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
-                </ComboBox>
+                </ComboBox>-->
+                <TextBlock Text="Tags"/>
+                <Border Height="150"
+                        BorderThickness="1"
+                        CornerRadius="6"
+                        BorderBrush="Gray">
+
+                    <ScrollViewer>
+
+                        <ListBox ItemsSource="{Binding Labels}"
+                                 SelectionMode="Multiple">
+
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <StackPanel Orientation="Horizontal" Spacing="8">
+
+                                        <CheckBox IsChecked="{Binding IsSelected}"
+                                                  VerticalAlignment="Center"/>
+
+                                        <TextBlock Text="{Binding Name}"
+                                                   VerticalAlignment="Center"/>
+
+                                    </StackPanel>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+
+                        </ListBox>
+
+                    </ScrollViewer>
+
+                </Border>
+
+
 
                 <ComboBox PlaceholderText="Status..."
                           ItemsSource="{Binding Columns}"

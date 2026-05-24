@@ -7,6 +7,7 @@ namespace AvaloniaClient.DataBase
         private int _id;
         private string _name;
         private string _color;
+        private bool _isSelected;
 
         public int Id
         {
@@ -24,6 +25,12 @@ namespace AvaloniaClient.DataBase
         {
             get => _color;
             set => this.RaiseAndSetIfChanged(ref _color, value);
+        }
+
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set => this.RaiseAndSetIfChanged(ref _isSelected, value);
         }
     }
 }
