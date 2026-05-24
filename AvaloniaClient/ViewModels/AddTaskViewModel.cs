@@ -28,7 +28,6 @@ namespace AvaloniaClient.ViewModels
         private DateTimeOffset? _date;
         private TimeSpan? _time;
         private DateTime? _deadline;
-        private string _deadlineInput = string.Empty;
 
 
         public ObservableCollection<UserModel> Users { get; } = new();
@@ -85,23 +84,22 @@ namespace AvaloniaClient.ViewModels
         public DateTimeOffset? Date
         {
             get => _date;
-            set => this.RaiseAndSetIfChanged(ref _date, value);
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _date, value);
+                DataTimeParse();
+            }
         }
         public TimeSpan? Time
         {
             get => _time;
-            set => this.RaiseAndSetIfChanged(ref _time, value);
-        }
-
-        public string DeadlineInput
-        {
-            get => _deadlineInput;
             set
             {
-                this.RaiseAndSetIfChanged(ref _deadlineInput, value);
+                this.RaiseAndSetIfChanged(ref _time, value);
                 DataTimeParse();
             }
         }
+
         private Color _selectedColor;
         public Color SelectedColor
         {
@@ -111,25 +109,18 @@ namespace AvaloniaClient.ViewModels
 
         private void DataTimeParse()
         {
-            DeadlineInput = Date.ToString() + Time;
-
-            if (!string.IsNullOrWhiteSpace(DeadlineInput))
+            if (Date.HasValue && Time.HasValue)
             {
-                if (DateTime.TryParseExact(DeadlineInput, new[] { "dd.MM.yyyy HH:mm", "dd.MM.yyyy HH.mm" }, CultureInfo.InvariantCulture, DateTimeStyles.AssumeLocal, out var dataParse))
-                {
-                    Deadline = DateTime.SpecifyKind(dataParse, DateTimeKind.Local);
-                }
-                else
-                {
-                    Deadline = null;
-                }
+                Deadline = Date.Value.Date + Time.Value;
+            }
+            else if (Date.HasValue)
+            {
+                Deadline = Date.Value.Date;
             }
             else
             {
                 Deadline = null;
             }
-
-
         }
 
         public ReactiveCommand<Unit, TaskModel?> SaveCommand { get; }
@@ -161,6 +152,7 @@ namespace AvaloniaClient.ViewModels
                         UserIds = SelectedUser != null ? new List<int?> { SelectedUser.Id } : new(),
                         LabelIds = SelectedLabel != null ? new List<int?> { SelectedLabel.Id } : new(),
                         TeamIds = SelectedTeam != null ? new List<int?> { SelectedTeam.Id } : new(),
+                        Labels = SelectedLabel != null ? new ObservableCollection<string> { SelectedLabel.Name } : new()
                     };
                 }
                 catch (Exception ex)

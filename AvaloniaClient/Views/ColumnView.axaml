@@ -214,6 +214,22 @@
 
                                                             </Grid>
 
+                                                            <StackPanel Margin="0,8,0,0"
+            Spacing="2">
+
+    <!-- дата -->
+    <TextBlock Text="{Binding Deadline,
+                              StringFormat='{}{0:dd.MM.yyyy HH:mm}'}"
+               FontSize="11"
+               Foreground="#6b7280"/>
+
+    <!-- таймер -->
+    <TextBlock Text="{Binding TimeLeft}"
+               FontSize="11"
+               FontWeight="SemiBold"
+               Foreground="#ef4444"/>
+
+</StackPanel>
 
                                                             <StackPanel Orientation="Horizontal"
                                                                         Margin="0,8,0,0">

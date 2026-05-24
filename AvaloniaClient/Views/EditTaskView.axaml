@@ -57,7 +57,15 @@
                     </ComboBox.ItemTemplate>
                 </ComboBox>
 
-                <ComboBox PlaceholderText="Status..." />
+                <ComboBox PlaceholderText="Status..."
+                          ItemsSource="{Binding Columns}"
+                          SelectedItem="{Binding SelectedColumnStatus}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Title}"/>
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
 
                 <TextBox Watermark="Description..."
                          AcceptsReturn="True"
