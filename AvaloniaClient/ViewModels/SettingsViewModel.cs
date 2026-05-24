@@ -66,6 +66,7 @@ namespace AvaloniaClient.ViewModels
             set => this.RaiseAndSetIfChanged(ref _selectedLabel, value);
         }
 
+        public ReactiveCommand<UserModel, Unit> RemoveUserFromTeamCommand { get; }
         public ReactiveCommand<Unit, Unit> NavigateToColumnCommand { get; }
         public ReactiveCommand<Unit, Unit> DropDBCommand { get; }
 
@@ -97,6 +98,7 @@ namespace AvaloniaClient.ViewModels
             _navigationService = navigationService;
             _signalRService = signalRService;
 
+            RemoveUserFromTeamCommand = ReactiveCommand.CreateFromTask<UserModel>(DeleteTeamUser);
             NavigateToColumnCommand = ReactiveCommand.CreateFromTask(NavigateToColumnAsync);
             DropDBCommand = ReactiveCommand.CreateFromTask(DropDatabaseAsync);
 
@@ -404,7 +406,7 @@ namespace AvaloniaClient.ViewModels
             _ = _teamService.UpdateTeamAsync(team);
 
         }
-        public void RemoveUserFromTeam(UserModel user, TeamModel team)
+        public async Task RemoveUserFromTeam(UserModel user, TeamModel team)
         {
             if (!team.Users.Contains(user))
                 return;
@@ -413,7 +415,22 @@ namespace AvaloniaClient.ViewModels
             if (team.UserIds.Contains(user.Id))
                 team.UserIds.Remove(user.Id);
 
-            _ = _teamService.UpdateTeamAsync(team);
+            await _teamService.UpdateTeamAsync(team);
+            this.RaisePropertyChanged(nameof(Teams));
+        }
+        public async Task DeleteTeamUser(UserModel user) 
+        {
+            if (SelectedTeam == null) return;
+
+            if (!SelectedTeam.Users.Contains(user))
+                return;
+
+            SelectedTeam.Users.Remove(user);
+
+            if (SelectedTeam.UserIds.Contains(user.Id))
+                SelectedTeam.UserIds.Remove(user.Id);
+
+            await _teamService.UpdateTeamAsync(SelectedTeam);
             this.RaisePropertyChanged(nameof(Teams));
         }
         // ========== НАВИГАЦИЯ ==========

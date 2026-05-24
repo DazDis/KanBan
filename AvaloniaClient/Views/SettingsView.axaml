@@ -120,10 +120,10 @@
                                                     <TextBlock Text="{Binding FirstName}"
                                                                VerticalAlignment="Center"
                                                                FontSize="13" />
-                                                         <Button Grid.Column="1"
-                    Content="❌"/>
-                   <!-- Command="{Binding DataContext.RemoveUserFromTeamCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
-                    CommandParameter="{Binding}" />-->
+                                                    <Button Grid.Column="1"
+                                                            Content="❌"
+                                                            Command="{Binding $parent[UserControl].DataContext.RemoveUserFromTeamCommand}"
+                                                            CommandParameter="{Binding}" />
                                                      
 
                                         </Grid>
