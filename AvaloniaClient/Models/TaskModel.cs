@@ -1,4 +1,5 @@
-﻿using ReactiveUI;
+﻿using AvaloniaClient.Models;
+using ReactiveUI;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -20,7 +21,12 @@ namespace AvaloniaClient.DataBase
         private int _position;
         private string? _timeLeft;
         private bool? _overDeadline;
-
+        private ObservableCollection<TaskHistoryEntry> _history = new();
+        public ObservableCollection<TaskHistoryEntry> History
+        {
+            get => _history;
+            set => this.RaiseAndSetIfChanged(ref _history, value);
+        }
         public int Id
         {
             get => _id;

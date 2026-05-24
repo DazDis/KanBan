@@ -46,5 +46,24 @@ namespace Server.Controllers
             await _hubContext.Clients.All.SendAsync("TaskDeleted", id, token);
             return NoContent();
         }
+
+        [HttpGet("{id}/history")]
+        public async Task<IActionResult> GetTaskHistory(int id, CancellationToken token)
+        {
+            var history = await _taskRepository.GetTaskHistoryAsync(id, token);
+            return Ok(history);
+        }
+
+        [HttpPost("{id}/history")]
+        public async Task<IActionResult> AddHistoryEntry(int id, [FromBody] TaskHistoryEntryDto entry, CancellationToken token)
+        {
+            if (id != entry.TaskId)
+                return BadRequest("Task ID mismatch");
+
+            await _taskRepository.AddHistoryEntryAsync(entry, token);
+            var history = await _taskRepository.GetTaskHistoryAsync(id, token);
+
+            return Ok(history);
+        }
     }
 }

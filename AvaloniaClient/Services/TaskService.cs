@@ -1,4 +1,6 @@
 ﻿using AvaloniaClient.DataBase;
+using AvaloniaClient.Models;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -21,7 +23,18 @@ public class TaskService : ITaskService
 
     public async Task<TaskModel?> CreateTaskAsync(TaskModel task, CancellationToken token = default)
     {
-        return await _apiClient.PostAsync<TaskModel>("api/task", task);
+        var created =  await _apiClient.PostAsync<TaskModel>("api/task", task);
+        if (created != null)
+        {
+            await AddHistoryEntryAsync(
+                created.Id,
+                "Создание",
+                "",
+                $"Задача \"{created.Title}\" создана",
+                $"Название: {created.Title}, Описание: {created.Description}"
+            );
+        }
+        return created;
     }
 
     public async Task DeleteTaskAsync(int id, CancellationToken token = default)
@@ -32,5 +45,25 @@ public class TaskService : ITaskService
     public async Task UpdateTaskAsync(TaskModel task, CancellationToken token = default)
     {
         await _apiClient.PutAsync("api/task", task);
+    }
+    public async Task<List<TaskHistoryEntry>> GetTaskHistoryAsync(int taskId, CancellationToken token = default)
+    {
+        return await _apiClient.GetAsync<List<TaskHistoryEntry>>($"api/task/{taskId}/history", token)
+               ?? new List<TaskHistoryEntry>();
+    }
+
+    public async Task AddHistoryEntryAsync(int taskId, string actionType, string oldValue, string newValue, string comment = null, CancellationToken token = default)
+    {
+        var entry = new
+        {
+            TaskId = taskId,
+            ActionType = actionType,
+            OldValue = oldValue,
+            NewValue = newValue,
+            ChangedAt = DateTime.UtcNow,
+            Comment = comment
+        };
+
+        await _apiClient.PostAsync<object>($"api/task/{taskId}/history", entry, token);
     }
 }

@@ -142,4 +142,31 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
             await context.SaveChangesAsync(token);
         }
     }
+    public async Task AddHistoryEntryAsync(TaskHistoryEntryDto entry, CancellationToken token = default)
+    {
+        using var context = _contextFactory.CreateApplicationContext();
+
+        var historyEntry = new TaskHistoryEntity
+        {
+            TaskId = entry.TaskId,
+            ActionType = entry.ActionType,
+            OldValue = entry.OldValue,
+            NewValue = entry.NewValue,
+            ChangedAt = entry.ChangedAt,
+            Comment = entry.Comment
+        };
+
+        await context.TaskHistory.AddAsync(historyEntry, token);
+        await context.SaveChangesAsync(token);
+    }
+
+    public async Task<List<TaskHistoryEntity>> GetTaskHistoryAsync(int taskId, CancellationToken token = default)
+    {
+        using var context = _contextFactory.CreateApplicationContext();
+
+        return await context.TaskHistory
+            .Where(h => h.TaskId == taskId)
+            .OrderByDescending(h => h.ChangedAt)
+            .ToListAsync(token);
+    }
 }

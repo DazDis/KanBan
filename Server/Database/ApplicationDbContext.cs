@@ -12,7 +12,7 @@ public class ApplicationDbContext : DbContext
     public virtual DbSet<TaskEntity> Tasks { get; set; }
     public virtual DbSet<ColumnEntity> Columns { get; set; }
     public virtual DbSet<TeamEntity> Teams { get; set; }
-
+    public virtual DbSet<TaskHistoryEntity> TaskHistory { get; set; }
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
     {
         // раскомментировать, чтобы уронить БД

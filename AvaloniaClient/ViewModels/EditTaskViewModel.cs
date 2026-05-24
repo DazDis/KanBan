@@ -1,5 +1,6 @@
 using Avalonia.Media;
 using AvaloniaClient.DataBase;
+using AvaloniaClient.Models;
 using AvaloniaClient.Services;
 using ReactiveUI;
 using System;
@@ -21,6 +22,7 @@ namespace AvaloniaClient.ViewModels
         private readonly ILabelService _labelService;
         private readonly ITeamService _teamService;
         private readonly IColumnService _columnService;
+        private readonly ITaskService _taskService;
 
         private string _title = string.Empty;
         private string _description = string.Empty;
@@ -30,6 +32,13 @@ namespace AvaloniaClient.ViewModels
         private TimeSpan? _time;
         private DateTime? _deadline;
 
+        private string _originalTitle;
+        private string _originalDescription;
+        private DateTime? _originalDeadline;
+        private int _originalColumnId;
+        private string? _originalColor;
+
+        public ObservableCollection<TaskHistoryEntry> History { get; } = new();
         public ObservableCollection<UserModel> Users { get; } = new();
         public ObservableCollection<LabelModel> Labels { get; } = new();
 
@@ -127,7 +136,7 @@ namespace AvaloniaClient.ViewModels
             }
         }
 
-        public EditTaskViewModel(TaskModel task, IUserService userService, ILabelService labelService, ITeamService teamService, IColumnService columnService)
+        public EditTaskViewModel(TaskModel task, IUserService userService, ILabelService labelService, ITeamService teamService, IColumnService columnService, ITaskService taskService)
         {
             _task = task ?? throw new ArgumentNullException(nameof(task));
 
@@ -140,33 +149,47 @@ namespace AvaloniaClient.ViewModels
             _labelService = labelService;
             _teamService = teamService;
             _columnService = columnService;
+            _taskService = taskService;
 
+            _originalTitle = _task.Title;
+            _originalDescription = _task.Description;
+            _originalDeadline = _task.Deadline;
+            _originalColumnId = _task.ColumnId;
+            _originalColor = _task.Color;
             _ = LoadAsync();
             SaveCommand = ReactiveCommand.CreateFromTask(async () =>
             {
-                try
+                var changes = new List<(string action, string old, string _new)>();
+
+                if (Title != _originalTitle)
+                    changes.Add(("Название", _originalTitle ?? "", Title ?? ""));
+
+                if (Description != _originalDescription)
+                    changes.Add(("Описание", _originalDescription ?? "", Description ?? ""));
+
+                if (Deadline != _originalDeadline)
+                    changes.Add(("Дедлайн", _originalDeadline?.ToString("dd.MM.yyyy HH:mm") ?? "Не указан", Deadline?.ToString("dd.MM.yyyy HH:mm") ?? "Не указан"));
+
+                if (SelectedColumnStatus?.Id != _originalColumnId)
+                    changes.Add(("Статус", _originalColumnId.ToString(), SelectedColumnStatus?.Id.ToString() ?? ""));
+
+                if (SelectedColor != _originalColor)
+                    changes.Add(("Цвет", _originalColor ?? "По умолчанию", SelectedColor ?? ""));
+
+                // Применяем изменения
+                _task.Title = Title;
+                _task.Description = Description;
+                _task.Deadline = Deadline;
+                _task.ColumnId = SelectedColumnStatus?.Id ?? _columnId;
+                _task.Color = SelectedColor;
+
+                // Записываем историю на сервер
+                foreach (var change in changes)
                 {
-                    _task.Title = Title;
-                    _task.Description = Description;
-                    _task.ColumnId = SelectedColumnStatus?.Id ?? _columnId;
-                    _task.Deadline = Deadline;
-                    _task.Color = SelectedColor.ToString();
-
-                    _task.UserIds = SelectedUser != null ? new List<int?> { SelectedUser.Id } : new();
-
-                    _task.LabelIds = Labels.Where(x => x.IsSelected).Select(x => (int?)x.Id).ToList();
-
-                    _task.TeamIds = SelectedTeam != null ? new List<int?> { SelectedTeam.Id } : new();
-
-                    _task.Labels = new ObservableCollection<LabelModel>(Labels.Where(x => x.IsSelected));
-
-                    return _task;
+                    await _taskService.AddHistoryEntryAsync(_task.Id, change.action, change.old, change._new);
                 }
-                catch (Exception ex)
-                {
-                    System.Diagnostics.Debug.WriteLine($"Error: {ex.Message}");
-                    return null;
-                }
+
+                return (TaskModel?)_task;
             });
 
             DeleteCommand = ReactiveCommand.Create(() => _task);
@@ -195,7 +218,11 @@ namespace AvaloniaClient.ViewModels
 
             foreach(var column in columns ?? new())
                 Columns.Add(column);
-
+            var history = await _taskService.GetTaskHistoryAsync(_task.Id);
+            foreach (var element in history) 
+            {
+                History.Add(element);
+            }
             //if (_task.UserIds?.Count > 0)
             //    SelectedUser = Users.FirstOrDefault(x => x.Id == _task.UserIds[0]);
 

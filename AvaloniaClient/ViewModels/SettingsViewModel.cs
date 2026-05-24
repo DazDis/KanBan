@@ -392,7 +392,10 @@ namespace AvaloniaClient.ViewModels
         public void AddUserToTeam(UserModel user, TeamModel team)
         {
             if (team.Users.Any(u => u.Id == user.Id))
+            {
+                RemoveUserFromTeam(user,team);
                 return;
+            }
 
             team.Users.Add(user);
 

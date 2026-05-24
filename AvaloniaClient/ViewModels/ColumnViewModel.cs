@@ -444,7 +444,7 @@ namespace AvaloniaClient.ViewModels
         private void OpenEditTaskDialog(TaskModel task)
         {
             var oldColumnId = task.ColumnId;
-            EditTask = new EditTaskViewModel(task, _userService, _labelService, _teamService, _columnService);
+            EditTask = new EditTaskViewModel(task, _userService, _labelService, _teamService, _columnService, _taskService);
             IsEditTaskOpen = true;
 
             EditTask.SaveCommand.Subscribe(async updatedTask =>
@@ -540,24 +540,26 @@ namespace AvaloniaClient.ViewModels
             var oldColumn = Columns.First(c => c.Tasks.Contains(task));
             var newColumn = Columns.First(c => c.Id == newColumnId);
 
-            // Удаляем из старой колонки
             oldColumn.Tasks.Remove(task);
 
-            // Обновляем Position в старой колонке
             for (int i = 0; i < oldColumn.Tasks.Count; i++)
                 oldColumn.Tasks[i].Position = i;
 
-            // Добавляем в новую колонку
             task.ColumnId = newColumnId;
             task.Position = newPosition;
             newColumn.Tasks.Insert(newPosition, task);
 
-            // Обновляем Position в новой колонке
             for (int i = 0; i < newColumn.Tasks.Count; i++)
                 newColumn.Tasks[i].Position = i;
 
-            // Сохраняем на сервере
             await _taskService.UpdateTaskAsync(task);
+            await _taskService.AddHistoryEntryAsync(
+                task.Id,
+                "Перемещение",
+                oldColumn.Title,
+                newColumn.Title,
+                $"Задача \"{task.Title}\" перемещена из колонки \"{oldColumn.Title}\" в колонку \"{newColumn.Title}\""
+            );
         }
         public async Task ReorderColumnAsync(ColumnModel draggedColumn, ColumnModel targetColumn)
         {
