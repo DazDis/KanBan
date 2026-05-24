@@ -98,5 +98,8 @@ namespace AvaloniaClient.DataBase
             get => _overDeadline;
             set => this.RaiseAndSetIfChanged(ref _overDeadline, value);
         }
+        public string DeadlineBorderBrush => OverDeadline == true ? "#ef4444" : "Transparent";
+
+        public Avalonia.Thickness DeadlineBorderThickness => OverDeadline == true ? new Avalonia.Thickness(2) : new Avalonia.Thickness(0);
     }
 }
