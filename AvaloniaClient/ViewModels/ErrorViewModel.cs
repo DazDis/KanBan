@@ -81,7 +81,10 @@ namespace AvaloniaClient.ViewModels
         {
             _configService.SaveApiUrl(ServerUrl);
             //_healthService.ResetUrl();
+            StatusMessage = "Проверка подключения...";
+
             var health = await _healthService.GetHealthStatusAsync();
+            StatusMessage = "Переподключение...";
 
             if (health.IsAvailable)
             {

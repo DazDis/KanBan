@@ -7,6 +7,7 @@ namespace Server.Database.Entities
         [Key]
         public int Id { get; set; }
         public string Title { get; set; }
+        public string? Color { get; set; }
         public List<UserEntity?> Users { get; set; }
         public List<TaskEntity> Tasks { get; set; } = new();
     }

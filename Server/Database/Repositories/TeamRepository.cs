@@ -23,7 +23,7 @@ public class TeamRepository(ApplicationDbContextFactory contextFactory)
         {
             Id = x.Id,
             Title = x.Title,
-            
+            Color = x.Color,
         }).ToList();
 
     }
@@ -36,6 +36,7 @@ public class TeamRepository(ApplicationDbContextFactory contextFactory)
         {
             //Id = x.Id,
             Title = team.Title,
+            Color = team.Color,
         };
 
         await context.Teams.AddAsync(entity, token);
@@ -54,6 +55,7 @@ public class TeamRepository(ApplicationDbContextFactory contextFactory)
 
         // Обновляем поля
         entity.Title = team.Title;
+        entity.Color = team.Color;
 
         await context.SaveChangesAsync(token);
 
