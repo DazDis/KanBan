@@ -76,7 +76,13 @@ namespace AvaloniaClient.ViewModels
             get => _isAddColumnOpen;
             set => this.RaiseAndSetIfChanged(ref _isAddColumnOpen, value);
         }
-        public EditColumnViewModel EditColumn { get; private set; }
+
+        private EditColumnViewModel _editColumn;
+        public EditColumnViewModel EditColumn
+        {
+            get => _editColumn;
+            set => this.RaiseAndSetIfChanged(ref _editColumn, value);
+        }
         public bool IsEditColumnOpen
         {
             get => _isEditColumnOpen;

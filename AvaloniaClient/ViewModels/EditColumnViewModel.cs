@@ -5,7 +5,7 @@ using System.Reactive;
 
 namespace AvaloniaClient.ViewModels
 {
-	public class EditColumnViewModel : ReactiveObject
+	public class EditColumnViewModel : ViewModelBase
     {
         private readonly ColumnModel _column;
 
@@ -31,12 +31,8 @@ namespace AvaloniaClient.ViewModels
             {
                 try
                 {
+                    _column.Title = Title;
                     return _column;
-                    //return new ColumnDTO
-                    //{
-                    //    Id = _column.Id,
-                    //    Title = Title
-                    //};
                 }
                 catch (Exception ex)
                 {
