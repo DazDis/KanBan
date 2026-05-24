@@ -23,61 +23,56 @@
         <Grid Grid.Row="1" ColumnDefinitions="2*,3*,1.5*" ColumnSpacing="15">
             <!-- ========== КОМАНДЫ ========== -->
             <Border Grid.Column="0" Background="#F0F0F0" CornerRadius="8" Padding="10">
-                <StackPanel>
-                    <TextBlock Text="Команды" FontWeight="Bold" FontSize="16" Margin="0,0,0,10" />
-                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,10">
-                        <Button Content="➕ Добавить" Command="{Binding AddTeamCommand}" />
-                        <Button Content="🗑 Удалить" Command="{Binding DeleteTeamCommand}" />
-                        <Button Content="💾 Сохранить" Command="{Binding SaveAllTeamsCommand}" />
-                    </StackPanel>
+    <Grid RowDefinitions="Auto,Auto,*" RowSpacing="10">
 
-                    <ListBox ItemsSource="{Binding Teams}"
-                             SelectedItem="{Binding SelectedTeam}"
-                             MaxHeight="400" />
-                </StackPanel>
-            </Border>
+        <TextBlock Text="Команды"
+                   FontWeight="Bold"
+                   FontSize="16" />
 
-            <!-- ========== ПОЛЬЗОВАТЕЛИ ========== -->
-            <Border Grid.Column="1" Background="#F0F0F0" CornerRadius="8" Padding="10">
-                <StackPanel>
-                    <TextBlock Text="Пользователи" FontWeight="Bold" FontSize="16" Margin="0,0,0,10" />
-                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,10">
-                        <Button Content="➕ Добавить" Command="{Binding AddUserCommand}" />
-                        <Button Content="🗑 Удалить" Command="{Binding DeleteUserCommand}" />
-                        <Button Content="💾 Сохранить" Command="{Binding SaveAllUsersCommand}" />
-                    </StackPanel>
+        <StackPanel Grid.Row="1" Orientation="Horizontal" Spacing="8">
+            <Button Content="➕ Добавить" Command="{Binding AddTeamCommand}" />
+            <Button Content="🗑 Удалить" Command="{Binding DeleteTeamCommand}" />
+            <Button Content="💾 Сохранить" Command="{Binding SaveAllTeamsCommand}" />
+        </StackPanel>
 
-                    <DataGrid ItemsSource="{Binding Users}"
-                              SelectedItem="{Binding SelectedUser}"
-                              AutoGenerateColumns="False">
-                        <DataGrid.Columns>
-                            <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" IsReadOnly="True" />
-                            <DataGridTextColumn Header="Имя" Binding="{Binding FirstName, Mode=TwoWay}" Width="*" />
-                            <DataGridTextColumn Header="Фамилия" Binding="{Binding LastName, Mode=TwoWay}" Width="*" />
-                            <DataGridTextColumn Header="Email" Binding="{Binding Email, Mode=TwoWay}" Width="*" />
-                        </DataGrid.Columns>
-                    </DataGrid>
-                </StackPanel>
-            </Border>
+        <ScrollViewer Grid.Row="2"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
 
-            <!-- ========== ТЕГИ ========== -->
-            <Border Grid.Column="2" Background="#F0F0F0" CornerRadius="8" Padding="10">
-                <StackPanel>
-                    <TextBlock Text="Теги" FontWeight="Bold" FontSize="16" Margin="0,0,0,10" />
-                    <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,0,0,10">
-                        <Button Content="➕ Добавить" Command="{Binding AddLabelCommand}" />
-                        <Button Content="🗑 Удалить" Command="{Binding DeleteLabelCommand}" />
-                        <Button Content="💾 Сохранить" Command="{Binding SaveAllLabelsCommand}" />
-                    </StackPanel>
+            <ItemsControl ItemsSource="{Binding Teams}">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <WrapPanel Orientation="Horizontal"
+                                   ItemWidth="260"
+                                   ItemHeight="320" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
 
-                    <ListBox ItemsSource="{Binding Labels}"
-                             SelectedItem="{Binding SelectedLabel}"
-                             MaxHeight="400">
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border Width="250"
+                                Height="300"
+                                Margin="5"
+                                Padding="10"
+                                CornerRadius="10"
+                                Background="#FFFFFF"
+                                BorderBrush="#D0D0D0"
+                                BorderThickness="1">
+
+                            <StackPanel Spacing="10">
+
                                 <Grid ColumnDefinitions="*,Auto">
-                                    <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
-                                    <Button Grid.Column="1" Width="40" Height="40" Margin="8,0,0,0" CornerRadius="4"
+
+                                    <TextBox Text="{Binding Title, Mode=TwoWay}"
+                                             FontWeight="Bold"
+                                             FontSize="16"
+                                             BorderThickness="0"
+                                             Background="Transparent" />
+
+                                    <Button Grid.Column="1"
+                                            Width="36"
+                                            Height="36"
+                                            CornerRadius="6"
                                             Background="{Binding Color}">
                                         <Button.Flyout>
                                             <Flyout>
@@ -85,12 +80,126 @@
                                             </Flyout>
                                         </Button.Flyout>
                                     </Button>
+
                                 </Grid>
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
-                    </ListBox>
-                </StackPanel>
-            </Border>
+
+                                <Border Background="#F7F7F7"
+                                        CornerRadius="6"
+                                        Padding="5"
+                                        MinHeight="220">
+
+                                    <ListBox ItemsSource="{Binding Users}">
+                                        <ListBox.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Padding="8"
+                                                        Margin="0,0,0,5"
+                                                        CornerRadius="6"
+                                                        Background="#ECECEC">
+                                                    <TextBlock Text="{Binding FirstName}" />
+                                                </Border>
+                                            </DataTemplate>
+                                        </ListBox.ItemTemplate>
+                                    </ListBox>
+
+                                </Border>
+
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </ScrollViewer>
+
+    </Grid>
+</Border>
+
+            <!-- ========== ПОЛЬЗОВАТЕЛИ ========== -->
+          <Border Grid.Column="1"
+        Background="#F0F0F0"
+        CornerRadius="8"
+        Padding="10">
+
+    <Grid RowDefinitions="Auto,Auto,*" RowSpacing="10">
+
+        <TextBlock Text="Пользователи"
+                   FontWeight="Bold"
+                   FontSize="16"/>
+
+        <StackPanel Grid.Row="1"
+                    Orientation="Horizontal"
+                    Spacing="8">
+            <Button Content="➕ Добавить" Command="{Binding AddUserCommand}" />
+            <Button Content="🗑 Удалить" Command="{Binding DeleteUserCommand}" />
+            <Button Content="💾 Сохранить" Command="{Binding SaveAllUsersCommand}" />
+        </StackPanel>
+
+        <DataGrid Grid.Row="2"
+                  ItemsSource="{Binding Users}"
+                  SelectedItem="{Binding SelectedUser}"
+                  AutoGenerateColumns="False">
+
+            <DataGrid.Columns>
+                <DataGridTextColumn Header="ID" Binding="{Binding Id}" Width="60" IsReadOnly="True" />
+                <DataGridTextColumn Header="Имя" Binding="{Binding FirstName, Mode=TwoWay}" Width="*" />
+                <DataGridTextColumn Header="Фамилия" Binding="{Binding LastName, Mode=TwoWay}" Width="*" />
+                <DataGridTextColumn Header="Email" Binding="{Binding Email, Mode=TwoWay}" Width="*" />
+            </DataGrid.Columns>
+
+        </DataGrid>
+
+    </Grid>
+</Border>
+
+            <!-- ========== ТЕГИ ========== -->
+<Border Grid.Column="2"
+        Background="#F0F0F0"
+        CornerRadius="8"
+        Padding="10">
+
+    <Grid RowDefinitions="Auto,Auto,*" RowSpacing="10">
+
+        <TextBlock Text="Теги"
+                   FontWeight="Bold"
+                   FontSize="16"/>
+
+        <StackPanel Grid.Row="1"
+                    Orientation="Horizontal"
+                    Spacing="8">
+            <Button Content="➕ Добавить" Command="{Binding AddLabelCommand}" />
+            <Button Content="🗑 Удалить" Command="{Binding DeleteLabelCommand}" />
+            <Button Content="💾 Сохранить" Command="{Binding SaveAllLabelsCommand}" />
+        </StackPanel>
+
+        <!-- УБРАЛ MaxHeight -->
+        <ListBox Grid.Row="2"
+                 ItemsSource="{Binding Labels}"
+                 SelectedItem="{Binding SelectedLabel}">
+
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=LostFocus}" />
+
+                        <Button Grid.Column="1"
+                                Width="40"
+                                Height="40"
+                                Margin="8,0,0,0"
+                                CornerRadius="4"
+                                Background="{Binding Color}">
+                            <Button.Flyout>
+                                <Flyout>
+                                    <ColorPicker Color="{Binding Color, Mode=TwoWay}" />
+                                </Flyout>
+                            </Button.Flyout>
+                        </Button>
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+
+        </ListBox>
+
+    </Grid>
+</Border>
         </Grid>
         <TextBlock Grid.Row="2" Text="{Binding Message}" FontWeight="Bold" FontSize="16" Margin="0,0,0,10" />
     </Grid>
