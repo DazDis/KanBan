@@ -13,6 +13,7 @@
         public List<int?> LabelIds { get; set; }
         public List<LabelDTO> Labels { get; set; } = new();
         public int Position { get; set; }
+        public bool IsCompleted { get; set; }
 
     }
 }
