@@ -14,12 +14,12 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
 {
     private ApplicationDbContextFactory _contextFactory = contextFactory;
 
-    public async Task<IReadOnlyList<TaskDTO>> GetTasksAsync()
+    public async Task<IReadOnlyList<TaskDTO>> GetTasksAsync(CancellationToken token = default)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
         // var entities = await context.Tasks.ToListAsync();
-        var entities = await context.Tasks.Include(x => x.Users).Include(x => x.Labels).OrderBy(t => t.Position).ToListAsync();
+        var entities = await context.Tasks.Include(x => x.Users).Include(x => x.Labels).OrderBy(t => t.Position).ToListAsync(token);
 
         return entities.Select(x => new TaskDTO
         {
@@ -38,20 +38,20 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
 
     }
 
-    public async Task AddTaskAsync(TaskDTO task)
+    public async Task AddTaskAsync(TaskDTO task, CancellationToken token = default)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
         // загрузка меток из БД
         var labels = await context.Labels
             .Where(l => task.LabelIds.Contains(l.Id))
-            .ToListAsync();
+            .ToListAsync(token);
         var users = await context.Users
             .Where(l => task.UserIds.Contains(l.UserId))
-            .ToListAsync();
+            .ToListAsync(token);
         var teams = await context.Teams
             .Where(l => task.TeamIds.Contains(l.Id))
-            .ToListAsync();
+            .ToListAsync(token);
 
         var entity = new TaskEntity
         {
@@ -67,11 +67,11 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
             Position = task.Position,
         };
 
-        await context.Tasks.AddAsync(entity);
-        await context.SaveChangesAsync();
+        await context.Tasks.AddAsync(entity, token);
+        await context.SaveChangesAsync(token);
         task.Id = entity.Id;
     }
-    public async Task UpdateTaskAsync(TaskDTO task)
+    public async Task UpdateTaskAsync(TaskDTO task, CancellationToken token = default)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
@@ -92,21 +92,21 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
         entity.Users.Clear();
         entity.Users = await context.Users
             .Where(u => task.UserIds.Contains(u.UserId))
-            .ToListAsync();
+            .ToListAsync(token);
 
         entity.Labels.Clear();
         entity.Labels = await context.Labels
             .Where(l => task.LabelIds.Contains(l.Id))
-            .ToListAsync();
+            .ToListAsync(token);
 
         entity.Teams.Clear();
         entity.Teams = await context.Teams
             .Where(u => task.UserIds.Contains(u.Id))
-            .ToListAsync();
+            .ToListAsync(token);
 
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(token);
     }
-    public async Task DeleteTaskAsync(TaskDTO task)
+    public async Task DeleteTaskAsync(TaskDTO task, CancellationToken token = default)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
@@ -122,18 +122,18 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
         if (entity != null)
         {
             context.Remove(entity);
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(token);
         }
     }
-    public async Task DeleteTaskAsync(int id)
+    public async Task DeleteTaskAsync(int id, CancellationToken token = default)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
-        var entity = await context.Tasks.FindAsync(id);
+        var entity = await context.Tasks.FindAsync(id, token);
         if (entity != null)
         {
             context.Remove(entity);
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(token);
         }
     }
 }

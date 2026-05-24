@@ -1,6 +1,7 @@
 ﻿using AvaloniaClient.Models;
 using System;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AvaloniaClient.Services
@@ -20,11 +21,11 @@ namespace AvaloniaClient.Services
         {
             _apiClient.SetUrl(url);
         }
-        public async Task<HealthStatus> GetHealthStatusAsync()
+        public async Task<HealthStatus> GetHealthStatusAsync(CancellationToken token = default)
         {
             try
             {
-                var response = await _apiClient.GetAsync<object>("api/health");
+                var response = await _apiClient.GetAsync<object>("api/health", token);
                 return new HealthStatus
                 {
                     IsAvailable = true,
@@ -48,11 +49,11 @@ namespace AvaloniaClient.Services
                 };
             }
         }
-        public async Task<HealthStatus> DropDBAsync()
+        public async Task<HealthStatus> DropDBAsync(CancellationToken token = default)
         {
             try
             {
-                var response = await _apiClient.PostAsync<object>("api/health", "");
+                var response = await _apiClient.PostAsync<object>("api/health", "", token);
                 return new HealthStatus
                 {
                     IsAvailable = true,

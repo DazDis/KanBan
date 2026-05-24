@@ -19,31 +19,31 @@ namespace Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetTasks()
+        public async Task<IActionResult> GetTasks(CancellationToken token)
         {
-            var tasks = await _taskRepository.GetTasksAsync();
+            var tasks = await _taskRepository.GetTasksAsync(token);
             return Ok(tasks);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTask(TaskDTO task)
+        public async Task<IActionResult> CreateTask(TaskDTO task, CancellationToken token)
         {
-            await _taskRepository.AddTaskAsync(task);
-            await _hubContext.Clients.All.SendAsync("TaskCreated", task);
+            await _taskRepository.AddTaskAsync(task, token);
+            await _hubContext.Clients.All.SendAsync("TaskCreated", task, token);
             return CreatedAtAction(nameof(GetTasks), new { id = task.Id }, task);
         }
         [HttpPut]
-        public async Task<IActionResult> UpdateTask(TaskDTO task)
+        public async Task<IActionResult> UpdateTask(TaskDTO task, CancellationToken token)
         {
-            await _taskRepository.UpdateTaskAsync(task);
-            await _hubContext.Clients.All.SendAsync("TaskUpdated", task);
+            await _taskRepository.UpdateTaskAsync(task, token);
+            await _hubContext.Clients.All.SendAsync("TaskUpdated", task, token);
             return Ok();
         }
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTask(int id)
+        public async Task<IActionResult> DeleteTask(int id, CancellationToken token)
         {
-            await _taskRepository.DeleteTaskAsync(id);
-            await _hubContext.Clients.All.SendAsync("TaskDeleted", id);
+            await _taskRepository.DeleteTaskAsync(id, token);
+            await _hubContext.Clients.All.SendAsync("TaskDeleted", id, token);
             return NoContent();
         }
     }

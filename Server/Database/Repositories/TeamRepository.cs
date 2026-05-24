@@ -13,11 +13,11 @@ public class TeamRepository(ApplicationDbContextFactory contextFactory)
 {
     private ApplicationDbContextFactory _contextFactory = contextFactory;
 
-    public async Task<IReadOnlyList<TeamDTO>> GetTeamsAsync()
+    public async Task<IReadOnlyList<TeamDTO>> GetTeamsAsync(CancellationToken token = default)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
-        var entities = await context.Teams.ToListAsync();
+        var entities = await context.Teams.ToListAsync(token);
 
         return entities.Select(x => new TeamDTO
         {
@@ -28,7 +28,7 @@ public class TeamRepository(ApplicationDbContextFactory contextFactory)
 
     }
 
-    public async Task AddTeamAsync(TeamDTO team)
+    public async Task AddTeamAsync(TeamDTO team, CancellationToken token = default)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
@@ -38,11 +38,11 @@ public class TeamRepository(ApplicationDbContextFactory contextFactory)
             Title = team.Title,
         };
 
-        await context.Teams.AddAsync(entity);
-        await context.SaveChangesAsync();
+        await context.Teams.AddAsync(entity, token);
+        await context.SaveChangesAsync(token);
         team.Id = entity.Id;
     }
-    public async Task<TeamDTO> UpdateTeamAsync(TeamDTO team)
+    public async Task<TeamDTO> UpdateTeamAsync(TeamDTO team, CancellationToken token = default)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
@@ -55,11 +55,11 @@ public class TeamRepository(ApplicationDbContextFactory contextFactory)
         // Обновляем поля
         entity.Title = team.Title;
 
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(token);
 
         return team;
     }
-    public async Task DeleteTeamAsync(TeamDTO team)
+    public async Task DeleteTeamAsync(TeamDTO team, CancellationToken token = default)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
@@ -72,18 +72,18 @@ public class TeamRepository(ApplicationDbContextFactory contextFactory)
         if (entity != null)
         {
             context.Remove(entity);
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(token);
         }
     }
-    public async Task DeleteTeamAsync(int id)
+    public async Task DeleteTeamAsync(int id, CancellationToken token = default)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
-        var entity = await context.Teams.FindAsync(id);
+        var entity = await context.Teams.FindAsync(id, token);
         if (entity != null)
         {
             context.Remove(entity);
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(token);
         }
     }
 }

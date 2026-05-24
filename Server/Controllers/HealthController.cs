@@ -16,7 +16,7 @@ namespace Server.Controllers
             _context = context;
         }
         [HttpGet]
-        public async Task<IActionResult> GetHealth()
+        public async Task<IActionResult> GetHealth(CancellationToken token)
         {
             return Ok(new
             {
@@ -26,17 +26,17 @@ namespace Server.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> DropDB()
+        public async Task<IActionResult> DropDB(CancellationToken token)
         {
+            token.ThrowIfCancellationRequested();
             try
             {
-                // Проверяем, существует ли БД
-                if (await _context.Database.CanConnectAsync())
+                if (await _context.Database.CanConnectAsync(token))
                 {
-                    await _context.Database.EnsureDeletedAsync();
+                    await _context.Database.EnsureDeletedAsync(token);
                 }
 
-                await _context.Database.EnsureCreatedAsync();
+                await _context.Database.EnsureCreatedAsync(token);
 
                 return Ok(new
                 {

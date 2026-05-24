@@ -21,31 +21,31 @@ namespace Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetTeams()
+        public async Task<IActionResult> GetTeams(CancellationToken token)
         {
-            var team = await _teamRepository.GetTeamsAsync();
+            var team = await _teamRepository.GetTeamsAsync(token);
             return Ok(team);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateTeam(TeamDTO team)
+        public async Task<IActionResult> CreateTeam(TeamDTO team, CancellationToken token)
         {
-            await _teamRepository.AddTeamAsync(team);
-            await _hubContext.Clients.All.SendAsync("TeamCreated", team);
+            await _teamRepository.AddTeamAsync(team, token);
+            await _hubContext.Clients.All.SendAsync("TeamCreated", team, token);
             return CreatedAtAction(nameof(GetTeams), new { id = team.Id }, team);
         }
         [HttpPut]
-        public async Task<IActionResult> UpdateTeam(TeamDTO team)
+        public async Task<IActionResult> UpdateTeam(TeamDTO team, CancellationToken token)
         {
-            await _teamRepository.UpdateTeamAsync(team);
-            await _hubContext.Clients.All.SendAsync("TeamUpdated", team);
+            await _teamRepository.UpdateTeamAsync(team, token);
+            await _hubContext.Clients.All.SendAsync("TeamUpdated", team, token);
             return Ok();
         }
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTeam(int id)
+        public async Task<IActionResult> DeleteTeam(int id, CancellationToken token)
         {
-            await _teamRepository.DeleteTeamAsync(id);
-            await _hubContext.Clients.All.SendAsync("TeamDeleted", id);
+            await _teamRepository.DeleteTeamAsync(id, token);
+            await _hubContext.Clients.All.SendAsync("TeamDeleted", id, token);
             return NoContent();
         }
     }

@@ -2,6 +2,7 @@
 using AvaloniaClient.DataBase;
 using Microsoft.AspNetCore.SignalR.Client;
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AvaloniaClient.Services;
@@ -36,7 +37,7 @@ public class SignalRService
         _configService = configService;
     }
 
-    public async Task StartAsync()
+    public async Task StartAsync(CancellationToken token = default)
     {
         var baseUrl = _configService.GetApiUrl();
         _hubConnection = new HubConnectionBuilder()
@@ -118,7 +119,7 @@ public class SignalRService
         {
             TeamDeleted?.Invoke(id);
         });
-        await _hubConnection.StartAsync();
+        await _hubConnection.StartAsync(token);
     }
 
     public async Task StopAsync()
@@ -130,11 +131,11 @@ public class SignalRService
     }
 
     // Отправка обновления на сервер (если нужно)
-    public async Task SendTaskUpdate(TaskModel task)
+    public async Task SendTaskUpdate(TaskModel task, CancellationToken token = default)
     {
         if (_hubConnection != null)
         {
-            await _hubConnection.InvokeAsync("SendTaskUpdate", task);
+            await _hubConnection.InvokeAsync("SendTaskUpdate",token, task);
         }
     }
 }

@@ -11,6 +11,7 @@ using System.Data.Common;
 using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace AvaloniaClient.ViewModels
@@ -19,11 +20,69 @@ namespace AvaloniaClient.ViewModels
     {
         public string? UrlPathSegment => "board";
         public IScreen HostScreen { get; }
+        
+        private CancellationTokenSource? _cts;
+
         private readonly IColumnService _columnService;
         private readonly ITaskService _taskService;
         private readonly IUserService _userService;
         private readonly ILabelService _labelService;
         private readonly ITeamService _teamService;
+
+
+        // задачи
+
+        private AddTaskViewModel _addTask;
+        public AddTaskViewModel AddTask
+        {
+            get => _addTask;
+            set => this.RaiseAndSetIfChanged(ref _addTask, value);
+        }
+
+        private bool _isAddTaskOpen;
+        public bool IsAddTaskOpen
+        {
+            get => _isAddTaskOpen;
+            set => this.RaiseAndSetIfChanged(ref _isAddTaskOpen, value);
+        }
+
+        private bool _isEditTaskOpen;
+
+        public EditTaskViewModel _editTask;
+        public EditTaskViewModel EditTask
+        {
+            get => _editTask;
+            set => this.RaiseAndSetIfChanged(ref _editTask, value);
+        }
+        public bool IsEditTaskOpen
+        {
+            get => _isEditTaskOpen;
+            set => this.RaiseAndSetIfChanged(ref _isEditTaskOpen, value);
+        }
+
+        // колонки
+
+        private AddColumnViewModel _addColumn;
+        public AddColumnViewModel AddColumn
+        {
+            get => _addColumn;
+            set => this.RaiseAndSetIfChanged(ref _addColumn, value);
+        }
+
+        private bool _isAddColumnOpen;
+        public bool IsAddColumnOpen
+        {
+            get => _isAddColumnOpen;
+            set => this.RaiseAndSetIfChanged(ref _isAddColumnOpen, value);
+        }
+        public EditColumnViewModel EditColumn { get; private set; }
+        public bool IsEditColumnOpen
+        {
+            get => _isEditColumnOpen;
+            set => this.RaiseAndSetIfChanged(ref _isEditColumnOpen, value);
+        }
+        private bool _isEditColumnOpen;
+
         public ObservableCollection<ColumnModel> Columns { get; } = new();
         private IReadOnlyList<TaskModel> Tasks = new List<TaskModel>();
 
@@ -59,7 +118,6 @@ namespace AvaloniaClient.ViewModels
 
             _signalRService = signalRService;
 
-            // Подписываемся на реальные обновления
             _signalRService.TaskUpdated += OnTaskUpdatedFromServer;
             _signalRService.TaskCreated += OnTaskCreatedFromServer;
             _signalRService.TaskDeleted += OnTaskDeletedFromServer;
@@ -95,22 +153,26 @@ namespace AvaloniaClient.ViewModels
         {
             if (!IsInitialized)
             {
+                _cts?.Cancel();
+                _cts = new CancellationTokenSource();
+                var token = _cts.Token;
                 await _signalRService.StopAsync();
-                await _signalRService.StartAsync();
-                await ReloadData();
-                await LoadColumns();
+                await _signalRService.StartAsync(token);
+                await ReloadDataAsync(token);
+                await LoadColumnsAsync(token);
                 IsInitialized = true;
             }
         }
 
-        private async Task ReloadData()
+        private async Task ReloadDataAsync(CancellationToken token)
         {
-            Tasks = await _taskService.GetTasksAsync() ?? new List<TaskModel>();
+            Tasks = await _taskService.GetTasksAsync(token) ?? new List<TaskModel>();
         }
 
-        private async Task LoadColumns()
+        private async Task LoadColumnsAsync(CancellationToken token)
         {
-            var columns = await _columnService.GetColumnsAsync();
+           
+            var columns = await _columnService.GetColumnsAsync(token);
 
             foreach (var column in columns ?? new())
             {
@@ -129,6 +191,7 @@ namespace AvaloniaClient.ViewModels
                 Columns[task.ColumnId - 1].Tasks.Add(task);
             }
         }
+        #region Подписки на SignalR
         private async void OnTaskUpdatedFromServer(TaskModel task)
         {
             await Dispatcher.UIThread.InvokeAsync(() =>
@@ -158,6 +221,7 @@ namespace AvaloniaClient.ViewModels
             {
                 foreach (var column in Columns ?? new())
                 {
+        
                     var existing = column.Tasks.FirstOrDefault(t => t.Id == id);
                     if (existing != null)
                     {
@@ -195,6 +259,9 @@ namespace AvaloniaClient.ViewModels
                     Columns.Remove(existing);
             });
         }
+
+        #endregion
+
         public string GetTimeLeft(TaskModel task)
         {
             if (!task.Deadline.HasValue)
@@ -227,22 +294,7 @@ namespace AvaloniaClient.ViewModels
             return task.Deadline.Value.ToLocalTime() <= Now.AddHours(24);
         }
 
-        // колонки
-
-        private AddColumnViewModel _addColumn;
-        public AddColumnViewModel AddColumn
-        {
-            get => _addColumn;
-            set => this.RaiseAndSetIfChanged(ref _addColumn, value);
-        }
-
-        private bool _isAddColumnOpen;
-        public bool IsAddColumnOpen
-        {
-            get => _isAddColumnOpen;
-            set => this.RaiseAndSetIfChanged(ref _isAddColumnOpen, value);
-        }
-
+        #region Колонки
         private void OpenAddColumnDialog()
         {
             AddColumn = new AddColumnViewModel();
@@ -261,89 +313,6 @@ namespace AvaloniaClient.ViewModels
                 IsAddColumnOpen = false;
             });
         }
-
-        public EditColumnViewModel EditColumn { get; private set; }
-        public bool IsEditColumnOpen
-        {
-            get => _isEditColumnOpen;
-            set => this.RaiseAndSetIfChanged(ref _isEditColumnOpen, value);
-        }
-        private bool _isEditColumnOpen;
-        
-        private async Task CreateColumn(ColumnDTO dto)
-        {
-            try
-            {
-                IsAddColumnOpen = false;
-
-                var created = await _columnService.CreateColumnAsync(dto);
-
-                /* if (created != null)
-                 {
-                     Columns.Add(new ColumnModel
-                     {
-                         Id = created.Id,
-                         Title = created.Title,
-                         Tasks = new ObservableCollection<TaskModel>()
-                     });
-                 }*/
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.Message);
-            }
-        }
-
-        // задачи
-
-        private AddTaskViewModel _addTask;
-        public AddTaskViewModel AddTask
-        {
-            get => _addTask;
-            set => this.RaiseAndSetIfChanged(ref _addTask, value);
-        }
-
-        private bool _isAddTaskOpen;
-        public bool IsAddTaskOpen
-        {
-            get => _isAddTaskOpen;
-            set => this.RaiseAndSetIfChanged(ref _isAddTaskOpen, value);
-        }
-
-        private bool _isEditTaskOpen;
-
-        public EditTaskViewModel _editTask;
-        public EditTaskViewModel EditTask
-        {
-            get => _editTask;
-            set => this.RaiseAndSetIfChanged(ref _editTask, value);
-        }
-        public bool IsEditTaskOpen
-        {
-            get => _isEditTaskOpen;
-            set => this.RaiseAndSetIfChanged(ref _isEditTaskOpen, value);
-        }
-
-        private async Task OpenAddTaskDialogAsync(int columnId)
-        {
-            AddTask = new AddTaskViewModel(columnId, _navigationService, _userService, _labelService, _teamService);
-            IsAddTaskOpen = true;
-
-            AddTask.SaveCommand.Subscribe(task =>
-            {
-                if (task != null)
-                {
-                    CreateTask(task);
-                }
-            });
-
-            AddTask.CancelCommand.Subscribe(_ =>
-            {
-                IsAddTaskOpen = false;
-            });
-        }
-
-
         private void OpenEditColumnDialog(ColumnModel column)
         {
             EditColumn = new EditColumnViewModel(column);
@@ -387,7 +356,54 @@ namespace AvaloniaClient.ViewModels
             });
 
         }
+        
+        private async Task CreateColumn(ColumnDTO dto)
+        {
+            try
+            {
+                IsAddColumnOpen = false;
 
+                var created = await _columnService.CreateColumnAsync(dto);
+
+                /* if (created != null)
+                 {
+                     Columns.Add(new ColumnModel
+                     {
+                         Id = created.Id,
+                         Title = created.Title,
+                         Tasks = new ObservableCollection<TaskModel>()
+                     });
+                 }*/
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+        }
+
+        #endregion
+
+        #region Задачи
+
+
+        private async Task OpenAddTaskDialogAsync(int columnId)
+        {
+            AddTask = new AddTaskViewModel(columnId, _navigationService, _userService, _labelService, _teamService);
+            IsAddTaskOpen = true;
+
+            AddTask.SaveCommand.Subscribe(task =>
+            {
+                if (task != null)
+                {
+                    CreateTask(task);
+                }
+            });
+
+            AddTask.CancelCommand.Subscribe(_ =>
+            {
+                IsAddTaskOpen = false;
+            });
+        }
 
 
 
@@ -436,14 +452,6 @@ namespace AvaloniaClient.ViewModels
         }
 
 
-
-
-
-
-
-
-
-
         private async Task CreateTask(TaskModel task)
         {
             try
@@ -464,15 +472,13 @@ namespace AvaloniaClient.ViewModels
             }
         }
 
-        
-    
-
-
-
+        #endregion
         private async Task NavigateToSettingsAsync()
         {
             await _navigationService.NavigateToSettingsAsync();
         }
+
+        #region Drag-and-Drop
         public void ReorderTaskInColumn(int columnId, int oldPosition, int newPosition)
         {
             var column = Columns.First(c => c.Id == columnId);
@@ -525,5 +531,6 @@ namespace AvaloniaClient.ViewModels
                 await _columnService.UpdateColumnAsync(columns[i]);
             }
         }
+        #endregion
     }
 }

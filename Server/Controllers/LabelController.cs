@@ -21,28 +21,29 @@ namespace Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetLabels()
+        public async Task<IActionResult> GetLabels(CancellationToken token)
         {
-            var labels = await _labelRepository.GetLabelsAsync();
+            var labels = await _labelRepository.GetLabelsAsync(token);
             return Ok(labels);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateLabel(LabelDTO label)
+        public async Task<IActionResult> CreateLabel(LabelDTO label, CancellationToken token)
         {
-            await _labelRepository.AddLabelAsync(label);
-            await _hubContext.Clients.All.SendAsync("LabelCreated", label);
+            await _labelRepository.AddLabelAsync(label, token);
+            await _hubContext.Clients.All.SendAsync("LabelCreated", label, token);
             return CreatedAtAction(nameof(GetLabels), new { id = label.Id }, label);
+            
         }
         [HttpPut]
-        public async Task<IActionResult> UpdateLabel(LabelDTO label)
+        public async Task<IActionResult> UpdateLabel(LabelDTO label, CancellationToken token)
         {
             await _labelRepository.UpdateLabelAsync(label);
             await _hubContext.Clients.All.SendAsync("LabelUpdated", label);
             return Ok();
         }
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteLabel(int id)
+        public async Task<IActionResult> DeleteLabel(int id, CancellationToken token)
         {
             await _labelRepository.DeleteLabelAsync(id);
             await _hubContext.Clients.All.SendAsync("LabelDeleted", id);

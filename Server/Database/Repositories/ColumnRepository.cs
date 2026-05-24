@@ -14,17 +14,17 @@ public class ColumnRepository(ApplicationDbContextFactory contextFactory)
 {
     private ApplicationDbContextFactory _contextFactory = contextFactory;
 
-    public async Task<IReadOnlyList<ColumnEntity>> GetColumnsAsync()
+    public async Task<IReadOnlyList<ColumnEntity>> GetColumnsAsync(CancellationToken token = default)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
-        var entities = await context.Columns.ToListAsync();
+        var entities = await context.Columns.ToListAsync(token);
 
         return entities;
 
     }
 
-    public async Task AddColumnAsync(ColumnDTO column)
+    public async Task AddColumnAsync(ColumnDTO column, CancellationToken token = default)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
@@ -35,15 +35,15 @@ public class ColumnRepository(ApplicationDbContextFactory contextFactory)
             Position = column.Position,
         };
 
-        await context.Columns.AddAsync(entity);
-        await context.SaveChangesAsync();
+        await context.Columns.AddAsync(entity, token);
+        await context.SaveChangesAsync(token);
         column.Id = entity.Id;
     }
-    public async Task UpdateColumnAsync(ColumnDTO column)
+    public async Task UpdateColumnAsync(ColumnDTO column, CancellationToken token = default)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
-        var entity = await context.Columns.FindAsync(column.Id);
+        var entity = await context.Columns.FindAsync(column.Id, token);
 
 
         if (entity == null)
@@ -52,18 +52,18 @@ public class ColumnRepository(ApplicationDbContextFactory contextFactory)
         // Обновляем поля
         entity.Title = column.Title;
         entity.Position = column.Position;
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(token);
     }
 
-    public async Task DeleteColumnAsync(int id)
+    public async Task DeleteColumnAsync(int id, CancellationToken token = default)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
-        var entity = await context.Columns.FindAsync(id);
+        var entity = await context.Columns.FindAsync(id, token);
         if (entity != null)
         {
             context.Remove(entity);
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(token);
         }
     }
 }

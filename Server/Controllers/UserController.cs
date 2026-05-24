@@ -21,31 +21,31 @@ namespace Server.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetUsers()
+        public async Task<IActionResult> GetUsers(CancellationToken token)
         {
-            var users = await _userRepository.GetUsersAsync();
+            var users = await _userRepository.GetUsersAsync(token);
             return Ok(users);
         }
 
         [HttpPost]
-        public async Task<IActionResult> CreateUser(UserDTO user)
+        public async Task<IActionResult> CreateUser(UserDTO user, CancellationToken token)
         {
-            await _userRepository.AddUserAsync(user);
-            await _hubContext.Clients.All.SendAsync("UserCreated", user);
+            await _userRepository.AddUserAsync(user, token);
+            await _hubContext.Clients.All.SendAsync("UserCreated", user, token);
             return CreatedAtAction(nameof(GetUsers), new { id = user.Id }, user);
         }
         [HttpPut]
-        public async Task<IActionResult> UpdateUser(UserDTO user)
+        public async Task<IActionResult> UpdateUser(UserDTO user, CancellationToken token)
         {
-            await _userRepository.UpdateUserAsync(user);
-            await _hubContext.Clients.All.SendAsync("UserUpdated", user);
+            await _userRepository.UpdateUserAsync(user, token);
+            await _hubContext.Clients.All.SendAsync("UserUpdated", user, token);
             return Ok();
         }
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteUser(int id)
+        public async Task<IActionResult> DeleteUser(int id, CancellationToken token)
         {
-            await _userRepository.DeleteUserAsync(id);
-            await _hubContext.Clients.All.SendAsync("UserDeleted", id);
+            await _userRepository.DeleteUserAsync(id, token);
+            await _hubContext.Clients.All.SendAsync("UserDeleted", id, token);
             return NoContent();
         }
     }

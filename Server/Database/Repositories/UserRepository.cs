@@ -14,11 +14,11 @@ public class UserRepository(ApplicationDbContextFactory contextFactory)
 {
     private ApplicationDbContextFactory _contextFactory = contextFactory;
 
-    public async Task<IReadOnlyList<UserDTO>> GetUsersAsync()
+    public async Task<IReadOnlyList<UserDTO>> GetUsersAsync(CancellationToken token = default)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
-        var entities = await context.Users.ToListAsync();
+        var entities = await context.Users.ToListAsync(token);
 
         return entities.Select(x => new UserDTO
         {
@@ -30,7 +30,7 @@ public class UserRepository(ApplicationDbContextFactory contextFactory)
 
     }
 
-    public async Task AddUserAsync(UserDTO user)
+    public async Task AddUserAsync(UserDTO user, CancellationToken token = default)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
@@ -42,11 +42,11 @@ public class UserRepository(ApplicationDbContextFactory contextFactory)
             Email = user.Email,
         };
 
-        await context.Users.AddAsync(entity);
-        await context.SaveChangesAsync();
+        await context.Users.AddAsync(entity, token);
+        await context.SaveChangesAsync(token);
         user.Id = entity.UserId;
     }
-    public async Task<UserDTO> UpdateUserAsync(UserDTO user)
+    public async Task<UserDTO> UpdateUserAsync(UserDTO user, CancellationToken token = default)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
@@ -61,11 +61,11 @@ public class UserRepository(ApplicationDbContextFactory contextFactory)
         entity.LastName = user.LastName;
         entity.Email = user.Email;
 
-        await context.SaveChangesAsync();
+        await context.SaveChangesAsync(token);
 
         return user;
     }
-    public async Task DeleteUserAsync(UserDTO user)
+    public async Task DeleteUserAsync(UserDTO user, CancellationToken token = default)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
@@ -80,18 +80,18 @@ public class UserRepository(ApplicationDbContextFactory contextFactory)
         if (entity != null)
         {
             context.Remove(entity);
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(token);
         }
     }
-    public async Task DeleteUserAsync(int id)
+    public async Task DeleteUserAsync(int id, CancellationToken token = default)
     {
         using var context = _contextFactory.CreateApplicationContext();
 
-        var entity = await context.Users.FindAsync(id);
+        var entity = await context.Users.FindAsync(id, token);
         if (entity != null)
         {
             context.Remove(entity);
-            await context.SaveChangesAsync();
+            await context.SaveChangesAsync(token);
         }
     }
 }

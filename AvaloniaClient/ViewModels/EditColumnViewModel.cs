@@ -27,7 +27,7 @@ namespace AvaloniaClient.ViewModels
 
             Title = column.Title;
 
-            SaveCommand = ReactiveCommand.Create(() =>
+            SaveCommand = ReactiveCommand.CreateFromTask(async () => 
             {
                 try
                 {
