@@ -19,7 +19,7 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
         using var context = _contextFactory.CreateApplicationContext();
 
         // var entities = await context.Tasks.ToListAsync();
-        var entities = await context.Tasks.Include(x => x.Users).Include(x => x.Labels).OrderBy(t => t.Position).ToListAsync(token);
+        var entities = await context.Tasks.Include(x => x.Users).Include(x => x.Labels).Include(x => x.Teams).OrderBy(t => t.Position).ToListAsync(token);
 
         return entities.Select(x => new TaskDTO
         {
@@ -86,6 +86,7 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
         var entity = await context.Tasks
             .Include(t => t.Users)
             .Include(t => t.Labels)
+            .Include(t => t.Teams)
             .FirstOrDefaultAsync(t => t.Id == task.Id);
 
         if (entity == null)
@@ -112,7 +113,7 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
 
         entity.Teams.Clear();
         entity.Teams = await context.Teams
-            .Where(u => task.UserIds.Contains(u.Id))
+            .Where(t => task.TeamIds.Contains(t.Id))
             .ToListAsync(token);
 
         await context.SaveChangesAsync(token);

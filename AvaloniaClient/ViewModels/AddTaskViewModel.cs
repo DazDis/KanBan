@@ -152,6 +152,7 @@ namespace AvaloniaClient.ViewModels
                         UserIds = SelectedUser != null ? new List<int?> { SelectedUser.Id } : new(),
                         LabelIds = Labels.Where(x => x.IsSelected).Select(x => (int?)x.Id).ToList(),
                         TeamIds = SelectedTeam != null ? new List<int?> { SelectedTeam.Id } : new(),
+                        Team = SelectedTeam,
                         Labels = new ObservableCollection<LabelModel>(Labels.Where(x => x.IsSelected))
                     };
                 }

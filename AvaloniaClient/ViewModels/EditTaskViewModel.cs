@@ -162,7 +162,11 @@ namespace AvaloniaClient.ViewModels
             SaveCommand = ReactiveCommand.CreateFromTask(async () =>
             {
                 var changes = new List<(string action, string old, string _new)>();
-
+                _task.UserIds = SelectedUser != null ? new List<int?> { SelectedUser.Id } : new();
+                _task.LabelIds = Labels.Where(x => x.IsSelected).Select(x => (int?)x.Id).ToList();
+                _task.TeamIds = SelectedTeam != null ? new List<int?> { SelectedTeam.Id } : new();
+                _task.Labels = new ObservableCollection<LabelModel>(Labels.Where(x => x.IsSelected));
+                _task.Team = SelectedTeam;
                 if (Title != _originalTitle)
                     changes.Add(("Название", _originalTitle ?? "", Title ?? ""));
 
@@ -178,14 +182,12 @@ namespace AvaloniaClient.ViewModels
                 if (SelectedColor != _originalColor)
                     changes.Add(("Цвет", _originalColor ?? "По умолчанию", SelectedColor ?? ""));
 
-                // Применяем изменения
                 _task.Title = Title;
                 _task.Description = Description;
                 _task.Deadline = Deadline;
                 _task.ColumnId = SelectedColumnStatus?.Id ?? _columnId;
                 _task.Color = SelectedColor;
 
-                // Записываем историю на сервер
                 foreach (var change in changes)
                 {
                     await _taskService.AddHistoryEntryAsync(_task.Id, change.action, change.old, change._new);
@@ -251,7 +253,7 @@ namespace AvaloniaClient.ViewModels
             //if (_task.TeamIds?.Count > 0)
             //    SelectedTeam = Teams.FirstOrDefault(x => x.Id == _task.TeamIds[0]);
 
-            //SelectedColumnStatus =  Columns.FirstOrDefault(x => x.Id == _task.ColumnId);
+            //SelectedColumnStatus = Columns.FirstOrDefault(x => x.Id == _task.ColumnId);
         }
     }
 }

@@ -156,14 +156,9 @@
                                                             BorderThickness="{Binding DeadlineBorderThickness}">
                                                           <ToolTip.Tip>
                                                             <StackPanel>
-                                                                <TextBlock Text="{Binding Title}"
+                                                                <TextBlock Text="{Binding Team.Title}"
                                                                            FontWeight="Bold"
                                                                            FontSize="14"/>
-
-                                                                <TextBlock Text="{Binding Description}"
-                                                                           FontSize="12"
-                                                                           Width="250"
-                                                                           TextWrapping="Wrap"/>
                                                             </StackPanel>
                                                         </ToolTip.Tip>
                                                         <i:Interaction.Behaviors>
@@ -184,13 +179,9 @@
                                                                        TextWrapping="Wrap"/>
                                                                     <ToolTip.Tip>
                                                             <StackPanel>
-                                                                <TextBlock Text="{Binding Title}"
+                                                                <TextBlock Text="{Binding Team.Title}"
                                                                             FontWeight="Bold"
                                                                             FontSize="14"/>
-                                                                <TextBlock Text="{Binding Description}"
-                                                                            FontSize="12"
-                                                                            TextWrapping="Wrap"
-                                                                            Width="250"/>
                                                             </StackPanel>
                                                         </ToolTip.Tip>
 
@@ -269,7 +260,7 @@
                                                                         Width="24"
                                                                         Height="24"
                                                                         CornerRadius="12"
-                                                                        Background="#d9f99d"/>
+                                                                        Background="{Binding Team.Color}"/>
 
                                                             </Grid>
 
