@@ -11,6 +11,7 @@ using System.Linq;
 using System.Reactive;
 using System.Reactive.Linq;
 using System.Threading.Tasks;
+using System.Windows.Input;
 
 namespace AvaloniaClient.ViewModels
 {
@@ -135,6 +136,7 @@ namespace AvaloniaClient.ViewModels
                 Deadline = null;
             }
         }
+         
 
         public EditTaskViewModel(TaskModel task, IUserService userService, ILabelService labelService, ITeamService teamService, IColumnService columnService, ITaskService taskService)
         {
@@ -164,6 +166,7 @@ namespace AvaloniaClient.ViewModels
                 _task.LabelIds = Labels.Where(x => x.IsSelected).Select(x => (int?)x.Id).ToList();
                 _task.TeamIds = SelectedTeam != null ? new List<int?> { SelectedTeam.Id } : new();
                 _task.Labels = new ObservableCollection<LabelModel>(Labels.Where(x => x.IsSelected));
+                _task.Team = SelectedTeam;
                 if (Title != _originalTitle)
                     changes.Add(("Название", _originalTitle ?? "", Title ?? ""));
 
@@ -193,10 +196,27 @@ namespace AvaloniaClient.ViewModels
                 return (TaskModel?)_task;
             });
 
+            ToggleHistoryCommand = ReactiveCommand.Create(() =>
+            {
+                //IsHistoryVisible = true;
+                IsHistoryVisible = !IsHistoryVisible;
+            });
+
             DeleteCommand = ReactiveCommand.Create(() => _task);
 
             CancelCommand = ReactiveCommand.Create(() => { });
         }
+
+        private bool _isHistoryVisible;
+        public bool IsHistoryVisible
+        {
+            get => _isHistoryVisible;
+            set => this.RaiseAndSetIfChanged(ref _isHistoryVisible, value);
+        }
+
+        public ICommand ToggleHistoryCommand { get; }
+
+       
 
         public async Task LoadAsync()
         {
@@ -233,7 +253,7 @@ namespace AvaloniaClient.ViewModels
             //if (_task.TeamIds?.Count > 0)
             //    SelectedTeam = Teams.FirstOrDefault(x => x.Id == _task.TeamIds[0]);
 
-            //SelectedColumnStatus =  Columns.FirstOrDefault(x => x.Id == _task.ColumnId);
+            //SelectedColumnStatus = Columns.FirstOrDefault(x => x.Id == _task.ColumnId);
         }
     }
 }

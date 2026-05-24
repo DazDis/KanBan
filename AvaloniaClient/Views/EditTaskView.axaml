@@ -3,53 +3,52 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="using:AvaloniaClient.ViewModels"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d"
              x:Class="AvaloniaClient.EditTaskView"
-			 x:DataType="vm:EditTaskViewModel">
+             x:DataType="vm:EditTaskViewModel">
 
-  <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-            
-            <Border Width="320"
-                    Padding="20"
-                    CornerRadius="20"
-                    Background="#F2F2F2">
+    <Grid ColumnDefinitions="*,300"
+          HorizontalAlignment="Center"
+          VerticalAlignment="Center"
+          Margin="20">
 
-    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
-        
-        <Border Width="320"
+        <Border Grid.Column="0"
                 Padding="20"
                 CornerRadius="20"
-                Background="#F2F2F2">
+                Background="#F2F2F2"
+                Margin="0,0,10,0">
 
             <StackPanel Spacing="12">
+
                 <Grid>
                     <TextBlock Text="Изменить задачу"
                                FontSize="20"
-                               FontWeight="SemiBold"
-                               VerticalAlignment="Center"/>
-               <Button Content="✕"
+                               FontWeight="SemiBold"/>
+
+                    <Button Content="✕"
                             HorizontalAlignment="Right"
-                            Width="28" Height="28"
+                            Width="28"
+                            Height="28"
                             Background="Transparent"
                             BorderThickness="0"
-                            FontSize="14"
                             Command="{Binding CancelCommand}"/>
-
                 </Grid>
 
-                <TextBox Watermark="Название..." Text="{Binding Title}"/>
+                <TextBox Watermark="Название..."
+                         Text="{Binding Title}"/>
 
                 <ComboBox PlaceholderText="Исполнитель..."
-                          ItemsSource="{Binding Users}"
-                          SelectedItem="{Binding SelectedUser}">
+                          ItemsSource="{Binding Teams}"
+                          SelectedItem="{Binding SelectedTeam}">
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
-                            <TextBlock Text="{Binding FirstName}"/>
+                            <TextBlock Text="{Binding Title}"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
+
                 </ComboBox>
 
-               <TextBlock Text="Теги"/>
+                <TextBlock Text="Теги"/>
 
                 <Border Height="150"
                         BorderThickness="1"
@@ -79,11 +78,13 @@
                 <ComboBox PlaceholderText="Статус..."
                           ItemsSource="{Binding Columns}"
                           SelectedItem="{Binding SelectedColumnStatus}">
+
                     <ComboBox.ItemTemplate>
                         <DataTemplate>
                             <TextBlock Text="{Binding Title}"/>
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
+
                 </ComboBox>
 
                 <TextBox Watermark="Описание..."
@@ -92,7 +93,7 @@
                          TextWrapping="Wrap"
                          Text="{Binding Description}"/>
 
-                 <TextBlock Text="Цвет задачи"/>
+                <TextBlock Text="Цвет задачи"/>
 
                 <ColorPicker Color="{Binding SelectedColor}"/>
 
@@ -104,59 +105,101 @@
 
                 <TimePicker SelectedTime="{Binding Time}"/>
 
-                 <Grid>
-                    <Button Content="Сохранить"
-                            HorizontalAlignment="Center"
-                            Padding="12,6"
+                <!-- Кнопки -->
+                <Grid ColumnDefinitions="*,*,*"
+                      ColumnSpacing="10">
+
+                    <Button Grid.Column="0"
+                            Content="Сохранить"
+                            Command="{Binding SaveCommand}"
                             Background="#E6E6FA"
                             Foreground="#6C7BFF"
                             CornerRadius="10"
-						    Command="{Binding SaveCommand}"
-						    x:Name="SaveButton"/>
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            HorizontalAlignment="Stretch"/>
 
-                    <Button Content="Удалить"
-                            HorizontalAlignment="Right"
-                            Padding="12,6"
-                            Background="#ffffff"
+                    <Button Grid.Column="1"
+                            Content="Удалить"
+                            Command="{Binding DeleteCommand}"
+                            Background="#FFF"
                             Foreground="#C51D34"
                             CornerRadius="10"
-						    Command="{Binding DeleteCommand}"
-						    x:Name="DeleteButton"/>
-                 </Grid>
-                <Border Padding="10">
-                            <StackPanel Spacing="10">
-                                <TextBlock Text="Журнал изменений"
-                                           FontSize="16"
-                                           FontWeight="SemiBold"/>
-                                
-                                <ScrollViewer MaxHeight="400" VerticalScrollBarVisibility="Auto">
-                                    <ItemsControl ItemsSource="{Binding History}">
-                                        <ItemsControl.ItemTemplate>
-                                            <DataTemplate>
-                                                <Border Background="#F5F5F5"
-                                                        CornerRadius="6"
-                                                        Padding="10"
-                                                        Margin="0,5">
-                                                    <StackPanel Spacing="5">
-                                                        <TextBlock Text="{Binding DisplayText}"
-                                                                   FontSize="12"
-                                                                   FontWeight="SemiBold"/>
-                                                        <TextBlock Text="{Binding Comment}"
-                                                                   FontSize="11"
-                                                                   Foreground="Gray"
-                                                                   IsVisible="{Binding Comment, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
-                                                    </StackPanel>
-                                                </Border>
-                                            </DataTemplate>
-                                        </ItemsControl.ItemTemplate>
-                                    </ItemsControl>
-                                </ScrollViewer>
-                            </StackPanel>
-                        </Border>
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            HorizontalAlignment="Stretch"/>
+
+                    <Button Grid.Column="2"
+                            Content="Журнал"
+                            Command="{Binding ToggleHistoryCommand}"
+                            CornerRadius="10"
+                            Background="#FFF"
+                            Foreground="#6C7BFF"
+                            HorizontalContentAlignment="Center"
+                            VerticalContentAlignment="Center"
+                            HorizontalAlignment="Stretch"/>
+
+                </Grid>
+
             </StackPanel>
 
         </Border>
+
+
+        <Border Grid.Column="1"
+                Padding="15"
+                CornerRadius="20"
+                Background="#F2F2F2"
+                IsVisible="{Binding IsHistoryVisible}">
+
+            <StackPanel Spacing="10">
+
+                <TextBlock Text="Журнал изменений"
+                           FontSize="16"
+                           FontWeight="SemiBold"/>
+
+                <!-- Скролл журнала -->
+                <ScrollViewer VerticalScrollBarVisibility="Auto"
+                              MaxHeight="500">
+
+                    <ItemsControl ItemsSource="{Binding History}">
+
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+
+                                <Border Background="#FFFFFF"
+                                        CornerRadius="6"
+                                        Padding="10"
+                                        Margin="0,5">
+
+                                    <StackPanel Spacing="5">
+
+                                        <TextBlock Text="{Binding DisplayText}"
+                                                   FontSize="12"
+                                                   FontWeight="SemiBold"
+                                                   TextWrapping="Wrap"/>
+
+                                        <TextBlock Text="{Binding Comment}"
+                                                   FontSize="11"
+                                                   Foreground="Gray"
+                                                   TextWrapping="Wrap"
+                                                   IsVisible="{Binding Comment, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+                                    </StackPanel>
+
+                                </Border>
+
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+
+                    </ItemsControl>
+
+                </ScrollViewer>
+
+            </StackPanel>
+
+        </Border>
+
     </Grid>
-                 </Border>
-        </Grid>
+
 </UserControl>

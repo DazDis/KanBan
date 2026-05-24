@@ -90,6 +90,7 @@ namespace AvaloniaClient.ViewModels
         private bool _isEditColumnOpen;
 
         public ObservableCollection<ColumnModel> Columns { get; } = new();
+        public ObservableCollection<TeamModel> Teams { get; } = new();
         private IReadOnlyList<TaskModel> Tasks = new List<TaskModel>();
 
         private bool IsInitialized;
@@ -185,14 +186,22 @@ namespace AvaloniaClient.ViewModels
         {
            
             var columns = await _columnService.GetColumnsAsync(token);
+            var teams = await _teamService.GetTeamsAsync(token);
 
             foreach (var column in columns ?? new())
             {
                 Columns.Add(column);
             }
 
+            foreach (var team in teams ?? new())
+            {
+                Teams.Add(team);
+            }
+
             foreach (var task in Tasks)
             {
+                task.Team = Teams.FirstOrDefault(t => task.TeamIds.Contains(t.Id));
+
                 Columns[task.ColumnId - 1].Tasks.Add(task);
             }
         }
@@ -213,13 +222,17 @@ namespace AvaloniaClient.ViewModels
                     existing.Color = task.Color;
                     existing.Position = task.Position;
                     existing.Labels = task.Labels;
+                    existing.TeamIds = task.TeamIds;
+                    existing.Team = Teams.FirstOrDefault(t => task.TeamIds.Contains(t.Id));
                 }
             });
         }
         private async void OnTaskCreatedFromServer(TaskModel task)
         {
-            await Dispatcher.UIThread.InvokeAsync(() =>
+            await Dispatcher.UIThread.InvokeAsync(async () =>
             {
+                task.Team = Teams.FirstOrDefault(t => task.TeamIds.Contains(t.Id));
+
                 Columns[task.ColumnId - 1].Tasks.Add(task);
             });
         }
