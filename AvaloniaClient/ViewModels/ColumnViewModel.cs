@@ -559,18 +559,33 @@ namespace AvaloniaClient.ViewModels
             // Сохраняем на сервере
             await _taskService.UpdateTaskAsync(task);
         }
-        public async Task ReorderColumnAsync(int oldPosition, int newPosition)
+        public async Task ReorderColumnAsync(ColumnModel draggedColumn, ColumnModel targetColumn)
         {
-            var columns = Columns.OrderBy(c => c.Position).ToList();
+            var oldIndex = Columns.IndexOf(draggedColumn);
+            var newIndex = Columns.IndexOf(targetColumn);
 
-            var column = columns[oldPosition];
-            columns.RemoveAt(oldPosition);
-            columns.Insert(newPosition, column);
+            if (oldIndex == -1 || newIndex == -1) return;
 
-            for (int i = 0; i < columns.Count; i++)
+            Columns.Move(oldIndex, newIndex);
+
+            for (int i = 0; i < Columns.Count; i++)
             {
-                columns[i].Position = i;
-                await _columnService.UpdateColumnAsync(columns[i]);
+                Columns[i].Position = i;
+                _columnService.UpdateColumnAsync(Columns[i]);
+            }
+        }
+        public async Task ReorderColumnAsync(ColumnModel draggedColumn, int newIndex)
+        {
+            var oldIndex = Columns.IndexOf(draggedColumn);
+
+            if (oldIndex == -1 || newIndex == -1) return;
+
+            Columns.Move(oldIndex, newIndex);
+
+            for (int i = 0; i < Columns.Count; i++)
+            {
+                Columns[i].Position = i;
+                await _columnService.UpdateColumnAsync(Columns[i]);
             }
         }
         #endregion

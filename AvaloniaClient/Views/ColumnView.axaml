@@ -16,7 +16,7 @@
              x:DataType="vm:ColumnViewModel">
 
     <UserControl.Resources>
-        <local:TaskDropHandler x:Key="TaskDropHandler" />
+        <local:UnifiedDropHandler x:Key="UnifiedDropHandler" />
     </UserControl.Resources>
 
     <Grid Background="#f3f4f6">
@@ -71,7 +71,9 @@
 
                 <!-- СПИСОК КОЛОНОК -->
                 <ItemsControl ItemsSource="{Binding Columns}">
-
+                    <i:Interaction.Behaviors>
+                        <dd:ContextDropBehavior Handler="{StaticResource UnifiedDropHandler}" />
+                    </i:Interaction.Behaviors>
                     <ItemsControl.ItemsPanel>
                         <ItemsPanelTemplate>
                             <StackPanel Orientation="Horizontal"/>
@@ -89,7 +91,8 @@
                                     Padding="15">
 
                                 <i:Interaction.Behaviors>
-                                    <dd:ContextDropBehavior Handler="{StaticResource TaskDropHandler}" />
+                                    <dd:ContextDragBehavior Context="{Binding}" />
+                                    <dd:ContextDropBehavior Handler="{StaticResource UnifiedDropHandler}" />
                                 </i:Interaction.Behaviors>
 
                                 <StackPanel>
@@ -142,7 +145,7 @@
                                                         DragDrop.AllowDrop="True">
 
                                                     <i:Interaction.Behaviors>
-                                                        <dd:ContextDropBehavior Handler="{StaticResource TaskDropHandler}" />
+                                                        <dd:ContextDropBehavior Handler="{StaticResource UnifiedDropHandler}" />
                                                     </i:Interaction.Behaviors>
 
                                                     <Border Background="{Binding Color}"
