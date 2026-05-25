@@ -10,6 +10,7 @@ namespace AvaloniaClient.DataBase
         private string _lastName;
         private string _email;
         private List<int> _teamIds = new();
+        private bool _isSelected;
         public int Id
         {
             get => _id;
@@ -38,6 +39,12 @@ namespace AvaloniaClient.DataBase
         {
             get => _teamIds;
             set => this.RaiseAndSetIfChanged(ref _teamIds, value);
+        }
+
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set => this.RaiseAndSetIfChanged(ref _isSelected, value);
         }
     }
 }

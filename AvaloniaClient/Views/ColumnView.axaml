@@ -154,11 +154,19 @@
                                                             Margin="0,0,0,10"
                                                             BorderBrush="{Binding DeadlineBorderBrush}"
                                                             BorderThickness="{Binding DeadlineBorderThickness}">
+
+
+
                                                           <ToolTip.Tip>
-                                                            <StackPanel>
-                                                                <TextBlock Text="{Binding Team.Title}"
+                                                            <StackPanel Spacing="4">
+                                                                <TextBlock Text="{Binding Title}"
                                                                            FontWeight="Bold"
                                                                            FontSize="14"/>
+
+                                                                <TextBlock Text="{Binding Description}"
+                                                                           FontSize="12"
+                                                                           Foreground="#9ca3af"
+                                                                           TextWrapping="Wrap"/>
                                                             </StackPanel>
                                                         </ToolTip.Tip>
                                                         <i:Interaction.Behaviors>
@@ -171,22 +179,59 @@
                                                                        FontWeight="SemiBold"
                                                                        FontSize="14"/>
 
+                                                            <!--Команды-->
+                                                            <ItemsControl ItemsSource="{Binding Teams}">
+                                                                <ItemsControl.ItemsPanel>
+                                                                    <ItemsPanelTemplate>
+                                                                        <StackPanel Orientation="Horizontal"/>
+                                                                    </ItemsPanelTemplate>
+                                                                </ItemsControl.ItemsPanel>
+
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate>
+                                                                        <Border Background="{Binding Color}"
+                                                                                CornerRadius="6"
+                                                                                Padding="4"
+                                                                                Margin="0,4,4,4">
+
+                                                                            <TextBlock Text="{Binding Title}"
+                                                                                       Foreground="White"
+                                                                                       FontSize="10"/>
+                                                                        </Border>
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+                                                            </ItemsControl>
+
+                                                            <!-- Пользователи -->
+                                                            <ItemsControl ItemsSource="{Binding Users}">
+                                                                <ItemsControl.ItemsPanel>
+                                                                    <ItemsPanelTemplate>
+                                                                        <StackPanel Orientation="Horizontal"/>
+                                                                    </ItemsPanelTemplate>
+                                                                </ItemsControl.ItemsPanel>
+
+                                                                <ItemsControl.ItemTemplate>
+                                                                    <DataTemplate>
+                                                                        <Border Background="#fca5a5"
+                                                                                CornerRadius="6"
+                                                                                Padding="6,2"
+                                                                                Margin="0,4,4,4">
+
+                                                                            <TextBlock Text="{Binding FirstName}"
+                                                                                       Foreground="White"
+                                                                                       FontSize="10"/>
+
+                                                                        </Border>
+                                                                    </DataTemplate>
+                                                                </ItemsControl.ItemTemplate>
+                                                            </ItemsControl>
 
                                                             <TextBlock Text="{Binding Description}"
                                                                        FontSize="11"
                                                                        Foreground="#6b7280"
                                                                        Margin="0,4,0,6"
                                                                        TextWrapping="Wrap"/>
-                                                                    <ToolTip.Tip>
-                                                            <StackPanel>
-                                                                <TextBlock Text="{Binding Team.Title}"
-                                                                            FontWeight="Bold"
-                                                                            FontSize="14"/>
-                                                            </StackPanel>
-                                                        </ToolTip.Tip>
-
-
-
+                                                                  
                                                             <Grid>
 
                                                                 <Grid.ColumnDefinitions>
@@ -256,11 +301,11 @@
 
 
                                                                 <!-- ИКОНКА -->
-                                                                <Border Grid.Column="1"
+                                                                <!--<Border Grid.Column="1"
                                                                         Width="24"
                                                                         Height="24"
                                                                         CornerRadius="12"
-                                                                        Background="{Binding Team.Color}"/>
+                                                                        Background="{Binding Teams.Color}"/>-->
 
                                                             </Grid>
 

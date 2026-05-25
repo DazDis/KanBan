@@ -39,6 +39,19 @@ public class TaskRepository(ApplicationDbContextFactory contextFactory)
                 Name = l.Name,
                 Color = l.Color
             }).ToList(),
+            Users = x.Users.Select(u => new UserDTO
+            {
+                Id = u.UserId,
+                FirstName = u.FirstName
+            }).ToList(),
+
+            Teams = x.Teams.Select(t => new TeamDTO
+            {
+                Id = t.Id,
+                Title = t.Title,
+                Color = t.Color
+            }).ToList(),
+
             UserIds = x.Users.Select(l => l?.UserId).ToList(),
             TeamIds = x.Teams.Select(l => l?.Id).ToList(),
         }).ToList();

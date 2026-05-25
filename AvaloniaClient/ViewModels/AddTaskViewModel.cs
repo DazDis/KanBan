@@ -149,10 +149,10 @@ namespace AvaloniaClient.ViewModels
                         Deadline = Deadline,
                         ColumnId = SelectedColumnStatus?.Id ?? _columnId,
                         Color = SelectedColor.ToString(),
-                        UserIds = SelectedUser != null ? new List<int?> { SelectedUser.Id } : new(),
+                        UserIds = Users.Where(x => x.IsSelected).Select(x => (int?)x.Id).ToList(),
                         LabelIds = Labels.Where(x => x.IsSelected).Select(x => (int?)x.Id).ToList(),
-                        TeamIds = SelectedTeam != null ? new List<int?> { SelectedTeam.Id } : new(),
-                        Team = SelectedTeam,
+                        TeamIds = Teams.Where(x => x.IsSelected).Select(x => (int?)x.Id).ToList(),
+                        Teams = new ObservableCollection<TeamModel>(Teams.Where(x => x.IsSelected)),
                         Labels = new ObservableCollection<LabelModel>(Labels.Where(x => x.IsSelected))
                     };
                 }

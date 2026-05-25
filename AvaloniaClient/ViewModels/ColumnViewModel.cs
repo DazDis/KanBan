@@ -91,6 +91,7 @@ namespace AvaloniaClient.ViewModels
 
         public ObservableCollection<ColumnModel> Columns { get; } = new();
         public ObservableCollection<TeamModel> Teams { get; } = new();
+        public ObservableCollection<UserModel> Users { get; } = new();
         private IReadOnlyList<TaskModel> Tasks = new List<TaskModel>();
 
         private bool IsInitialized;
@@ -187,6 +188,7 @@ namespace AvaloniaClient.ViewModels
            
             var columns = await _columnService.GetColumnsAsync(token);
             var teams = await _teamService.GetTeamsAsync(token);
+            var users = await _userService.GetUsersAsync(token);
 
             foreach (var column in columns ?? new())
             {
@@ -198,9 +200,16 @@ namespace AvaloniaClient.ViewModels
                 Teams.Add(team);
             }
 
+            foreach (var user in users ?? new())
+            {
+                Users.Add(user);
+            }
+
             foreach (var task in Tasks)
             {
-                task.Team = Teams.FirstOrDefault(t => task.TeamIds.Contains(t.Id));
+                task.Teams = new ObservableCollection<TeamModel>(Teams.Where(t => task.TeamIds.Contains(t.Id)));
+
+                task.Users = new ObservableCollection<UserModel>(Users.Where(u => task.UserIds.Contains(u.Id)));
 
                 Columns[task.ColumnId - 1].Tasks.Add(task);
             }
@@ -223,7 +232,8 @@ namespace AvaloniaClient.ViewModels
                     existing.Position = task.Position;
                     existing.Labels = task.Labels;
                     existing.TeamIds = task.TeamIds;
-                    existing.Team = Teams.FirstOrDefault(t => task.TeamIds.Contains(t.Id));
+                    existing.Teams = task.Teams;
+                    existing.Users = task.Users;
                 }
             });
         }
@@ -231,7 +241,8 @@ namespace AvaloniaClient.ViewModels
         {
             await Dispatcher.UIThread.InvokeAsync(async () =>
             {
-                task.Team = Teams.FirstOrDefault(t => task.TeamIds.Contains(t.Id));
+                task.Teams = new ObservableCollection<TeamModel>(Teams.Where(t => task.TeamIds.Contains(t.Id)));
+                task.Users = new ObservableCollection<UserModel>(Users.Where(u  => task.UserIds.Contains(u.Id)));
 
                 Columns[task.ColumnId - 1].Tasks.Add(task);
             });

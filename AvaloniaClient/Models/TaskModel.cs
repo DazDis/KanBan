@@ -19,7 +19,8 @@ namespace AvaloniaClient.DataBase
         private List<int?> _teamIds = new();
         private List<int?> _labelIds = new();
         private ObservableCollection<LabelModel> _labels = new();
-        private TeamModel? _team;
+        private ObservableCollection<TeamModel> _teams = new();
+        private ObservableCollection<UserModel> _users = new();
         private int _position;
         private string? _timeLeft;
         private bool? _overDeadline;
@@ -91,10 +92,16 @@ namespace AvaloniaClient.DataBase
             set => this.RaiseAndSetIfChanged(ref _labels, value);
         }
 
-        public TeamModel? Team
+        public ObservableCollection<TeamModel> Teams
         {
-            get => _team;
-            set => this.RaiseAndSetIfChanged(ref _team, value);
+            get => _teams;
+            set => this.RaiseAndSetIfChanged(ref _teams, value);
+        }
+
+        public ObservableCollection<UserModel> Users
+        {
+            get => _users;
+            set => this.RaiseAndSetIfChanged(ref _users, value);
         }
 
         public int Position

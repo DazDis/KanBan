@@ -11,6 +11,7 @@ namespace AvaloniaClient.DataBase
         private string _color = "#CCCCCC";
         private List<int> _userIds = new();
         private ObservableCollection<UserModel> _users = new();
+        private bool _isSelected;
 
         public int Id
         {
@@ -40,6 +41,11 @@ namespace AvaloniaClient.DataBase
         {
             get => _users;
             set => this.RaiseAndSetIfChanged(ref _users, value);
+        }
+        public bool IsSelected
+        {
+            get => _isSelected;
+            set => this.RaiseAndSetIfChanged(ref _isSelected, value);
         }
     }
 }

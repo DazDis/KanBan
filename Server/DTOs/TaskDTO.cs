@@ -1,4 +1,6 @@
-﻿namespace Server.DTOs
+﻿using Server.DataBase;
+
+namespace Server.DTOs
 {
     public class TaskDTO
     {
@@ -12,6 +14,8 @@
         public List<int?> TeamIds { get; set; }
         public List<int?> LabelIds { get; set; }
         public List<LabelDTO> Labels { get; set; } = new();
+        public List<TeamDTO> Teams { get; set; } = new();
+        public List<UserDTO> Users { get; set; } = new();
         public int Position { get; set; }
         public bool IsCompleted { get; set; }
 

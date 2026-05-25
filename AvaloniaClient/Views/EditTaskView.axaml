@@ -37,7 +37,7 @@
                 <TextBox Watermark="Название..."
                          Text="{Binding Title}"/>
 
-                <ComboBox PlaceholderText="Исполнитель..."
+                <!--<ComboBox PlaceholderText="Исполнитель..."
                           ItemsSource="{Binding Teams}"
                           SelectedItem="{Binding SelectedTeam}">
                     <ComboBox.ItemTemplate>
@@ -46,11 +46,70 @@
                         </DataTemplate>
                     </ComboBox.ItemTemplate>
 
-                </ComboBox>
+                </ComboBox>-->
+                <!-- Команды -->
+                <TextBlock Text="Команды"/>
+                <ItemsControl ItemsSource="{Binding Teams}">
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="{Binding Color}"
+                                    CornerRadius="8"
+                                    Padding="6,2"
+                                    Margin="0,0,4,4">
+
+                                <CheckBox IsChecked="{Binding IsSelected}">
+                                    <CheckBox.Content>
+                                        <TextBlock Text="{Binding Title}"
+                                                   FontSize="10"
+                                                   Foreground="White"/>
+                                    </CheckBox.Content>
+                                </CheckBox>
+
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                                                       
+                <!-- Пользователи -->
+                <TextBlock Text="Пользователи"/>
+
+                <Border Height="70"
+                        BorderThickness="1"
+                        CornerRadius="6"
+                        BorderBrush="Gray">
+
+                    <ScrollViewer MaxHeight="150"
+                                  VerticalScrollBarVisibility="Auto">
+
+                        <ItemsControl ItemsSource="{Binding Users}">
+
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+
+                                    <Border CornerRadius="6"
+                                            Padding="6,2"
+                                            Margin="0,2,4,2"
+                                            Background="#E5E7EB">
+
+                                        <CheckBox IsChecked="{Binding IsSelected}"
+                                                  Content="{Binding FirstName}" />
+
+                                    </Border>
+
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+
+                        </ItemsControl>
+
+                    </ScrollViewer>
+
+                </Border>
+
 
                 <TextBlock Text="Теги"/>
 
-                <Border Height="150"
+                <Border Height="70"
                         BorderThickness="1"
                         CornerRadius="6"
                         BorderBrush="Gray">

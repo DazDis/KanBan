@@ -164,11 +164,12 @@ namespace AvaloniaClient.ViewModels
             SaveCommand = ReactiveCommand.CreateFromTask(async () =>
             {
                 var changes = new List<(string action, string old, string _new)>();
-                _task.UserIds = SelectedUser != null ? new List<int?> { SelectedUser.Id } : new();
+                _task.UserIds = Users.Where(x => x.IsSelected).Select(x => (int?)x.Id).ToList();
                 _task.LabelIds = Labels.Where(x => x.IsSelected).Select(x => (int?)x.Id).ToList();
-                _task.TeamIds = SelectedTeam != null ? new List<int?> { SelectedTeam.Id } : new();
+                _task.TeamIds = Teams.Where(x => x.IsSelected).Select(x => (int?)x.Id).ToList();
                 _task.Labels = new ObservableCollection<LabelModel>(Labels.Where(x => x.IsSelected));
-                _task.Team = SelectedTeam;
+                _task.Teams = new ObservableCollection<TeamModel>(Teams.Where(x => x.IsSelected));
+                _task.Users = new ObservableCollection<UserModel>(Users.Where(x => x.IsSelected));
                 if (Title != _originalTitle)
                     changes.Add(("Название", _originalTitle ?? "", Title ?? ""));
 
@@ -228,7 +229,10 @@ namespace AvaloniaClient.ViewModels
             var columns = await _columnService.GetColumnsAsync();
 
             foreach (var user in users ?? new())
+            {
+                user.IsSelected = _task.UserIds?.Contains(user.Id) == true;
                 Users.Add(user);
+            }
 
             foreach (var label in labels ?? new())
             {
@@ -237,7 +241,10 @@ namespace AvaloniaClient.ViewModels
             }
 
             foreach (var team in teams ?? new())
+            {
+                team.IsSelected = _task.TeamIds?.Contains(team.Id) == true;
                 Teams.Add(team);
+            }
 
             foreach(var column in columns ?? new())
                 Columns.Add(column);
