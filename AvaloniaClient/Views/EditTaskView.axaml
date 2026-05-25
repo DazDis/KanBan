@@ -11,7 +11,7 @@
         <Grid ColumnDefinitions="1*,2*"
               Margin="20"
               ColumnSpacing="16"
-              MinWidth="1100"
+              MinWidth="1300"
               MinHeight="750"
               MaxWidth="1400">
 
@@ -77,12 +77,13 @@
             <!-- ОСНОВНАЯ ФОРМА -->
             <!-- ========================================= -->
 
-            <Border Grid.Column="1"
-                    Padding="24"
-                    CornerRadius="20"
-                    Background="#F2F2F2"
-                    MinWidth="700"
-                    MaxWidth="950">
+           <Border Grid.Column="1"
+        Padding="24"
+        CornerRadius="20"
+        Background="#F2F2F2"
+        MinWidth="700"
+        MaxWidth="1400"
+        HorizontalAlignment="Stretch">
 
                 <Grid RowDefinitions="Auto,Auto,*,Auto,Auto"
                       RowSpacing="18">
@@ -126,8 +127,8 @@
                     <!-- ========================================= -->
 
                     <Grid Grid.Row="2"
-                          ColumnDefinitions="1.2*,*"
-                          ColumnSpacing="24">
+      ColumnDefinitions="1*,2.2*"
+      ColumnSpacing="24">
 
                         <!-- ========================================= -->
                         <!-- ЛЕВАЯ КОЛОНКА -->
@@ -340,38 +341,44 @@
 
                             </StackPanel>
 
-                            <!-- ДАТА / ВРЕМЯ -->
+                           <!-- БЛОК: ДАТА / ВРЕМЯ -->
+<Border Background="White"
+        CornerRadius="10"
+        BorderBrush="#D1D5DB"
+        BorderThickness="1"
+        Padding="12">
 
-                            <WrapPanel Orientation="Horizontal"
-                                       ItemWidth="220">
+   <!-- ДАТА / ВРЕМЯ -->
+<StackPanel Spacing="6">
 
-                                <StackPanel Width="200"
-                                            Spacing="6">
+    <TextBlock Text="Дата и время"
+               FontWeight="SemiBold"/>
 
-                                    <TextBlock Text="Дата выполнения"
-                                               FontWeight="SemiBold"/>
+    <!-- ДАТА -->
+    <StackPanel Spacing="6">
 
-                                    <DatePicker SelectedDate="{Binding Date}"
-                                                 Width="300"
-                                                 HorizontalAlignment="Left"/>
-                                                
+        <TextBlock Text="Дата выполнения"
+                   FontSize="12"
+                   Opacity="0.7"/>
 
-                                </StackPanel>
+        <DatePicker SelectedDate="{Binding Date}"
+                    HorizontalAlignment="Stretch"/>
+    </StackPanel>
 
-                                <StackPanel Width="200"
-                                            Spacing="6">
+    <!-- ВРЕМЯ -->
+    <StackPanel Spacing="6">
 
-                                    <TextBlock Margin="0,8,0,4"    
-                                    Text="Время"
-                                               FontWeight="SemiBold"/>
+        <TextBlock Text="Время"
+                   FontSize="12"
+                   Opacity="0.7"/>
 
-                                    <TimePicker SelectedTime="{Binding Time}" 
-                                                Width="250"
-                                                HorizontalAlignment="Left"/>
+        <TimePicker SelectedTime="{Binding Time}"
+                    HorizontalAlignment="Stretch"/>
+    </StackPanel>
 
-                                </StackPanel>
+</StackPanel>
 
-                            </WrapPanel>
+</Border>
 
                         </StackPanel>
 
