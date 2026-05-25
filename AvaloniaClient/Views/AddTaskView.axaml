@@ -194,7 +194,11 @@
                             Command="{Binding NavigateToSettingsCommand}"/>
 
                 </Grid>
-
+                <TextBlock Text="{Binding Error}"
+                               FontSize="10"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"
+                               IsVisible="{Binding HaveError}"/>
             </StackPanel>
 
         </Border>

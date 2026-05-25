@@ -49,7 +49,29 @@ namespace AvaloniaClient.ViewModels
         public ReactiveCommand<Unit, Unit> CancelCommand { get; }
         public ReactiveCommand<Unit, TaskModel> DeleteCommand { get; }
         public ObservableCollection<TeamModel> Teams { get; } = new();
+        private Color _selectedColorBrush;
+        public Color SelectedColorBrush
+        {
+            get => _selectedColorBrush;
+            set
+            {
+                this.RaiseAndSetIfChanged(ref _selectedColorBrush, value);
+                SelectedColor = value.ToString();
+            }
+        }
+        private string _error = string.Empty;
 
+        public string Error
+        {
+            get => _error;
+            set => this.RaiseAndSetIfChanged(ref _error, value);
+        }
+        private bool _haveError = false;
+        public bool HaveError
+        {
+            get => _haveError;
+            set => this.RaiseAndSetIfChanged(ref _haveError, value);
+        }
         public string Title
         {
             get => _title;
@@ -145,10 +167,27 @@ namespace AvaloniaClient.ViewModels
             Title = _task.Title;
             Description = _task.Description;
             Deadline = _task.Deadline;
-            Date = new DateTimeOffset(_task.Deadline.Value);
-            Time = _task.Deadline.Value.TimeOfDay;
+            if (Deadline != null)
+            {
+                Date = new DateTimeOffset(_task.Deadline.Value);
+                Time = _task.Deadline.Value.TimeOfDay;
+            }
             _columnId = _task.ColumnId;
-            _selectedColor = _task.Color;
+            if (!string.IsNullOrEmpty(_task.Color))
+            {
+                try
+                {
+                    SelectedColorBrush = Color.Parse(_task.Color);
+                }
+                catch
+                {
+                    SelectedColorBrush = Colors.White;
+                }
+            }
+            else
+            {
+                SelectedColorBrush = Colors.White;
+            }
             _userService = userService;
             _labelService = labelService;
             _teamService = teamService;
@@ -163,6 +202,15 @@ namespace AvaloniaClient.ViewModels
             _ = LoadAsync();
             SaveCommand = ReactiveCommand.CreateFromTask(async () =>
             {
+
+                if (string.IsNullOrWhiteSpace(Title))
+                {
+                    Error = "Заполните название";
+                    HaveError = true;
+                    return null;
+                }
+
+
                 var changes = new List<(string action, string old, string _new)>();
                 _task.UserIds = Users.Where(x => x.IsSelected).Select(x => (int?)x.Id).ToList();
                 _task.LabelIds = Labels.Where(x => x.IsSelected).Select(x => (int?)x.Id).ToList();
@@ -179,7 +227,7 @@ namespace AvaloniaClient.ViewModels
                 if (Deadline != _originalDeadline)
                     changes.Add(("Дедлайн", _originalDeadline?.ToString("dd.MM.yyyy HH:mm") ?? "Не указан", Deadline?.ToString("dd.MM.yyyy HH:mm") ?? "Не указан"));
 
-                if (SelectedColumnStatus?.Id != _originalColumnId)
+                if (SelectedColumnStatus?.Id != null && SelectedColumnStatus?.Id != _originalColumnId)
                     changes.Add(("Статус", _originalColumnId.ToString(), SelectedColumnStatus?.Id.ToString() ?? ""));
 
                 if (SelectedColor != _originalColor)

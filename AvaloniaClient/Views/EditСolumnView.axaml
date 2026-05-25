@@ -61,7 +61,11 @@
 						Command="{Binding DeleteCommand}"
 						x:Name="DeleteButton"/>
                  </Grid>
-                
+                <TextBlock Text="{Binding Error}"
+                               FontSize="10"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"
+                               IsVisible="{Binding HaveError}"/>
             </StackPanel>
 
                 </Border>

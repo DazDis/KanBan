@@ -154,7 +154,7 @@
 
                 <TextBlock Text="Цвет задачи"/>
 
-                <ColorPicker Color="{Binding SelectedColor}"/>
+                <ColorPicker Color="{Binding SelectedColorBrush}"/>
 
                 <TextBlock Text="Срок выполнения"/>
 
@@ -199,7 +199,11 @@
                             HorizontalAlignment="Stretch"/>
 
                 </Grid>
-
+                <TextBlock Text="{Binding Error}"
+                               FontSize="10"
+                               FontWeight="SemiBold"
+                               VerticalAlignment="Center"
+                               IsVisible="{Binding HaveError}"/>
             </StackPanel>
 
         </Border>

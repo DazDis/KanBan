@@ -107,26 +107,24 @@
                                                         CornerRadius="6"
                                                         Background="#ECECEC"
                                                         Cursor="Hand">
+                                                        <i:Interaction.Behaviors>
+                                                            <dd:ContextDragBehavior Context="{Binding}" />
+                                                        </i:Interaction.Behaviors>
 
-                                                     <Grid ColumnDefinitions="*,Auto">
-
-                                                    <i:Interaction.Behaviors>
-                                                        <dd:ContextDragBehavior Context="{Binding}" />
-                                                    </i:Interaction.Behaviors>
-
+                                                    <Grid ColumnDefinitions="*,Auto">
 
                 
-                                                    <!-- Текст внутри -->
-                                                    <TextBlock Text="{Binding FirstName}"
-                                                               VerticalAlignment="Center"
-                                                               FontSize="13" />
-                                                    <Button Grid.Column="1"
-                                                            Content="❌"
-                                                            Command="{Binding $parent[UserControl].DataContext.RemoveUserFromTeamCommand}"
-                                                            CommandParameter="{Binding}" />
+                                                        <!-- Текст внутри -->
+                                                        <TextBlock Text="{Binding FirstName}"
+                                                                   VerticalAlignment="Center"
+                                                                   FontSize="13" />
+                                                        <Button Grid.Column="1"
+                                                                Content="❌"
+                                                                Command="{Binding $parent[UserControl].DataContext.RemoveUserFromTeamCommand}"
+                                                                CommandParameter="{Binding}" />
                                                      
 
-                                        </Grid>
+                                                    </Grid>
                                                 </Border>
                                             </DataTemplate>
                                         </ListBox.ItemTemplate>

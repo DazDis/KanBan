@@ -36,6 +36,19 @@ namespace AvaloniaClient.ViewModels
         public ObservableCollection<TeamModel> Teams { get; } = new();
         public ObservableCollection<ColumnModel> Columns { get; } = new();
 
+        private string _error = string.Empty;
+
+        public string Error
+        {
+            get => _error;
+            set => this.RaiseAndSetIfChanged(ref _error, value);
+        }
+        private bool _haveError = false;
+        public bool HaveError
+        {
+            get => _haveError;
+            set => this.RaiseAndSetIfChanged(ref _haveError, value);
+        }
         private UserModel? _selectedUser;
         public UserModel? SelectedUser
         {
@@ -142,6 +155,13 @@ namespace AvaloniaClient.ViewModels
             {
                 try
                 {
+                    if (string.IsNullOrWhiteSpace(Title))
+                    {
+                        Error = "Заполните название";
+                        HaveError = true;
+                        return null;
+                    }
+
                     return (TaskModel?)new TaskModel
                     {
                         Title = Title,
