@@ -145,6 +145,8 @@ namespace AvaloniaClient.ViewModels
             Title = _task.Title;
             Description = _task.Description;
             Deadline = _task.Deadline;
+            Date = new DateTimeOffset(_task.Deadline.Value);
+            Time = _task.Deadline.Value.TimeOfDay;
             _columnId = _task.ColumnId;
             _selectedColor = _task.Color;
             _userService = userService;
