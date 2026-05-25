@@ -211,7 +211,8 @@ namespace AvaloniaClient.ViewModels
 
                 task.Users = new ObservableCollection<UserModel>(Users.Where(u => task.UserIds.Contains(u.Id)));
 
-                Columns[task.ColumnId - 1].Tasks.Add(task);
+                //Columns[task.ColumnId - 1].Tasks.Add(task);
+                Columns.FirstOrDefault(c => c.Id == task.ColumnId)?.Tasks.Add(task);
             }
         }
         #region Подписки на SignalR
@@ -244,7 +245,8 @@ namespace AvaloniaClient.ViewModels
                 task.Teams = new ObservableCollection<TeamModel>(Teams.Where(t => task.TeamIds.Contains(t.Id)));
                 task.Users = new ObservableCollection<UserModel>(Users.Where(u  => task.UserIds.Contains(u.Id)));
 
-                Columns[task.ColumnId - 1].Tasks.Add(task);
+                // Columns[task.ColumnId - 1].Tasks.Add(task);
+                Columns.FirstOrDefault(c => c.Id == task.ColumnId)?.Tasks.Add(task);
             });
         }
         private async void OnTaskDeletedFromServer(int id)
