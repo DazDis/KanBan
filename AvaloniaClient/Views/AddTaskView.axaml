@@ -2,206 +2,314 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:vm="using:AvaloniaClient.ViewModels"
-             xmlns:cp="using:Avalonia.Controls.ColorPicker"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             mc:Ignorable="d"
              x:Class="AvaloniaClient.AddTaskView"
              x:DataType="vm:AddTaskViewModel">
 
-    <Grid HorizontalAlignment="Center" VerticalAlignment="Center">
+    <Grid HorizontalAlignment="Center"
+          VerticalAlignment="Center">
 
-        <Border Width="320"
-                Padding="20"
+        <Border Width="950"
+                Padding="24"
                 CornerRadius="20"
                 Background="#F2F2F2">
 
-            <StackPanel Spacing="12">
+            <Grid RowDefinitions="Auto,Auto,*,Auto,Auto"
+                  RowSpacing="18">
 
-                <!-- Заголовок -->
-                <Grid>
-                    <TextBlock Text="Добавление задачи"
-                               FontSize="20"
+                <!-- HEADER -->
+                <Grid Grid.Row="0"
+                      ColumnDefinitions="*,Auto">
+
+                    <TextBlock Text="Добавить задачу"
+                               FontSize="24"
                                FontWeight="SemiBold"
                                VerticalAlignment="Center"/>
 
-                    <Button Content="✕"
-                            HorizontalAlignment="Right"
-                            Width="28"
-                            Height="28"
+                    <Button Grid.Column="1"
+                            Content="✕"
+                            Width="32"
+                            Height="32"
                             Background="Transparent"
                             BorderThickness="0"
                             FontSize="14"
                             Command="{Binding CancelCommand}"/>
                 </Grid>
 
-                <TextBox Watermark="Название..." Text="{Binding Title}"/>
+                <!-- TITLE -->
+                <TextBox Grid.Row="1"
+                         Watermark="Название задачи..."
+                         FontSize="15"
+                         Text="{Binding Title}"/>
 
-                <!--<ComboBox PlaceholderText="Исполнитель..."
-                          ItemsSource="{Binding Teams}"
-                          SelectedItem="{Binding SelectedTeam}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Title}"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>-->
-                <TextBlock Text="Команды"/>
+                <!-- MAIN CONTENT -->
+                <Grid Grid.Row="2"
+                      ColumnDefinitions="1.2*,*"
+                      ColumnSpacing="24">
 
-                <Border Height="60"
-                        BorderThickness="1"
-                        CornerRadius="6"
-                        BorderBrush="Gray">
+                    <!-- LEFT COLUMN -->
+                    <StackPanel Grid.Column="0"
+                                Spacing="16">
 
-                    <ScrollViewer>
+                        <!-- Команды -->
+                        <StackPanel Spacing="8">
+                            <TextBlock Text="Команды"
+                                       FontWeight="SemiBold"/>
 
-                        <ListBox ItemsSource="{Binding Teams}"
-                                 SelectionMode="Multiple">
+                            <Border BorderThickness="1"
+                                    BorderBrush="#D1D5DB"
+                                    CornerRadius="10"
+                                    Padding="8"
+                                    MinHeight="120"
+                                    MaxHeight="160"
+                                    Background="White">
 
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal"
-                                                Spacing="8">
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
 
-                                        <CheckBox
-                                            IsChecked="{Binding IsSelected}"
-                                            VerticalAlignment="Center"/>
+                                    <ItemsControl ItemsSource="{Binding Teams}">
 
-                                        <TextBlock
-                                            Text="{Binding Title}"
-                                            VerticalAlignment="Center"/>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
 
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
+                                                <Border CornerRadius="8"
+                                                        Padding="8,5"
+                                                        Margin="0,0,0,6"
+                                                        Background="{Binding Color}">
 
-                        </ListBox>
+                                                    <CheckBox IsChecked="{Binding IsSelected}">
 
-                    </ScrollViewer>
+                                                        <CheckBox.Content>
+                                                            <TextBlock Text="{Binding Title}"
+                                                                       Foreground="White"
+                                                                       FontWeight="SemiBold"/>
+                                                        </CheckBox.Content>
 
-                </Border>
+                                                    </CheckBox>
 
+                                                </Border>
 
-                <TextBlock Text="Пользователи"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
 
-                <Border Height="60"
-                        BorderThickness="1"
-                        CornerRadius="6"
-                        BorderBrush="Gray">
+                                    </ItemsControl>
 
-                    <ScrollViewer>
+                                </ScrollViewer>
 
-                        <ListBox ItemsSource="{Binding Users}"
-                                 SelectionMode="Multiple">
+                            </Border>
+                        </StackPanel>
 
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal"
-                                                Spacing="8">
+                        <!-- Пользователи -->
+                        <StackPanel Spacing="8">
 
-                                        <CheckBox
-                                            IsChecked="{Binding IsSelected}"
-                                            VerticalAlignment="Center"/>
+                            <TextBlock Text="Пользователи"
+                                       FontWeight="SemiBold"/>
 
-                                        <TextBlock
-                                            Text="{Binding FirstName}"
-                                            VerticalAlignment="Center"/>
+                            <Border BorderThickness="1"
+                                    BorderBrush="#D1D5DB"
+                                    CornerRadius="10"
+                                    Padding="8"
+                                    MinHeight="120"
+                                    MaxHeight="160"
+                                    Background="White">
 
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
 
-                        </ListBox>
+                                    <ItemsControl ItemsSource="{Binding Users}">
 
-                    </ScrollViewer>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
 
-                </Border>
+                                                <Border CornerRadius="8"
+                                                        Padding="8,5"
+                                                        Margin="0,0,0,6"
+                                                        Background="#F3F4F6">
 
+                                                    <CheckBox IsChecked="{Binding IsSelected}"
+                                                              Content="{Binding FirstName}"/>
 
-                <TextBlock Text="Теги"/>
+                                                </Border>
 
-                <Border Height="60"
-                        BorderThickness="1"
-                        CornerRadius="6"
-                        BorderBrush="Gray">
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
 
-                    <ScrollViewer>
+                                    </ItemsControl>
 
-                        <ListBox ItemsSource="{Binding Labels}"
-                                 SelectionMode="Multiple">
+                                </ScrollViewer>
 
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <StackPanel Orientation="Horizontal" Spacing="8">
+                            </Border>
+                        </StackPanel>
 
-                                        <CheckBox IsChecked="{Binding IsSelected}"
-                                                  VerticalAlignment="Center"/>
+                        <!-- Теги -->
+                        <StackPanel Spacing="8">
 
-                                        <TextBlock Text="{Binding Name}"
-                                                   VerticalAlignment="Center"/>
+                            <TextBlock Text="Теги"
+                                       FontWeight="SemiBold"/>
 
-                                    </StackPanel>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
+                            <Border BorderThickness="1"
+                                    BorderBrush="#D1D5DB"
+                                    CornerRadius="10"
+                                    Padding="8"
+                                    MinHeight="120"
+                                    MaxHeight="160"
+                                    Background="White">
 
-                        </ListBox>
+                                <ScrollViewer VerticalScrollBarVisibility="Auto">
 
-                    </ScrollViewer>
+                                    <ItemsControl ItemsSource="{Binding Labels}">
 
-                </Border>
+                                        <ItemsControl.ItemsPanel>
+                                            <ItemsPanelTemplate>
+                                                <WrapPanel />
+                                            </ItemsPanelTemplate>
+                                        </ItemsControl.ItemsPanel>
 
-                <ComboBox PlaceholderText="Статус..."
-                          ItemsSource="{Binding Columns}"
-                          SelectedItem="{Binding SelectedColumnStatus}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Title}"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-                </ComboBox>
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
 
-                <TextBox Watermark="Описание..."
-                         AcceptsReturn="True"
-                         Height="80"
-                         TextWrapping="Wrap"
-                         Text="{Binding Description}"/>
+                                                <Border Padding="8,5"
+                                                        Margin="4"
+                                                        CornerRadius="8"
+                                                        Background="#F9FAFB">
 
-                <TextBlock Text="Цвет задачи"/>
-                <ColorPicker Color="{Binding SelectedColor}"/>
+                                                    <CheckBox IsChecked="{Binding IsSelected}"
+                                                              Content="{Binding Name}"/>
 
-                <TextBlock Text="Дата выполнения"/>
-                <DatePicker SelectedDate="{Binding Date}"/>
+                                                </Border>
 
-                <TextBlock Text="Время"/>
-                <TimePicker SelectedTime="{Binding Time}"/>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
 
-                <Border Height="20"
-                        CornerRadius="5"
-                        Background="{Binding SelectedColor}"/>
+                                    </ItemsControl>
 
-                <Grid ColumnDefinitions="*,*" Margin="0,5,0,0">
+                                </ScrollViewer>
 
-                    <Button Content="Сохранить"
-                            Grid.Column="0"
-                            Padding="12,6"
-                            Background="#E6E6FA"
-                            Foreground="#6C7BFF"
-                            CornerRadius="10"
-                            Command="{Binding SaveCommand}"/>
+                            </Border>
+                        </StackPanel>
 
-                    <Button Content="Настройки"
-                            Grid.Column="1"
-                            HorizontalAlignment="Right"
-                            Command="{Binding NavigateToSettingsCommand}"/>
+                    </StackPanel>
+
+                    <!-- RIGHT COLUMN -->
+                    <StackPanel Grid.Column="1"
+                                Spacing="16">
+
+                        <!-- Статус -->
+                        <StackPanel Spacing="6">
+
+                            <TextBlock Text="Статус"
+                                       FontWeight="SemiBold"/>
+
+                            <ComboBox ItemsSource="{Binding Columns}"
+                                      SelectedItem="{Binding SelectedColumnStatus}"
+                                      HorizontalAlignment="Stretch">
+
+                                <ComboBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <TextBlock Text="{Binding Title}"/>
+                                    </DataTemplate>
+                                </ComboBox.ItemTemplate>
+
+                            </ComboBox>
+
+                        </StackPanel>
+
+                        <!-- Описание -->
+                        <StackPanel Spacing="6">
+
+                            <TextBlock Text="Описание"
+                                       FontWeight="SemiBold"/>
+
+                            <TextBox AcceptsReturn="True"
+                                     MinHeight="140"
+                                     MaxHeight="240"
+                                     TextWrapping="Wrap"
+                                     Text="{Binding Description}"/>
+
+                        </StackPanel>
+
+                        <!-- Цвет -->
+                        <StackPanel Spacing="6">
+
+                            <TextBlock Text="Цвет задачи"
+                                       FontWeight="SemiBold"/>
+
+                            <ColorPicker Color="{Binding SelectedColor}"
+                                         Width="220"
+                                         HorizontalAlignment="Left"/>
+
+                        </StackPanel>
+
+                        <!-- ДАТА / ВРЕМЯ -->
+                        <WrapPanel Orientation="Horizontal"
+                                   ItemWidth="220">
+
+                            <StackPanel Width="200"
+                                        Spacing="6">
+
+                                <TextBlock Text="Дата выполнения"
+                                           FontWeight="SemiBold"/>
+
+                                <DatePicker SelectedDate="{Binding Date}"
+                                            Width="300"/>
+                            </StackPanel>
+
+                            <StackPanel Width="200"
+                                        Spacing="6">
+
+                                <TextBlock Text="Время"
+                                           FontWeight="SemiBold"/>
+
+                                <TimePicker SelectedTime="{Binding Time}"
+                                            Width="250"/>
+                            </StackPanel>
+
+                        </WrapPanel>
+
+                    </StackPanel>
 
                 </Grid>
-                <TextBlock Text="{Binding Error}"
-                               FontSize="10"
-                               FontWeight="SemiBold"
-                               VerticalAlignment="Center"
-                               IsVisible="{Binding HaveError}"/>
-            </StackPanel>
+
+                <!-- ERROR -->
+                <TextBlock Grid.Row="3"
+                           Text="{Binding Error}"
+                           FontSize="11"
+                           Foreground="#C51D34"
+                           FontWeight="SemiBold"
+                           IsVisible="{Binding HaveError}"/>
+
+                <!-- BUTTONS -->
+                <Grid Grid.Row="4"
+                      ColumnDefinitions="*,Auto"
+                      ColumnSpacing="12">
+
+                    <Grid Grid.Column="0"/>
+
+                    <StackPanel Grid.Column="1"
+                                Orientation="Horizontal"
+                                Spacing="10">
+
+                        <Button Content="Сохранить"
+                                Command="{Binding SaveCommand}"
+                                Background="#E6E6FA"
+                                Foreground="#6C7BFF"
+                                CornerRadius="12"
+                                FontWeight="SemiBold"
+                                Height="42"/>
+
+                        <Button Content="Настройки"
+                                Command="{Binding NavigateToSettingsCommand}"
+                                Background="White"
+                                CornerRadius="12"
+                                Height="42"/>
+
+                    </StackPanel>
+
+                </Grid>
+
+            </Grid>
 
         </Border>
 
     </Grid>
+
 </UserControl>
