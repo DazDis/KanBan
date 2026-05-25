@@ -69,7 +69,7 @@ public class UnifiedDropHandler : DropHandlerBase
         var oldColumn = viewModel.Columns.FirstOrDefault(c => c.Tasks.Contains(draggedTask));
         if (oldColumn == null) return false;
         int oldPosition = oldColumn.Tasks.IndexOf(draggedTask);
-        if (oldColumn.Id != targetColumn.Id)
+        if (targetContext is ColumnModel && oldColumn.Id != targetColumn.Id)
             targetIndex += 1;
 
         if (targetColumn == null || targetIndex < 0) return false;
