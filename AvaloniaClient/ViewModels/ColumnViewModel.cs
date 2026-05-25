@@ -190,7 +190,7 @@ namespace AvaloniaClient.ViewModels
             var teams = await _teamService.GetTeamsAsync(token);
             var users = await _userService.GetUsersAsync(token);
 
-            foreach (var column in columns ?? new())
+            foreach (var column in (columns ?? new()).OrderBy(c => c.Position))
             {
                 Columns.Add(column);
             }
