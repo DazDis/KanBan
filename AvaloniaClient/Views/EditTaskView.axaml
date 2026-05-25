@@ -7,93 +7,58 @@
              x:Class="AvaloniaClient.EditTaskView"
              x:DataType="vm:EditTaskViewModel">
 
-    <Grid ColumnDefinitions="*,300"
-          HorizontalAlignment="Center"
-          VerticalAlignment="Center"
-          Margin="20">
 
-        <Border Grid.Column="0"
-                Padding="20"
-                CornerRadius="20"
-                Background="#F2F2F2"
-                Margin="0,0,10,0">
+        <Grid ColumnDefinitions="1*,2*"
+              Margin="20"
+              ColumnSpacing="16"
+              MinWidth="1100"
+              MinHeight="750"
+              MaxWidth="1400">
 
-            <StackPanel Spacing="12">
+            <!-- ========================================= -->
+            <!-- ЖУРНАЛ -->
+            <!-- ========================================= -->
 
-                <Grid>
-                    <TextBlock Text="Изменить задачу"
-                               FontSize="20"
-                               FontWeight="SemiBold"/>
+            <Border Grid.Column="0"
+                    Padding="16"
+                    CornerRadius="20"
+                    Background="#F2F2F2"
+                    IsVisible="{Binding IsHistoryVisible}">
 
-                    <Button Content="✕"
-                            HorizontalAlignment="Right"
-                            Width="28"
-                            Height="28"
-                            Background="Transparent"
-                            BorderThickness="0"
-                            Command="{Binding CancelCommand}"/>
-                </Grid>
+                <Grid RowDefinitions="Auto,*">
 
-                <TextBox Watermark="Название..."
-                         Text="{Binding Title}"/>
+                    <TextBlock Text="Журнал изменений"
+                               FontSize="18"
+                               FontWeight="SemiBold"
+                               Margin="0,0,0,12"/>
 
-                <!--<ComboBox PlaceholderText="Исполнитель..."
-                          ItemsSource="{Binding Teams}"
-                          SelectedItem="{Binding SelectedTeam}">
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Title}"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-
-                </ComboBox>-->
-                <!-- Команды -->
-                <TextBlock Text="Команды"/>
-                <ItemsControl ItemsSource="{Binding Teams}">
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border Background="{Binding Color}"
-                                    CornerRadius="8"
-                                    Padding="6,2"
-                                    Margin="0,0,4,4">
-
-                                <CheckBox IsChecked="{Binding IsSelected}">
-                                    <CheckBox.Content>
-                                        <TextBlock Text="{Binding Title}"
-                                                   FontSize="10"
-                                                   Foreground="White"/>
-                                    </CheckBox.Content>
-                                </CheckBox>
-
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-
-                                                       
-                <!-- Пользователи -->
-                <TextBlock Text="Пользователи"/>
-
-                <Border Height="70"
-                        BorderThickness="1"
-                        CornerRadius="6"
-                        BorderBrush="Gray">
-
-                    <ScrollViewer MaxHeight="150"
+                    <ScrollViewer Grid.Row="1"
                                   VerticalScrollBarVisibility="Auto">
 
-                        <ItemsControl ItemsSource="{Binding Users}">
+                        <ItemsControl ItemsSource="{Binding History}">
 
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
 
-                                    <Border CornerRadius="6"
-                                            Padding="6,2"
-                                            Margin="0,2,4,2"
-                                            Background="#E5E7EB">
+                                    <Border Background="White"
+                                            CornerRadius="10"
+                                            Padding="12"
+                                            Margin="0,0,0,10">
 
-                                        <CheckBox IsChecked="{Binding IsSelected}"
-                                                  Content="{Binding FirstName}" />
+                                        <StackPanel Spacing="6">
+
+                                            <TextBlock Text="{Binding DisplayText}"
+                                                       FontSize="12"
+                                                       FontWeight="SemiBold"
+                                                       TextWrapping="Wrap"/>
+
+                                            <TextBlock Text="{Binding Comment}"
+                                                       FontSize="11"
+                                                       Foreground="Gray"
+                                                       TextWrapping="Wrap"
+                                                       IsVisible="{Binding Comment, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+
+                                        </StackPanel>
 
                                     </Border>
 
@@ -104,165 +69,381 @@
 
                     </ScrollViewer>
 
-                </Border>
-
-
-                <TextBlock Text="Теги"/>
-
-                <Border Height="70"
-                        BorderThickness="1"
-                        CornerRadius="6"
-                        BorderBrush="Gray">
-
-                    <ScrollViewer MaxHeight="150"
-                                  VerticalScrollBarVisibility="Auto">
-
-                        <ItemsControl ItemsSource="{Binding Labels}">
-
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-
-                                    <CheckBox IsChecked="{Binding IsSelected}"
-                                              Content="{Binding Name}" />
-
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-
-                        </ItemsControl>
-
-                    </ScrollViewer>
-
-                </Border>
-
-                <ComboBox PlaceholderText="Статус..."
-                          ItemsSource="{Binding Columns}"
-                          SelectedItem="{Binding SelectedColumnStatus}">
-
-                    <ComboBox.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Title}"/>
-                        </DataTemplate>
-                    </ComboBox.ItemTemplate>
-
-                </ComboBox>
-
-                <TextBox Watermark="Описание..."
-                         AcceptsReturn="True"
-                         Height="80"
-                         TextWrapping="Wrap"
-                         Text="{Binding Description}"/>
-
-                <TextBlock Text="Цвет задачи"/>
-
-                <ColorPicker Color="{Binding SelectedColorBrush}"/>
-
-                <TextBlock Text="Срок выполнения"/>
-
-                <DatePicker SelectedDate="{Binding Date}"/>
-
-                <TextBlock Text="Время"/>
-
-                <TimePicker SelectedTime="{Binding Time}"/>
-
-                <!-- Кнопки -->
-                <Grid ColumnDefinitions="*,*,*"
-                      ColumnSpacing="10">
-
-                    <Button Grid.Column="0"
-                            Content="Сохранить"
-                            Command="{Binding SaveCommand}"
-                            Background="#E6E6FA"
-                            Foreground="#6C7BFF"
-                            CornerRadius="10"
-                            HorizontalContentAlignment="Center"
-                            VerticalContentAlignment="Center"
-                            HorizontalAlignment="Stretch"/>
-
-                    <Button Grid.Column="1"
-                            Content="Удалить"
-                            Command="{Binding DeleteCommand}"
-                            Background="#FFF"
-                            Foreground="#C51D34"
-                            CornerRadius="10"
-                            HorizontalContentAlignment="Center"
-                            VerticalContentAlignment="Center"
-                            HorizontalAlignment="Stretch"/>
-
-                    <Button Grid.Column="2"
-                            Content="Журнал"
-                            Command="{Binding ToggleHistoryCommand}"
-                            CornerRadius="10"
-                            Background="#FFF"
-                            Foreground="#6C7BFF"
-                            HorizontalContentAlignment="Center"
-                            VerticalContentAlignment="Center"
-                            HorizontalAlignment="Stretch"/>
-
                 </Grid>
-                <TextBlock Text="{Binding Error}"
-                               FontSize="10"
-                               FontWeight="SemiBold"
-                               VerticalAlignment="Center"
-                               IsVisible="{Binding HaveError}"/>
-            </StackPanel>
 
-        </Border>
+            </Border>
 
+            <!-- ========================================= -->
+            <!-- ОСНОВНАЯ ФОРМА -->
+            <!-- ========================================= -->
 
-        <Border Grid.Column="1"
-                Padding="15"
-                CornerRadius="20"
-                Background="#F2F2F2"
-                IsVisible="{Binding IsHistoryVisible}">
+            <Border Grid.Column="1"
+                    Padding="24"
+                    CornerRadius="20"
+                    Background="#F2F2F2"
+                    MinWidth="700"
+                    MaxWidth="950">
 
-            <StackPanel Spacing="10">
+                <Grid RowDefinitions="Auto,Auto,*,Auto,Auto"
+                      RowSpacing="18">
 
-                <TextBlock Text="Журнал изменений"
-                           FontSize="16"
-                           FontWeight="SemiBold"/>
+                    <!-- ========================================= -->
+                    <!-- HEADER -->
+                    <!-- ========================================= -->
 
-                <!-- Скролл журнала -->
-                <ScrollViewer VerticalScrollBarVisibility="Auto"
-                              MaxHeight="500">
+                    <Grid Grid.Row="0"
+                          ColumnDefinitions="*,Auto">
 
-                    <ItemsControl ItemsSource="{Binding History}">
+                        <TextBlock Text="Изменить задачу"
+                                   FontSize="24"
+                                   FontWeight="SemiBold"
+                                   VerticalAlignment="Center"/>
 
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
+                        <Button Grid.Column="1"
+                                Content="✕"
+                                Width="32"
+                                Height="32"
+                                Background="Transparent"
+                                BorderThickness="0"
+                                FontSize="14"
+                                Command="{Binding CancelCommand}"/>
 
-                                <Border Background="#FFFFFF"
-                                        CornerRadius="6"
-                                        Padding="10"
-                                        Margin="0,5">
+                    </Grid>
 
-                                    <StackPanel Spacing="5">
+                    <!-- ========================================= -->
+                    <!-- НАЗВАНИЕ -->
+                    <!-- ========================================= -->
 
-                                        <TextBlock Text="{Binding DisplayText}"
-                                                   FontSize="12"
-                                                   FontWeight="SemiBold"
-                                                   TextWrapping="Wrap"/>
+                    <TextBox Grid.Row="1"
+                             Watermark="Название задачи..."
+                             FontSize="15"
+                             TextWrapping="NoWrap"
+                             HorizontalAlignment="Stretch"
+                             Text="{Binding Title}"/>
 
-                                        <TextBlock Text="{Binding Comment}"
-                                                   FontSize="11"
-                                                   Foreground="Gray"
-                                                   TextWrapping="Wrap"
-                                                   IsVisible="{Binding Comment, Converter={x:Static StringConverters.IsNotNullOrEmpty}}"/>
+                    <!-- ========================================= -->
+                    <!-- ОСНОВНОЙ КОНТЕНТ -->
+                    <!-- ========================================= -->
 
-                                    </StackPanel>
+                    <Grid Grid.Row="2"
+                          ColumnDefinitions="1.2*,*"
+                          ColumnSpacing="24">
+
+                        <!-- ========================================= -->
+                        <!-- ЛЕВАЯ КОЛОНКА -->
+                        <!-- ========================================= -->
+
+                        <StackPanel Grid.Column="0"
+                                    Spacing="16">
+
+                            <!-- Команды -->
+
+                            <StackPanel Spacing="8">
+
+                                <TextBlock Text="Команды"
+                                           FontWeight="SemiBold"/>
+
+                                <Border BorderThickness="1"
+                                        BorderBrush="#D1D5DB"
+                                        CornerRadius="10"
+                                        Padding="8"
+                                        MinHeight="120"
+                                        MaxHeight="160"
+                                        Background="White">
+
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+
+                                        <ItemsControl ItemsSource="{Binding Teams}">
+
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+
+                                                    <Border CornerRadius="8"
+                                                            Padding="8,5"
+                                                            Margin="0,0,0,6"
+                                                            Background="{Binding Color}">
+
+                                                        <CheckBox IsChecked="{Binding IsSelected}">
+
+                                                            <CheckBox.Content>
+                                                                <TextBlock Text="{Binding Title}"
+                                                                           Foreground="White"
+                                                                           FontWeight="SemiBold"/>
+                                                            </CheckBox.Content>
+
+                                                        </CheckBox>
+
+                                                    </Border>
+
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+
+                                        </ItemsControl>
+
+                                    </ScrollViewer>
 
                                 </Border>
 
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
+                            </StackPanel>
 
-                    </ItemsControl>
+                            <!-- Пользователи -->
 
-                </ScrollViewer>
+                            <StackPanel Spacing="8">
 
-            </StackPanel>
+                                <TextBlock Text="Пользователи"
+                                           FontWeight="SemiBold"/>
 
-        </Border>
+                                <Border BorderThickness="1"
+                                        BorderBrush="#D1D5DB"
+                                        CornerRadius="10"
+                                        Padding="8"
+                                        MinHeight="120"
+                                        MaxHeight="160"
+                                        Background="White">
 
-    </Grid>
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+
+                                        <ItemsControl ItemsSource="{Binding Users}">
+
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+
+                                                    <Border CornerRadius="8"
+                                                            Padding="8,5"
+                                                            Margin="0,0,0,6"
+                                                            Background="#F3F4F6">
+
+                                                        <CheckBox IsChecked="{Binding IsSelected}"
+                                                                  Content="{Binding FirstName}"/>
+
+                                                    </Border>
+
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+
+                                        </ItemsControl>
+
+                                    </ScrollViewer>
+
+                                </Border>
+
+                            </StackPanel>
+
+                            <!-- Теги -->
+
+                            <StackPanel Spacing="8">
+
+                                <TextBlock Text="Теги"
+                                           FontWeight="SemiBold"/>
+
+                                <Border BorderThickness="1"
+                                        BorderBrush="#D1D5DB"
+                                        CornerRadius="10"
+                                        Padding="8"
+                                        MinHeight="120"
+                                        MaxHeight="160"
+                                        Background="White">
+
+                                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+
+                                        <ItemsControl ItemsSource="{Binding Labels}">
+
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <WrapPanel />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+
+                                                    <Border Padding="8,5"
+                                                            Margin="4"
+                                                            CornerRadius="8"
+                                                            Background="#F9FAFB">
+
+                                                        <CheckBox IsChecked="{Binding IsSelected}"
+                                                                  Content="{Binding Name}"/>
+
+                                                    </Border>
+
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+
+                                        </ItemsControl>
+
+                                    </ScrollViewer>
+
+                                </Border>
+
+                            </StackPanel>
+
+                        </StackPanel>
+
+                        <!-- ========================================= -->
+                        <!-- ПРАВАЯ КОЛОНКА -->
+                        <!-- ========================================= -->
+
+                        <StackPanel Grid.Column="1"
+                                    Spacing="16">
+
+                            <!-- Статус -->
+
+                            <StackPanel Spacing="6">
+
+                                <TextBlock Text="Статус"
+                                           FontWeight="SemiBold"/>
+
+                                <ComboBox PlaceholderText="Выберите статус..."
+                                          ItemsSource="{Binding Columns}"
+                                          SelectedItem="{Binding SelectedColumnStatus}"
+                                          HorizontalAlignment="Stretch">
+
+                                    <ComboBox.ItemTemplate>
+                                        <DataTemplate>
+                                            <TextBlock Text="{Binding Title}"/>
+                                        </DataTemplate>
+                                    </ComboBox.ItemTemplate>
+
+                                </ComboBox>
+
+                            </StackPanel>
+
+                            <!-- Описание -->
+
+                            <StackPanel Spacing="6">
+
+                                <TextBlock Text="Описание"
+                                           FontWeight="SemiBold"/>
+
+                                <TextBox Watermark="Описание задачи..."
+                                         AcceptsReturn="True"
+                                         MinHeight="140"
+                                         MaxHeight="240"
+                                         TextWrapping="Wrap"
+                                         VerticalAlignment="Stretch"
+                                         HorizontalAlignment="Stretch"
+                                         Text="{Binding Description}"/>
+
+                            </StackPanel>
+
+                            <!-- Цвет -->
+
+                            <StackPanel Spacing="6">
+
+                                <TextBlock Text="Цвет задачи"
+                                           FontWeight="SemiBold"/>
+
+                                <ColorPicker Color="{Binding SelectedColorBrush}"
+                                             Width="220"
+                                             HorizontalAlignment="Left"/>
+
+                            </StackPanel>
+
+                            <!-- ДАТА / ВРЕМЯ -->
+
+                            <WrapPanel Orientation="Horizontal"
+                                       ItemWidth="220">
+
+                                <StackPanel Width="200"
+                                            Spacing="6">
+
+                                    <TextBlock Text="Дата выполнения"
+                                               FontWeight="SemiBold"/>
+
+                                    <DatePicker SelectedDate="{Binding Date}"
+                                                 Width="300"
+                                                 HorizontalAlignment="Left"/>
+                                                
+
+                                </StackPanel>
+
+                                <StackPanel Width="200"
+                                            Spacing="6">
+
+                                    <TextBlock Margin="0,8,0,4"    
+                                    Text="Время"
+                                               FontWeight="SemiBold"/>
+
+                                    <TimePicker SelectedTime="{Binding Time}" 
+                                                Width="250"
+                                                HorizontalAlignment="Left"/>
+
+                                </StackPanel>
+
+                            </WrapPanel>
+
+                        </StackPanel>
+
+                    </Grid>
+
+                    <!-- ========================================= -->
+                    <!-- ОШИБКА -->
+                    <!-- ========================================= -->
+
+                    <TextBlock Grid.Row="3"
+                               Text="{Binding Error}"
+                               FontSize="11"
+                               Foreground="#C51D34"
+                               FontWeight="SemiBold"
+                               IsVisible="{Binding HaveError}"/>
+
+                    <!-- ========================================= -->
+                    <!-- КНОПКИ -->
+                    <!-- ========================================= -->
+
+                      <Grid Grid.Row="4"
+      ColumnDefinitions="*,Auto"
+      ColumnSpacing="12">
+
+    <!-- пустая левая часть (выталкивает всё вправо) -->
+    <Grid Grid.Column="0"/>
+
+    <!-- ПРАВАЯ ГРУППА -->
+    <StackPanel Grid.Column="1"
+                Orientation="Horizontal"
+                Spacing="10">
+
+        <!-- Удалить -->
+        <Button Content="Удалить"
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                Command="{Binding DeleteCommand}"
+                Background="White"
+                Foreground="#C51D34"
+                CornerRadius="12"
+                FontWeight="SemiBold"
+                Height="42"
+                Margin="0,0,12,0"/>
+
+        <!-- Журнал -->
+        <Button Content="Журнал"
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                Command="{Binding ToggleHistoryCommand}"
+                Background="White"
+                Foreground="#6C7BFF"
+                CornerRadius="12"
+                FontWeight="SemiBold"
+                Height="42"/>
+
+        <!-- Сохранить -->
+        <Button Content="Сохранить"
+                HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
+                Command="{Binding SaveCommand}"
+                Background="#E6E6FA"
+                Foreground="#6C7BFF"
+                CornerRadius="12"
+                FontWeight="SemiBold"
+                Height="42"/>
+
+    </StackPanel>
+
+</Grid>
+
+                </Grid>
+
+            </Border>
+
+        </Grid>
+
 
 </UserControl>
