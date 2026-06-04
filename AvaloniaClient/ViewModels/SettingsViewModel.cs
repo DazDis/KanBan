@@ -58,7 +58,7 @@ namespace AvaloniaClient.ViewModels
         public TeamModel? SelectedTeam
         {
             get => _selectedTeam;
-            set => this.RaiseAndSetIfChanged(ref _selectedTeam, value);
+            set {  this.RaiseAndSetIfChanged(ref _selectedTeam, value); UpdateUsersDeleteButtonVisibility(); }
         }
         public LabelModel? SelectedLabel
         {
@@ -311,6 +311,16 @@ namespace AvaloniaClient.ViewModels
         }
 
         // ========== КОМАНДЫ ==========
+        private void UpdateUsersDeleteButtonVisibility()
+        {
+            foreach (var team in Teams)
+                foreach (var user in team.Users)
+                    user.IsSelected = false;
+
+            if (SelectedTeam != null)
+                foreach (var user in SelectedTeam.Users)
+                    user.IsSelected = true;
+        }
         private async Task AddTeamAsync()
         {
             try

@@ -94,12 +94,14 @@
                                 <Border Background="#F7F7F7"
                                         CornerRadius="6"
                                         Padding="1"
-                                        MinHeight="220">
-
-                                    <ListBox ItemsSource="{Binding Users}"
+                                        MinHeight="220"
+                                        MaxHeight="220">
+                                     <ScrollViewer VerticalScrollBarVisibility="Auto"
+                                                   HorizontalScrollBarVisibility="Disabled">
+                                    <ItemsControl ItemsSource="{Binding Users}"
                                              Background="Transparent"
                                              BorderThickness="0">
-                                        <ListBox.ItemTemplate>
+                                        <ItemsControl.ItemTemplate>
                                             <DataTemplate>
                                                 <!-- Весь блок перетаскивается -->
                                                 <Border Padding="8"
@@ -120,6 +122,7 @@
                                                                    FontSize="13" />
                                                         <Button Grid.Column="1"
                                                                 Content="❌"
+                                                                IsVisible="{Binding IsSelected}"
                                                                 Command="{Binding $parent[UserControl].DataContext.RemoveUserFromTeamCommand}"
                                                                 CommandParameter="{Binding}" />
                                                      
@@ -127,9 +130,9 @@
                                                     </Grid>
                                                 </Border>
                                             </DataTemplate>
-                                        </ListBox.ItemTemplate>
-                                    </ListBox>
-
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                    </ScrollViewer>
                                 </Border>
 
                             </StackPanel>
