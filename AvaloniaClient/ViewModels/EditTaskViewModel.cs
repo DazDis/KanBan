@@ -291,6 +291,7 @@ namespace AvaloniaClient.ViewModels
             foreach (var team in teams ?? new())
             {
                 team.IsSelected = _task.TeamIds?.Contains(team.Id) == true;
+                team.Users = new ObservableCollection<UserModel?>(users.Where(u => team.UserIds.Contains(u.Id)));
                 Teams.Add(team);
             }
 

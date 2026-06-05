@@ -1,6 +1,7 @@
 ﻿using ReactiveUI;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 
 namespace AvaloniaClient.DataBase
 {
@@ -47,5 +48,7 @@ namespace AvaloniaClient.DataBase
             get => _isSelected;
             set => this.RaiseAndSetIfChanged(ref _isSelected, value);
         }
+
+        public string UsersTeam => string.Join("\n", Users.Where(u => u != null).Select(u => $"{u.FirstName} {u.LastName}"));
     }
 }
