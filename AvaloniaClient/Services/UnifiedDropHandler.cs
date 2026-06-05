@@ -12,7 +12,6 @@ public class UnifiedDropHandler : DropHandlerBase
 {
     public override bool Validate(object? sender, DragEventArgs e, object? sourceContext, object? targetContext, object? state)
     {
-        // Проверяем, есть ли данные для задачи или колонки
         return e.Data.Contains("Context");
     }
 
@@ -20,13 +19,11 @@ public class UnifiedDropHandler : DropHandlerBase
     {
         var data = e.Data.Get("Context");
 
-        // Пробуем обработать как задачу
         if (data is TaskModel draggedTask)
         {
             return HandleTaskDrop(sender, e, targetContext, draggedTask);
         }
 
-        // Пробуем обработать как колонку
         if (data is ColumnModel draggedColumn)
         {
             return HandleColumnDrop(sender, e, targetContext, draggedColumn);
@@ -37,7 +34,6 @@ public class UnifiedDropHandler : DropHandlerBase
 
     private bool HandleTaskDrop(object? sender, DragEventArgs e, object? targetContext, TaskModel draggedTask)
     {
-        // Находим ViewModel
         if (sender is not Control control) return false;
         var viewModel = control.FindLogicalAncestorOfType<ColumnView>()?.DataContext as ColumnViewModel;
         if (viewModel == null) return false;
@@ -45,7 +41,6 @@ public class UnifiedDropHandler : DropHandlerBase
         ColumnModel targetColumn = null;
         int targetIndex = -1;
 
-        // Определяем целевую колонку и индекс
         if (targetContext is TaskModel targetTask)
         {
             targetColumn = viewModel.Columns.FirstOrDefault(c => c.Tasks.Contains(targetTask));

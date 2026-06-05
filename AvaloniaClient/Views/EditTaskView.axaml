@@ -164,6 +164,10 @@
                                                             Margin="0,0,0,6"
                                                             Background="{Binding Color}">
 
+                                                        <ToolTip.Tip>
+                                                            <TextBlock Text="{Binding UsersTeam}"/>
+                                                        </ToolTip.Tip>
+
                                                         <CheckBox IsChecked="{Binding IsSelected}">
 
                                                             <CheckBox.Content>

@@ -32,12 +32,12 @@ public class TeamDropHandler : DropHandlerBase
         {
             if (sender is Control control && control.FindLogicalAncestorOfType<SettingsView>()?.DataContext is SettingsViewModel vm)
             {
-                var teamWithUser = vm.Teams.FirstOrDefault(t => t.Users.Contains(draggedUser));
-                if (teamWithUser != null)
+                var teamsWithUser = vm.Teams.Where(t => t.Users.Contains(draggedUser));
+                foreach(var team in teamsWithUser)
                 {
-                    vm.RemoveUserFromTeam(draggedUser, teamWithUser);
-                    return true;
+                    _ = vm.RemoveUserFromTeam(draggedUser, team);
                 }
+                return true;
             }
         }
         return false;

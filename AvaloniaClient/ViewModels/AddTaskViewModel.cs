@@ -207,7 +207,10 @@ namespace AvaloniaClient.ViewModels
                 Labels.Add(label);
 
             foreach (var team in teams ?? new())
+            {
+                team.Users = new ObservableCollection<UserModel?>(users.Where(u => team.UserIds.Contains(u.Id)));
                 Teams.Add(team);
+            }
 
             foreach (var column in columns ?? new())
                 Columns.Add(column);
