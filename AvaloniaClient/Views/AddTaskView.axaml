@@ -293,6 +293,7 @@
                                 Spacing="10">
 
                         <Button Content="Сохранить"
+                                HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                                 Command="{Binding SaveCommand}"
                                 Background="#E6E6FA"
                                 Foreground="#6C7BFF"
@@ -301,6 +302,7 @@
                                 Height="42"/>
 
                         <Button Content="Настройки"
+                                HorizontalContentAlignment="Center" VerticalContentAlignment="Center"
                                 Command="{Binding NavigateToSettingsCommand}"
                                 Background="White"
                                 CornerRadius="12"
