@@ -42,30 +42,38 @@
                         <TextBox Watermark="Название..."
                                  Text="{Binding Title}"/>
 
-                        <Grid>
-                            <Button Content="Сохранить"
-                                    HorizontalAlignment="Center"
-                                    Padding="12,6"
-                                    Background="#E6E6FA"
-                                    Foreground="#6C7BFF"
-                                    CornerRadius="10"
-						            Command="{Binding SaveCommand}"
-						            x:Name="SaveButton"/>
+                       
+                            
 
-                 <Button Content="Удалить"
-                        HorizontalAlignment="Right"
-                        Padding="12,6"
-                        Background="#ffffff"
-                        Foreground="#C51D34"
-                        CornerRadius="10"
-						Command="{Binding DeleteCommand}"
-						x:Name="DeleteButton"/>
-                 </Grid>
+                 <StackPanel Orientation="Horizontal" 
+                HorizontalAlignment="Right" 
+                Spacing="10">
+                <Button Content="Удалить"
+                Padding="12,6"
+                Background="#ffffff"
+                Foreground="#C51D34"
+                CornerRadius="10"
+                Command="{Binding DeleteCommand}"
+                x:Name="DeleteButton"/>
+
+                <Button Content="Сохранить"
+                Padding="12,6"
+                Background="#E6E6FA"
+                Foreground="#6C7BFF"
+                CornerRadius="10"
+                Command="{Binding SaveCommand}"
+                x:Name="SaveButton"/>
+                </StackPanel>
+               
+                
+
                 <TextBlock Text="{Binding Error}"
                                FontSize="10"
                                FontWeight="SemiBold"
                                VerticalAlignment="Center"
                                IsVisible="{Binding HaveError}"/>
+
+
             </StackPanel>
 
                 </Border>
