@@ -1,5 +1,4 @@
-﻿// AvaloniaClient/Services/SignalRService.cs
-using AvaloniaClient.DataBase;
+﻿using AvaloniaClient.DataBase;
 using Microsoft.AspNetCore.SignalR.Client;
 using System;
 using System.Threading;
@@ -44,7 +43,6 @@ public class SignalRService
             .WithUrl($"{baseUrl}/taskHub")
             .Build();
 
-        // Подписываемся на события от сервера
         _hubConnection.On<TaskModel>("TaskUpdated", task =>
         {
             TaskUpdated?.Invoke(task);
@@ -130,12 +128,11 @@ public class SignalRService
         }
     }
 
-    // Отправка обновления на сервер (если нужно)
     public async Task SendTaskUpdate(TaskModel task, CancellationToken token = default)
     {
         if (_hubConnection != null)
         {
-            await _hubConnection.InvokeAsync("SendTaskUpdate",token, task);
+            await _hubConnection.InvokeAsync("SendTaskUpdate", token, task);
         }
     }
 }

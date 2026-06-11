@@ -9,13 +9,9 @@ namespace AvaloniaClient.Services
     public class HealthService : IHealthService
     {
         private readonly IApiClient _apiClient;
-        private readonly IConfigurationService _configService;
-        public HealthService(IApiClient apiClient, IConfigurationService configService)
+        public HealthService(IApiClient apiClient)
         {
             _apiClient = apiClient;
-            _configService = configService;
-
-            _configService.UrlChanged += ResetUrl;
         }
         public void ResetUrl(string? url)
         {
@@ -37,7 +33,7 @@ namespace AvaloniaClient.Services
                 return new HealthStatus
                 {
                     IsAvailable = false,
-                    Message = $"Сервер недоступен ({_configService.GetApiUrl()}): {ex.Message}"
+                    Message = $"Сервер недоступен ({_apiClient.GetUrl()}): {ex.Message}"
                 };
             }
             catch (Exception ex)
@@ -45,37 +41,10 @@ namespace AvaloniaClient.Services
                 return new HealthStatus
                 {
                     IsAvailable = false,
-                    Message = $"Не удалось подключиться к серверу ({_configService.GetApiUrl()}): {ex.Message}"
+                    Message = $"Не удалось подключиться к серверу ({_apiClient.GetUrl()}): {ex.Message}"
                 };
             }
         }
-        public async Task<HealthStatus> DropDBAsync(CancellationToken token = default)
-        {
-            try
-            {
-                var response = await _apiClient.PostAsync<object>("api/health", "", token);
-                return new HealthStatus
-                {
-                    IsAvailable = true,
-                    Message = "БД удалена"
-                };
-            }
-            catch (HttpRequestException ex)
-            {
-                return new HealthStatus
-                {
-                    IsAvailable = false,
-                    Message = $"Сервер недоступен ({_configService.GetApiUrl()}): {ex.Message}"
-                };
-            }
-            catch (Exception ex)
-            {
-                return new HealthStatus
-                {
-                    IsAvailable = false,
-                    Message = $"Не удалось подключиться к серверу ({_configService.GetApiUrl()}): {ex.Message}"
-                };
-            }
-        }
+
     }
 }

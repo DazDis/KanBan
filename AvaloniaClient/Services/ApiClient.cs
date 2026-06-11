@@ -9,18 +9,24 @@ namespace AvaloniaClient.Services;
 public class ApiClient : IApiClient
 {
     private HttpClient _httpClient;
+    private IConfigurationService _configurationService;
 
-    public ApiClient(HttpClient httpClient)
+    public ApiClient(HttpClient httpClient, IConfigurationService configurationService)
     {
         _httpClient = httpClient;
+        _configurationService = configurationService;
+        _configurationService.UrlChanged += SetUrl;
         _httpClient.Timeout = TimeSpan.FromSeconds(30);
     }
-    public void SetUrl(string http)
+    public void SetUrl(string? http)
     {
         _httpClient = new();
         _httpClient.BaseAddress = new Uri(http);
     }
-
+    public Uri GetUrl()
+    {
+        return _httpClient.BaseAddress;
+    }
     public async Task<T?> GetAsync<T>(string endpoint, CancellationToken token = default)
     {
         var response = await _httpClient.GetAsync(endpoint, token);

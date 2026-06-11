@@ -87,7 +87,7 @@ namespace AvaloniaClient
                     BaseAddress = new Uri(configService.GetApiUrl()),
                     Timeout = TimeSpan.FromSeconds(30)
                 };
-                return new ApiClient(httpClient);
+                return new ApiClient(httpClient, configService);
             });
             services.AddScoped<NavigationService>();
             services.AddScoped<RoutableViewModelsFactory>();
@@ -96,7 +96,6 @@ namespace AvaloniaClient
             services.AddTransient<ErrorViewModel>();
             services.AddTransient<SettingsViewModel>();
             services.AddSingleton<SignalRService>();
-            services.AddScoped<IConfigurationService, ConfigurationService>();
             services.AddScoped<IHealthService, HealthService>();
             services.AddScoped<IColumnService, ColumnService>();
             services.AddScoped<ITeamService, TeamService>();

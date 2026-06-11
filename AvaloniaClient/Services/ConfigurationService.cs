@@ -37,7 +37,7 @@ namespace AvaloniaClient.Services
             }
             _configuration = new ConfigurationBuilder().AddJsonFile("appsettings.json").Build();
             UrlServerPath = url;
-            UrlChanged?.Invoke(url);
+            UrlChanged?.Invoke(UrlServerPath);
         }
     }
 }

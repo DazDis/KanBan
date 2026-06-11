@@ -1,6 +1,5 @@
 ﻿using AvaloniaClient.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
-using ReactiveUI;
 using System;
 
 namespace AvaloniaClient.Services;

@@ -26,7 +26,7 @@ public class TeamService : ITeamService
     {
         await _apiClient.PutAsync("api/team", dto);
     }
-    
+
     public async Task DeleteTeamAsync(int id, CancellationToken token = default)
     {
         await _apiClient.DeleteAsync($"api/team/{id}");

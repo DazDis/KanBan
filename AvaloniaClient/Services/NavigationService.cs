@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace AvaloniaClient.Services;
 
-public sealed class NavigationService
+public class NavigationService
 {
     private RoutableViewModelsFactory _routableViewModelsFactory;
     private readonly IServiceProvider _serviceProvider;

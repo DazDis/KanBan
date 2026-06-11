@@ -80,8 +80,8 @@ namespace AvaloniaClient.ViewModels
         private async Task RetryConnect()
         {
             _configService.SaveApiUrl(ServerUrl);
-            //_healthService.ResetUrl();
             StatusMessage = "Проверка подключения...";
+            IsServerAvailable = true;
 
             var health = await _healthService.GetHealthStatusAsync();
             StatusMessage = "Переподключение...";
@@ -94,6 +94,7 @@ namespace AvaloniaClient.ViewModels
             else
             {
                 StatusMessage = health.Message;
+                IsServerAvailable = false;
             }
         }
     }

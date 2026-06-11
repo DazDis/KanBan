@@ -23,7 +23,7 @@ public class TaskService : ITaskService
 
     public async Task<TaskModel?> CreateTaskAsync(TaskModel task, CancellationToken token = default)
     {
-        var created =  await _apiClient.PostAsync<TaskModel>("api/task", task);
+        var created = await _apiClient.PostAsync<TaskModel>("api/task", task);
         if (created != null)
         {
             await AddHistoryEntryAsync(

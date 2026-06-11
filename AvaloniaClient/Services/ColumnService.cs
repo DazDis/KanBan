@@ -1,7 +1,6 @@
 ﻿using AvaloniaClient.DataBase;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Data.Common;
 using System.Threading;
 using System.Threading.Tasks;
 namespace AvaloniaClient.Services;
@@ -19,7 +18,8 @@ public class ColumnService : IColumnService
     {
         var DTOs = await _apiClient.GetAsync<List<ColumnDTO>>("api/column") ?? new List<ColumnDTO>();
         List<ColumnModel> columns = new();
-        foreach (var dto in DTOs) {
+        foreach (var dto in DTOs)
+        {
             columns.Add(new ColumnModel
             {
                 Id = dto.Id,
